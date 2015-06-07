@@ -37,7 +37,7 @@
 		800460881B24934A001CFCF0 /* mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mesh.h; sourceTree = "<group>"; };
 		800460891B24934A001CFCF0 /* raytracing.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = raytracing.cpp; sourceTree = "<group>"; };
 		8004608A1B24934A001CFCF0 /* raytracing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = raytracing.h; sourceTree = "<group>"; };
-		8004608B1B24934A001CFCF0 /* traqueboule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = traqueboule.h; sourceTree = "<group>"; };
+		8004608B1B24934A001CFCF0 /* trackball.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trackball.h; sourceTree = "<group>"; };
 		8004608C1B24934A001CFCF0 /* Vec3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vec3D.h; sourceTree = "<group>"; };
 		8004608D1B24934A001CFCF0 /* Vertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vertex.h; sourceTree = "<group>"; };
 		800460911B24935F001CFCF0 /* resource */ = {isa = PBXFileReference; lastKnownFileType = folder; path = resource; sourceTree = "<group>"; };
@@ -99,7 +99,7 @@
 				800460881B24934A001CFCF0 /* mesh.h */,
 				800460891B24934A001CFCF0 /* raytracing.cpp */,
 				8004608A1B24934A001CFCF0 /* raytracing.h */,
-				8004608B1B24934A001CFCF0 /* traqueboule.h */,
+				8004608B1B24934A001CFCF0 /* trackball.h */,
 				8004608C1B24934A001CFCF0 /* Vec3D.h */,
 				8004608D1B24934A001CFCF0 /* Vertex.h */,
 			);
