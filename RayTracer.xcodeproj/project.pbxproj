@@ -30,7 +30,7 @@
 		800460711B2490FF001CFCF0 /* RayTracer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = RayTracer; sourceTree = BUILT_PRODUCTS_DIR; };
 		800460821B249271001CFCF0 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		800460831B249271001CFCF0 /* STRUCTURE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = STRUCTURE.md; sourceTree = "<group>"; };
-		800460841B24934A001CFCF0 /* imageWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = imageWriter.h; sourceTree = "<group>"; };
+		800460841B24934A001CFCF0 /* image_writer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = image_writer.h; sourceTree = "<group>"; };
 		800460851B24934A001CFCF0 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		800460861B24934A001CFCF0 /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
 		800460871B24934A001CFCF0 /* mesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mesh.cpp; sourceTree = "<group>"; };
@@ -92,7 +92,7 @@
 		8004607D1B249222001CFCF0 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				800460841B24934A001CFCF0 /* imageWriter.h */,
+				800460841B24934A001CFCF0 /* image_writer.h */,
 				800460851B24934A001CFCF0 /* main.cpp */,
 				800460861B24934A001CFCF0 /* matrix.h */,
 				800460871B24934A001CFCF0 /* mesh.cpp */,

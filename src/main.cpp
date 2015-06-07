@@ -21,7 +21,7 @@
 #include "raytracing.h"
 #include "mesh.h"
 #include "trackball.h"
-#include "imageWriter.h"
+#include "image_writer.h"
 
 
 //This is the main application
@@ -218,7 +218,7 @@ void keyboard(unsigned char key, int x, int y)
 
 
             //Setup an image with the size of the current image.
-            Image result(WindowSize_X,WindowSize_Y);
+            image result(WindowSize_X,WindowSize_Y);
 
             //produce the rays for each pixel, by first computing
             //the rays for the corners of the frustum.
@@ -251,7 +251,7 @@ void keyboard(unsigned char key, int x, int y)
                     //launch raytracing for the given ray.
                     vector3f rgb = performRayTracing(origin, dest);
                     //store the result in an image 
-                    result.setPixel(x,y, RGBValue(rgb[0], rgb[1], rgb[2]));
+                    result.setPixel(x,y, rgb_value(rgb[0], rgb[1], rgb[2]));
                 }
             
             result.writeImage("result.ppm");
