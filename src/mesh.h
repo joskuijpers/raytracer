@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 
-#include "Vertex.h"
+#include "vertex.h"
 
 //Material class of the mesh
 //while colors seem useful, also texture names are loaded
@@ -181,7 +181,7 @@ public:
 class Mesh {
 public:
 	Mesh(){}
-    inline Mesh (const std::vector<Vertex> & v, const std::vector<Triangle> & t) : vertices (v), triangles (t)  {}
+    inline Mesh (const std::vector<vertex> & v, const std::vector<Triangle> & t) : vertices (v), triangles (t)  {}
     bool loadMesh(const char * filename, bool randomizeTriangulation);
 	bool loadMtl(const char * filename, std::map<std::string, unsigned int> & materialIndex);
     void computeVertexNormals ();
@@ -189,7 +189,7 @@ public:
     void drawSmooth();
 
 	//Vertices are the vertex positions, and normals of the mesh.
-	std::vector<Vertex> vertices;
+	std::vector<vertex> vertices;
 	//texCoords are the texture coordinates, these are DIFFERENT indices in triangles.
 	//in the current version, if you use textures, then you have to use texture coords everywhere
 	//for convenience, vector3f is used, although only 2D tex coordinates are stored (x,y entry of the vector3f).

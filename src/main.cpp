@@ -1,8 +1,9 @@
 #include "platform.h"
 
-#include <stdlib.h>
-#include <math.h>
-#include <assert.h>
+#include <cstdlib>
+#include <cmath>
+#include <cassert>
+
 #include "raytracing.h"
 #include "mesh.h"
 #include "trackball.h"

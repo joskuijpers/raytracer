@@ -2,10 +2,10 @@
 
 #include "platform.h"
 
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstring>
+#include <cmath>
+#include <cstdlib>
 #include <iostream>
 #include <fstream>
 

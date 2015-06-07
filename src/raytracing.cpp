@@ -1,6 +1,6 @@
 #include "raytracing.h"
 
-#include <stdio.h>
+#include <cstdio>
 
 #include "platform.h"
 

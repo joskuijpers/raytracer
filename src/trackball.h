@@ -1,34 +1,17 @@
 #pragma once
 
 /** \file traqueboule.h
- 
 Utilitaires pour appliquer une traqueboule a une fenetre OpenGL.
- 
 */
-#ifndef TRAQUEBOULE_H
-#define TRAQUEBOULE_H
 
-#if defined(_WIN32)
-# include <windows.h>
-#endif
+#include "platform.h"
 
-#if defined(__APPLE__) // OSX
-# include "TargetConditionals.h"
-# if TARGET_OS_MAC
-#  include <OpenGL/gl.h>
-#  include <OpenGL/glu.h>
-#  include <GLUT/glut.h>
-# else
-#  error Unsupported platform
-# endif
-#else // any UNIX or Windows
-# include <GL/glut.h>
-#endif
+#include <cmath>
+#include <cstdio>
 
-#include <math.h>
 #include "matrix.h"
-#include "stdio.h"
 #include "vector3.h"
+
 static const float speedfact = 0.2;
 
 /** votre fonction d'affichage */
