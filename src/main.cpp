@@ -26,7 +26,7 @@ vector3f MyCameraPosition;
 std::vector<vector3f> MyLightPositions;
 
 //Main mesh
-Mesh MyMesh;
+mesh MyMesh;
 
 unsigned int WindowSize_X = 800;  // resolution X
 unsigned int WindowSize_Y = 800;  // resolution Y
