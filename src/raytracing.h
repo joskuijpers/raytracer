@@ -4,12 +4,7 @@
 
 #include "mesh.h"
 
-// Welcome to your MAIN PROJECT...
-// THIS IS THE MOST relevant code for you!
-// this is an important file, raytracing.cpp is what you need to fill out
-// In principle, you can do the entire project ONLY by working in these two files
-
-extern Mesh MyMesh; //Main mesh
+extern mesh MyMesh; // Main mesh
 extern std::vector<vector3f> MyLightPositions;
 extern vector3f MyCameraPosition; // currCamera
 extern unsigned int WindowSize_X; // window resolution width
