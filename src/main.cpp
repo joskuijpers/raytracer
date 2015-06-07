@@ -20,7 +20,7 @@
 #include <assert.h>
 #include "raytracing.h"
 #include "mesh.h"
-#include "traqueboule.h"
+#include "trackball.h"
 #include "imageWriter.h"
 
 
