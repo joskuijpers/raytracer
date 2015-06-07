@@ -32,9 +32,9 @@ void init()
 }
 
 //return the color of your pixel.
-vector3f performRayTracing(const vector3f & origin, const vector3f & dest)
+vector3f performRayTracing(const vector3f &origin, const vector3f &dest)
 {
-	return vector3f(dest[0],dest[1],dest[2]);
+	return vector3f(dest[0], dest[1], dest[2]);
 }
 
 
@@ -53,10 +53,11 @@ void yourDebugDraw()
 	glColor3f(1,1,1);
 	glPointSize(10);
 	glBegin(GL_POINTS);
-	for (int i=0;i<MyLightPositions.size();++i)
+    for (int i = 0; i < MyLightPositions.size(); ++i) {
 		glVertex3fv(MyLightPositions[i].pointer());
+    }
 	glEnd();
-	glPopAttrib();//restore all GL attributes
+	glPopAttrib(); //restore all GL attributes
 	//The Attrib commands maintain the state. 
 	//e.g., even though inside the two calls, we set
 	//the color to white, it will be reset to the previous 
@@ -104,19 +105,19 @@ void yourDebugDraw()
 //    the target of the ray - see the code above), but once you replaced 
 //    this function and raytracing is in place, it might take a 
 //    while to complete...
-void yourKeyboardFunc(char t, int x, int y, const vector3f & rayOrigin, const vector3f & rayDestination)
+void yourKeyboardFunc(char t, int x, int y, const vector3f &rayOrigin, const vector3f &rayDestination)
 {
 
 	//here, as an example, I use the ray to fill in the values for my upper global ray variable
 	//I use these variables in the debugDraw function to draw the corresponding ray.
 	//try it: Press a key, move the camera, see the ray that was launched as a line.
-	testRayOrigin=rayOrigin;	
-	testRayDestination=rayDestination;
+	testRayOrigin = rayOrigin;
+	testRayDestination = rayDestination;
 	
 	// do here, whatever you want with the keyboard input t.
 	
 	//...
 	
 	
-	std::cout<<t<<" pressed! The mouse was in location "<<x<<","<<y<<"!"<<std::endl;	
+	std::cout << t << " pressed! The mouse was in location " << x << ", " << y << "!" <<std::endl;
 }
