@@ -161,6 +161,8 @@ private:
 
     std::string name;
     std::string textureName;
+
+    friend class mesh;
 };
 
 /**
@@ -230,7 +232,7 @@ public:
     mesh() {}
 
     inline mesh(const std::vector<vertex> &v, const std::vector<triangle> &t)
-        : vertices (v), triangles (t) {
+    : vertices (v), triangles (t) {
     }
 
     bool loadMesh(const char *filename, bool randomizeTriangulation);
@@ -254,13 +256,13 @@ public:
     // These are the material properties
     // each triangle (!), NOT (!) each vertex, has a material.
     // Use the triangle index to receive a material INDEX
-    std::vector<unsigned int> trianglematerials;
+    std::vector<unsigned int> triangleMaterials;
 
     // using the material index, you can then recover the material from this vector
     // the class material is defined just above
     std::vector<material> materials;
-
+    
     // As an example:
-    // triangle triangles[i] has material index trianglematerials[i]
-    // and uses material materials[trianglematerials[i]].
+    // triangle triangles[i] has material index triangleMaterials[i]
+    // and uses material materials[triangleMaterials[i]].
 };
