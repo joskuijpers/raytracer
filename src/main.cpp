@@ -31,13 +31,13 @@
 
 
 
-Vec3Df MyCameraPosition;
+vector3f MyCameraPosition;
 
 //MyLightPositions stores all the light positions to use
 //for the ray tracing. Please notice, the light that is
 //used for the real-time rendering is NOT one of these,
 //but following the camera instead.
-std::vector<Vec3Df> MyLightPositions;
+std::vector<vector3f> MyLightPositions;
 
 //Main mesh
 Mesh MyMesh;
@@ -178,7 +178,7 @@ void reshape(int w, int h)
 }
 
 //transform the x, y position on the screen into the corresponding 3D world position
-void produceRay(int x_I, int y_I, Vec3Df * origin, Vec3Df * dest)
+void produceRay(int x_I, int y_I, vector3f * origin, vector3f * dest)
 {
     int viewport[4];
     double modelview[16];
@@ -222,11 +222,11 @@ void keyboard(unsigned char key, int x, int y)
 
             //produce the rays for each pixel, by first computing
             //the rays for the corners of the frustum.
-            Vec3Df origin00, dest00;
-            Vec3Df origin01, dest01;
-            Vec3Df origin10, dest10;
-            Vec3Df origin11, dest11;
-            Vec3Df origin, dest;
+            vector3f origin00, dest00;
+            vector3f origin01, dest01;
+            vector3f origin10, dest10;
+            vector3f origin11, dest11;
+            vector3f origin, dest;
 
 
             produceRay(0,0, &origin00, &dest00);
@@ -249,7 +249,7 @@ void keyboard(unsigned char key, int x, int y)
                     (1-yscale)*(xscale*dest01+(1-xscale)*dest11);
                     
                     //launch raytracing for the given ray.
-                    Vec3Df rgb = performRayTracing(origin, dest);
+                    vector3f rgb = performRayTracing(origin, dest);
                     //store the result in an image 
                     result.setPixel(x,y, RGBValue(rgb[0], rgb[1], rgb[2]));
                 }
@@ -263,7 +263,7 @@ void keyboard(unsigned char key, int x, int y)
     
     
     //produce the ray for the current mouse position
-    Vec3Df testRayOrigin, testRayDestination;
+    vector3f testRayOrigin, testRayDestination;
     produceRay(x, y, &testRayOrigin, &testRayDestination);
     
     yourKeyboardFunc(key,x,y, testRayOrigin, testRayDestination);

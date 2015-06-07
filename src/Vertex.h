@@ -1,7 +1,6 @@
-#ifndef VERTEX_H
-#define VERTEX_H
+#pragma once
 
-#include "Vec3D.h"
+#include "vector3.h"
 
 /************************************************************
  * Vertex of the mesh (containing normal n and vertetx v)
@@ -9,18 +8,17 @@
 class Vertex {
 public:
     inline Vertex () {}
-    inline Vertex (const Vec3Df & p) : p (p) {}
-    inline Vertex (const Vec3Df & p, const Vec3Df & n) : p (p), n (n){}
-    inline Vertex (const Vertex & v) : p (v.p), n (v.n){}
+    inline Vertex (const vector3f &p) : p (p) {}
+    inline Vertex (const vector3f &p, const vector3f &n) : p (p), n (n) {}
+    inline Vertex (const Vertex &v) : p (v.p), n (v.n) {}
     inline virtual ~Vertex () {}
-    inline Vertex & operator= (const Vertex & v) {
+    inline Vertex& operator= (const Vertex &v) {
         p = v.p;
         n = v.n;
-		return (*this);
+
+        return (*this);
     }
-    Vec3Df p;
-    Vec3Df n;
+
+    vector3f p;
+    vector3f n;
 };
-
-
-#endif // VERTEX_H

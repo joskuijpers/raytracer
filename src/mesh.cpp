@@ -44,13 +44,13 @@ const unsigned int LINE_LEN=256;
  ************************************************************/
 void Mesh::computeVertexNormals () {
     for (unsigned int i = 0; i < vertices.size (); i++)
-        vertices[i].n = Vec3Df (0.0, 0.0, 0.0);
+        vertices[i].n = vector3f (0.0, 0.0, 0.0);
 
     //Sum up neighboring normals
     for (unsigned int i = 0; i < triangles.size (); i++) {
-        Vec3Df edge01 = vertices[triangles[i].v[1]].p -  vertices[triangles[i].v[0]].p;
-        Vec3Df edge02 = vertices[triangles[i].v[2]].p -  vertices[triangles[i].v[0]].p;
-        Vec3Df n = edge01.cross(edge02);
+        vector3f edge01 = vertices[triangles[i].v[1]].p -  vertices[triangles[i].v[0]].p;
+        vector3f edge02 = vertices[triangles[i].v[2]].p -  vertices[triangles[i].v[0]].p;
+        vector3f n = edge01.cross(edge02);
         n.normalize ();
         for (unsigned int j = 0; j < 3; j++)
             vertices[triangles[i].v[j]].n += n;
@@ -71,7 +71,7 @@ void Mesh::drawSmooth(){
 
     for (unsigned int i=0;i<triangles.size();++i)
     {
-		Vec3Df col=this->materials[triangleMaterials[i]].Kd();
+		vector3f col=this->materials[triangleMaterials[i]].Kd();
 
 		glColor3fv(col.pointer());
         for(int v = 0; v < 3 ; v++){
@@ -89,11 +89,11 @@ void Mesh::draw(){
     for (unsigned int i=0;i<triangles.size();++i)
     {
         unsigned int triMat = triangleMaterials.at(i);
-        Vec3Df col=this->materials.at(triMat).Kd();
+        vector3f col=this->materials.at(triMat).Kd();
 		glColor3fv(col.pointer());
-        Vec3Df edge01 = vertices[triangles[i].v[1]].p -  vertices[triangles[i].v[0]].p;
-        Vec3Df edge02 = vertices[triangles[i].v[2]].p -  vertices[triangles[i].v[0]].p;
-        Vec3Df n = edge01.cross(edge02);
+        vector3f edge01 = vertices[triangles[i].v[1]].p -  vertices[triangles[i].v[0]].p;
+        vector3f edge02 = vertices[triangles[i].v[2]].p -  vertices[triangles[i].v[0]].p;
+        vector3f n = edge01.cross(edge02);
         n.normalize ();
         glNormal3f(n[0], n[1], n[2]);
         for(int v = 0; v < 3 ; v++){
@@ -143,7 +143,7 @@ bool Mesh::loadMesh(const char * filename, bool randomizeTriangulation)
             realFilename[i]='/';
     }
 
-    std::vector<Vec3Df>     normals;
+    std::vector<vector3f>     normals;
     std::string            matname;
 
     std::string path_;
@@ -208,7 +208,7 @@ bool Mesh::loadMesh(const char * filename, bool randomizeTriangulation)
         else if (strncmp(s, "v ", 2) == 0)
         {
             sscanf(s, "v %f %f %f", &x, &y, &z);
-            vertices.push_back(Vec3Df(x,y,z));
+            vertices.push_back(vector3f(x,y,z));
         }
 
 
@@ -216,7 +216,7 @@ bool Mesh::loadMesh(const char * filename, bool randomizeTriangulation)
         else if (strncmp(s, "vt ", 3) == 0)
         {
             //we do nothing
-			Vec3Df texCoords(0,0,0);
+			vector3f texCoords(0,0,0);
 		
 			//we only support 2d tex coords
             sscanf(s, "vt %f %f", &texCoords[0], &texCoords[1]);

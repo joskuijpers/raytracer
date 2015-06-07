@@ -23,8 +23,8 @@
 //temporary variables
 //these are only used to illustrate 
 //a simple debug drawing. A ray 
-Vec3Df testRayOrigin;
-Vec3Df testRayDestination;
+vector3f testRayOrigin;
+vector3f testRayDestination;
 
 
 //use this function for any preprocessing of the mesh.
@@ -47,9 +47,9 @@ void init()
 }
 
 //return the color of your pixel.
-Vec3Df performRayTracing(const Vec3Df & origin, const Vec3Df & dest)
+vector3f performRayTracing(const vector3f & origin, const vector3f & dest)
 {
-	return Vec3Df(dest[0],dest[1],dest[2]);
+	return vector3f(dest[0],dest[1],dest[2]);
 }
 
 
@@ -119,7 +119,7 @@ void yourDebugDraw()
 //    the target of the ray - see the code above), but once you replaced 
 //    this function and raytracing is in place, it might take a 
 //    while to complete...
-void yourKeyboardFunc(char t, int x, int y, const Vec3Df & rayOrigin, const Vec3Df & rayDestination)
+void yourKeyboardFunc(char t, int x, int y, const vector3f & rayOrigin, const vector3f & rayDestination)
 {
 
 	//here, as an example, I use the ray to fill in the values for my upper global ray variable
