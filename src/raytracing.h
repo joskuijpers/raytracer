@@ -25,7 +25,6 @@ void init();
 // it is defined elsewhere
 void produceRay(int x_I, int y_I, vector3f &origin, vector3f &dest);
 
-
 // your main function to rewrite
 vector3f performRayTracing(const vector3f &origin, const vector3f &dest);
 
