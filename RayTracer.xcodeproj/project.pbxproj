@@ -44,6 +44,7 @@
 		800460921B249389001CFCF0 /* doc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = doc; sourceTree = "<group>"; };
 		800460931B2495A2001CFCF0 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		800460951B2495A6001CFCF0 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		800460981B25028A001CFCF0 /* platform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +103,7 @@
 				8004608B1B24934A001CFCF0 /* trackball.h */,
 				8004608C1B24934A001CFCF0 /* vector3.h */,
 				8004608D1B24934A001CFCF0 /* vertex.h */,
+				800460981B25028A001CFCF0 /* platform.h */,
 			);
 			path = src;
 			sourceTree = "<group>";

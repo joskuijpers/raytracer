@@ -1,5 +1,5 @@
-#ifndef RAYTRACING_Hjdslkjfadjfasljf
-#define RAYTRACING_Hjdslkjfadjfasljf
+#pragma once
+
 #include <vector>
 #include "mesh.h"
 
@@ -33,5 +33,3 @@ void yourDebugDraw();
 
 //want keyboard interaction? Here it is...
 void yourKeyboardFunc(char t, int x, int y, const vector3f & rayOrigin, const vector3f & rayDestination);
-
-#endif

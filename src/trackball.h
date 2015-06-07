@@ -1,11 +1,4 @@
-
-
-//PLEASE IGNORE THIS FILE !!!! 
-//IT DEALS WITH THE TRACKBALL
-//IT IS COMPLEX and has French comments ;) 
-//good times...
-
-
+#pragma once
 
 /** \file traqueboule.h
  
@@ -253,5 +246,3 @@ vector3f getWorldPositionOfPixel(unsigned int px, unsigned int py)
 
 	return vector3f(x,y,z);
 }
-
-#endif // TRAQUEBOULE_H
