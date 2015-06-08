@@ -242,6 +242,10 @@ void keyboard(unsigned char key, int x, int y)
 
                     // store the result in an image
                     result.setPixel(x,y, rgb);
+
+                    if (x % 1000 == 0) {
+                        cout << "Pixel(" << x << ", " << y << ") calculated." << endl;
+                    }
                 }
             }
 

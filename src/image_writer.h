@@ -6,6 +6,8 @@
 #include <cassert>
 #include <vector>
 
+#include "vector3.h"
+
 class rgb_value
 {
 public:
@@ -26,6 +28,9 @@ public:
         else if (b < 0.f)
             this->b = 0.f;
     };
+
+    /// Convert from vector to rgb
+    rgb_value(vector3f vector) : rgb_value(vector[0], vector[1], vector[2]) {}
 
     float operator[](int i) const
     {

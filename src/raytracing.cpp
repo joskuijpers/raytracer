@@ -1,8 +1,11 @@
 #include "raytracing.h"
 
 #include <cstdio>
+#include <cfloat>
 
 #include "platform.h"
+#include "compiler_opt.h"
+#include "mesh.h"
 
 using std::endl;
 using std::cout;
@@ -31,15 +34,16 @@ enum intersection_result : int {
     DEGENERATE = -1, // triangle is a line or point
     DISJOINT = 0, // no intersection
     INTERSECT = 1,
-    PARALLEL = 2
+    PARALLEL = 2,
+    OUTSIDE = 3
 };
 
-intersection_result rayTriangleIntersect(ray ray, triangle triangle, vector3f &point)
+intersection_result rayTriangleIntersect(ray ray, triangle triangle, vector3f &point, float &hitDistance)
 {
     vector3f v0, v1, v2;
     vector3f u, v, n;
     vector3f w0, w; // a thing?
-    float r /* ray length */, a, b;
+    float a, b;
 
     // get the vertices
     v0 = g_mainMesh.vertices[triangle.v[0]].p;
@@ -58,7 +62,7 @@ intersection_result rayTriangleIntersect(ray ray, triangle triangle, vector3f &p
     b = n.dot(ray.direction);
 
     // Angle is much much tiny: parallel
-    if(fabs(b) < 0.00000001f) {
+    if (unlikely(fabs(b) < 0.00000001f)) {
         if(a == 0.f)
             return PARALLEL;
         else
@@ -66,11 +70,11 @@ intersection_result rayTriangleIntersect(ray ray, triangle triangle, vector3f &p
     }
 
     // get intersection point
-    r = a / b;
-    if(r < 0.f)
+    hitDistance = a / b;
+    if (hitDistance < 0.f)
         return DISJOINT;
 
-    point = ray.origin + r * ray.direction;
+    point = ray.origin + hitDistance * ray.direction;
 
     // test if the point lies inside the triangle, not only in its plane
 
@@ -88,12 +92,12 @@ intersection_result rayTriangleIntersect(ray ray, triangle triangle, vector3f &p
     float s, t;
 
     s = (uv * wv - vv * wu) / denominator;
-    if(s < 0.0 || s > 1.0)
-        return DISJOINT;
+    if (s < 0.0 || s > 1.0)
+        return OUTSIDE;
 
     t = (uv * wu - uu * wv) / denominator;
-    if(t < 0.0 || (s + t) > 1.0)
-        return DISJOINT;
+    if (t < 0.0 || (s + t) > 1.0)
+        return OUTSIDE;
 
     return INTERSECT;
 }
@@ -101,26 +105,43 @@ intersection_result rayTriangleIntersect(ray ray, triangle triangle, vector3f &p
 /**
  * @return return the color of the pixel
  */
-rgb_value performRayTracing(const vector3f &origin __attribute__((unused)), const vector3f &dest)
+rgb_value performRayTracing(const vector3f &origin, const vector3f &dest)
 {
     ray ray(origin, dest);
+    size_t triangleIndex = 0;
+    triangle nearest;
+    float near = FLT_MAX;
+    material m;
 
-    int x = 0;
-
-    for(triangle t : g_mainMesh.triangles) {
+    for(size_t it = 0; it < g_mainMesh.triangles.size(); ++it) {
         intersection_result result;
         vector3f intPoint;
+        float hit;
+        triangle t = g_mainMesh.triangles[it];
 
-        result = rayTriangleIntersect(ray, t, intPoint);
+        result = rayTriangleIntersect(ray, t, intPoint, hit);
 
-        if(result == INTERSECT) {
-            return rgb_value(1,1,1);
-        }
+        if (likely(result != INTERSECT))
+            continue;
 
-        ++x;
+        if(hit >= near)
+            continue;
+
+        near = hit;
+        nearest = t;
+        triangleIndex = it;
     }
 
-    return rgb_value(0,0,0);
+    // No hit
+    if(near == FLT_MAX)
+        return rgb_value(0,0,0);
+
+    // Get material
+    m = g_mainMesh.materials[g_mainMesh.triangleMaterials[triangleIndex]];
+
+    vector3f diffuse = m.getKd();
+
+    return rgb_value(diffuse);
 }
 
 void drawLights(void)
