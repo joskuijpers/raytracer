@@ -3,6 +3,7 @@
 *.lo
 *.o
 *.obj
+obj/
 !resource/*.obj
 
 # Precompiled Headers
@@ -27,7 +28,7 @@
 *.exe
 *.out
 *.app
-
+bin/
 
 # Mac + Xcode
 .DS_Store
@@ -51,5 +52,5 @@ xcuserdata
 *.xccheckout
 *.moved-aside
 *.xcuserstate
-
+dep/
 
