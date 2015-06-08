@@ -125,7 +125,7 @@ bool image::writeImage(const char *filename)
         printf("Dump file problem... fwrite\n");
         return false;
     }
-
+    
     fclose(file);
     return true;
 }

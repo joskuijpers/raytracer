@@ -13,44 +13,44 @@ template <class T> bool operator!= (const vector3<T> &p1, const vector3<T> &p2) 
 
 template <class T> const vector3<T> operator* (const vector3<T> &p, float factor) {
     return vector3<T> (p[0] * factor,
-                     p[1] * factor,
-                     p[2] * factor);
+                       p[1] * factor,
+                       p[2] * factor);
 }
 
 template <class T> const vector3<T> operator* (float factor, const vector3<T> &p) {
     return vector3<T> (p[0] * factor,
-                     p[1] * factor,
-                     p[2] * factor);
+                       p[1] * factor,
+                       p[2] * factor);
 }
 
 template <class T> const vector3<T> operator* (const vector3<T> &p1, const vector3<T> &p2) {
     return vector3<T> (p1[0] * p2[0],
-                     p1[1] * p2[1],
-                     p1[2] * p2[2]);
+                       p1[1] * p2[1],
+                       p1[2] * p2[2]);
 }
 
 template <class T> const vector3<T> operator+ (const vector3<T> &p1, const vector3<T> &p2) {
     return vector3<T> (p1[0] + p2[0],
-                     p1[1] + p2[1],
-                     p1[2] + p2[2]);
+                       p1[1] + p2[1],
+                       p1[2] + p2[2]);
 }
 
 template <class T> const vector3<T> operator- (const vector3<T> &p1, const vector3<T> &p2) {
     return vector3<T> (p1[0] - p2[0],
-                     p1[1] - p2[1],
-                     p1[2] - p2[2]);
+                       p1[1] - p2[1],
+                       p1[2] - p2[2]);
 }
 
 template <class T> const vector3<T> operator- (const vector3<T> &p) {
     return vector3<T> (-p[0],
-                     -p[1],
-                     -p[2]);
+                       -p[1],
+                       -p[2]);
 }
 
 template <class T> const vector3<T> operator/ (const vector3<T> &p, float divisor) {
     return vector3<T> (p[0]/divisor,
-                     p[1]/divisor,
-                     p[2]/divisor);
+                       p[1]/divisor,
+                       p[2]/divisor);
 }
 
 template <class T> bool operator== (const vector3<T> &p1, const vector3<T> &p2) {
@@ -327,8 +327,8 @@ public:
         q = (*this) - pos;
 
         return vector3(u.dot(q),
-                     v.dot(q),
-                     n.dot(q));
+                       v.dot(q),
+                       n.dot(q));
     }
 
     inline void set(T a, T b, T c) {

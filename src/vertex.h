@@ -19,7 +19,7 @@ public:
     inline vertex& operator= (const vertex &v) {
         p = v.p;
         n = v.n;
-
+        
         return (*this);
     }
 

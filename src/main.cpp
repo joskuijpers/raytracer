@@ -232,11 +232,11 @@ void keyboard(unsigned char key, int x, int y)
                     yscale = 1.0f - float(y) / (g_windowSizeY - 1);
 
                     origin = yscale * (xscale * origin00 + (1 - xscale) * origin10) +
-                            (1 - yscale) * (xscale * origin01 + (1 - xscale) * origin11);
+                    (1 - yscale) * (xscale * origin01 + (1 - xscale) * origin11);
 
                     dest = yscale * (xscale * dest00 + (1 - xscale) * dest10) +
-                            (1 - yscale) * (xscale * dest01 + (1 - xscale) * dest11);
-                    
+                    (1 - yscale) * (xscale * dest01 + (1 - xscale) * dest11);
+
                     // launch raytracing for the given ray.
                     rgb = performRayTracing(origin, dest);
 
@@ -244,7 +244,7 @@ void keyboard(unsigned char key, int x, int y)
                     result.setPixel(x,y, rgb_value(rgb[0], rgb[1], rgb[2]));
                 }
             }
-            
+
             result.writeImage("result.ppm");
             break;
         }

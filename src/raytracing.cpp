@@ -117,11 +117,11 @@ void yourKeyboardFunc(char t, int x, int y, const vector3f &rayOrigin, const vec
     //try it: Press a key, move the camera, see the ray that was launched as a line.
     testRayOrigin = rayOrigin;
     testRayDestination = rayDestination;
-    
+
     // do here, whatever you want with the keyboard input t.
-    
+
     //...
-    
-    
+
+
     std::cout << t << " pressed! The mouse was in location " << x << ", " << y << "!" <<std::endl;
 }
