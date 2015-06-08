@@ -10,27 +10,22 @@
 class rgb_value
 {
 public:
-    rgb_value(float r = 0.f, float g = 0.f, float b = 0.f, float a = 1.f) : r(r), g(g), b(b), a(a)
+    rgb_value(float r = 0.f, float g = 0.f, float b = 0.f) : r(r), g(g), b(b)
     {
         if (r > 1.f)
-            r = 1.f;
+            this->r = 1.f;
         else if (r < 0.f)
-            r = 0.f;
+            this->r = 0.f;
 
         if (g > 1.f)
-            g = 1.f;
+            this->g = 1.f;
         else if (g < 0.f)
-            g = 0.f;
+            this->g = 0.f;
 
         if (b > 1.f)
-            b = 1.f;
+            this->b = 1.f;
         else if (b < 0.f)
-            b = 0.f;
-
-        if (a > 1.f)
-            a = 1.f;
-        else if (a < 0.f)
-            a = 0.f;
+            this->b = 0.f;
     };
 
     float operator[](int i) const
@@ -43,8 +38,6 @@ public:
                 return g;
             case 2:
                 return b;
-            case 3:
-                return a;
             default:
                 return r;
         }
@@ -60,14 +53,12 @@ public:
                 return g;
             case 2:
                 return b;
-            case 3:
-                return a;
             default:
                 return r;
         }
     }
 
-    float r, g, b, a;
+    float r, g, b;
 };
 
 /**
