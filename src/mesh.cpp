@@ -412,7 +412,6 @@ bool mesh::loadMaterial(const char *filename, std::map<string, unsigned int> &ma
         }
         else if (strncmp(line, "map_Kd ",7) == 0) // map images
         {
-
             std::string t = &(line[7]);
             if (!t.empty() && t[t.length() - 1] == '\n') {
                 t.erase(t.length() - 1);

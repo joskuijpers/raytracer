@@ -6,34 +6,30 @@
 #include <math.h>
 #include <assert.h>
 
-//image class
-//This class can be used to write your final result to an image.
-//You can open the image using a PPM viewer.
 
-//YOU CAN IGNORE THIS CODE!
 class rgb_value
 {
 public:
-    rgb_value(float r = 0, float g = 0, float b = 0, float a = 1) : r(r), g(g), b(b), a(a)
+    rgb_value(float r = 0.f, float g = 0.f, float b = 0.f, float a = 1.f) : r(r), g(g), b(b), a(a)
     {
-        if (r > 1)
+        if (r > 1.f)
             r = 1.f;
-        else if (r < 0)
+        else if (r < 0.f)
             r = 0.f;
 
-        if (g > 1)
+        if (g > 1.f)
             g = 1.f;
-        else if (g < 0)
+        else if (g < 0.f)
             g = 0.f;
 
-        if (b > 1)
+        if (b > 1.f)
             b = 1.f;
-        else if (b < 0)
+        else if (b < 0.f)
             b = 0.f;
 
-        if (a > 1)
+        if (a > 1.f)
             a = 1.f;
-        else if (a < 0)
+        else if (a < 0.f)
             a = 0.f;
     };
 
@@ -74,6 +70,11 @@ public:
     float r, g, b, a;
 };
 
+/**
+ * Image class.
+ *
+ * Can write an image to file in PPM format.
+ */
 class image
 {
 public:
@@ -103,9 +104,7 @@ bool image::writeImage(const char *filename)
     int t;
 
     file = fopen(filename, "wb");
-
-    if (!file)
-    {
+    if (!file) {
         printf("Dump file problem... fopen\n");
         return false;
     }
@@ -127,5 +126,6 @@ bool image::writeImage(const char *filename)
     }
     
     fclose(file);
+
     return true;
 }
