@@ -205,13 +205,15 @@ public:
 
 #pragma mark - Operators
 
-    inline triangle& operator= (const triangle & t2) {
-        v[0] = t2.v[0];
-        v[1] = t2.v[1];
-        v[2] = t2.v[2];
-        t[0] = t2.v[0];
-        t[1] = t2.v[1];
-        t[2] = t2.v[2];
+    inline triangle& operator= (const triangle &other) {
+        v[0] = other.v[0];
+        v[1] = other.v[1];
+        v[2] = other.v[2];
+
+        t[0] = other.t[0];
+        t[1] = other.t[1];
+        t[2] = other.t[2];
+
         return (*this);
     }
 

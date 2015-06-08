@@ -107,11 +107,11 @@ public:
 #pragma mark - Operators
 
     inline T& operator[] (int Index) {
-        return (p[Index]);
+        return p[Index];
     }
 
     inline const T& operator[] (int Index) const {
-        return (p[Index]);
+        return p[Index];
     }
 
     inline vector3& operator= (const vector3 &P) {
@@ -234,7 +234,7 @@ public:
     }
 
     inline T dot(const vector3 &v) const {
-        return p[0]*v[0] + p[1]*v[1] + p[2]*v[2];
+        return p[0] * v[0] + p[1] * v[1] + p[2] * v[2];
     }
 
     inline vector3 cross(const vector3 &v) const {

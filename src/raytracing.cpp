@@ -1,9 +1,14 @@
 #include "raytracing.h"
 
 #include <cstdio>
+#include <cfloat>
 
 #include "platform.h"
+#include "compiler_opt.h"
+#include "mesh.h"
 
+using std::endl;
+using std::cout;
 
 //temporary variables
 //these are only used to illustrate
@@ -11,18 +16,12 @@
 vector3f testRayOrigin;
 vector3f testRayDestination;
 
-
 //use this function for any preprocessing of the mesh.
 void init(void)
 {
     //load the mesh file
     //please realize that not all OBJ files will successfully load.
-    //Nonetheless, if they come from Blender, they should, if they
-    //are exported as WavefrontOBJ.
-    //PLEASE ADAPT THE LINE BELOW TO THE FULL PATH OF THE dodgeColorTest.obj
-    //model, e.g., "C:/temp/myData/GraphicsIsFun/dodgeColorTest.obj",
-    //otherwise the application will not load properly
-    g_mainMesh.loadMesh("resource/dodgeColorTest.obj", true);
+    g_mainMesh.loadMesh("resource/cube.obj", true);
     g_mainMesh.computeVertexNormals();
 
     //one first move: initialize the first light source
@@ -31,12 +30,118 @@ void init(void)
     g_lightPositions.push_back(g_cameraPosition);
 }
 
+enum intersection_result : int {
+    DEGENERATE = -1, // triangle is a line or point
+    DISJOINT = 0, // no intersection
+    INTERSECT = 1,
+    PARALLEL = 2,
+    OUTSIDE = 3
+};
+
+intersection_result rayTriangleIntersect(ray ray, triangle triangle, vector3f &point, float &hitDistance)
+{
+    vector3f v0, v1, v2;
+    vector3f u, v, n;
+    vector3f w0, w; // a thing?
+    float a, b;
+
+    // get the vertices
+    v0 = g_mainMesh.vertices[triangle.v[0]].p;
+    v1 = g_mainMesh.vertices[triangle.v[1]].p;
+    v2 = g_mainMesh.vertices[triangle.v[2]].p;
+
+    u = v1 - v0;
+    v = v2 - v0;
+
+    n = u.cross(v);
+    if(n.getLength() == 0)
+        return DEGENERATE;
+
+    w0 = ray.origin - v0;
+    a = -(n.dot(w0));
+    b = n.dot(ray.direction);
+
+    // Angle is much much tiny: parallel
+    if (unlikely(fabs(b) < 0.00000001f)) {
+        if(a == 0.f)
+            return PARALLEL;
+        else
+            return DISJOINT;
+    }
+
+    // get intersection point
+    hitDistance = a / b;
+    if (hitDistance < 0.f)
+        return DISJOINT;
+
+    point = ray.origin + hitDistance * ray.direction;
+
+    // test if the point lies inside the triangle, not only in its plane
+
+    // these dot products are used multiple times. Precompute them
+    float uu, uv, vv, wu, wv, denominator;
+
+    uu = u.dot(u);
+    uv = u.dot(v);
+    vv = v.dot(v);
+    w = point - v0;
+    wu = w.dot(u);
+    wv = w.dot(v);
+    denominator = uv * uv - uu * vv;
+
+    float s, t;
+
+    s = (uv * wv - vv * wu) / denominator;
+    if (s < 0.0 || s > 1.0)
+        return OUTSIDE;
+
+    t = (uv * wu - uu * wv) / denominator;
+    if (t < 0.0 || (s + t) > 1.0)
+        return OUTSIDE;
+
+    return INTERSECT;
+}
+
 /**
  * @return return the color of the pixel
  */
-vector3f performRayTracing(const vector3f &origin __attribute__((unused)), const vector3f &dest)
+rgb_value performRayTracing(const vector3f &origin, const vector3f &dest)
 {
-    return vector3f(dest[0], dest[1], dest[2]);
+    ray ray(origin, dest);
+    size_t triangleIndex = 0;
+    triangle nearest;
+    float near = FLT_MAX;
+    material m;
+
+    for(size_t it = 0; it < g_mainMesh.triangles.size(); ++it) {
+        intersection_result result;
+        vector3f intPoint;
+        float hit;
+        triangle t = g_mainMesh.triangles[it];
+
+        result = rayTriangleIntersect(ray, t, intPoint, hit);
+
+        if (likely(result != INTERSECT))
+            continue;
+
+        if(hit >= near)
+            continue;
+
+        near = hit;
+        nearest = t;
+        triangleIndex = it;
+    }
+
+    // No hit
+    if(near == FLT_MAX)
+        return rgb_value(0,0,0);
+
+    // Get material
+    m = g_mainMesh.materials[g_mainMesh.triangleMaterials[triangleIndex]];
+
+    vector3f diffuse = m.getKd();
+
+    return rgb_value(diffuse);
 }
 
 void drawLights(void)
@@ -96,7 +201,6 @@ void yourDebugDraw(void)
     ////if you produce a sphere renderer, this
     ////triangulated sphere is nice for the preview
 }
-
 
 //yourKeyboardFunc is used to deal with keyboard input.
 //t is the character that was pressed

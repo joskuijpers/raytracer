@@ -2,10 +2,11 @@
 
 #include "platform.h"
 
-#include <stdlib.h>
-#include <math.h>
-#include <assert.h>
+#include <cmath>
+#include <cassert>
+#include <vector>
 
+#include "vector3.h"
 
 class rgb_value
 {
@@ -27,6 +28,9 @@ public:
         else if (b < 0.f)
             this->b = 0.f;
     };
+
+    /// Convert from vector to rgb
+    rgb_value(vector3f vector) : rgb_value(vector[0], vector[1], vector[2]) {}
 
     float operator[](int i) const
     {
@@ -69,17 +73,14 @@ public:
 class image
 {
 public:
-    image(int width, int height) : _width(width), _height(height)
-    {
+    image(int width, int height) : _width(width), _height(height) {
         _image.resize(3 * _width * _height);
     }
 
-    void setPixel(int i, int j, const rgb_value &rgb)
-    {
+    void setPixel(int i, int j, const rgb_value &rgb) {
         _image[3 * (_width * j + i)] = rgb[0];
         _image[3 * (_width * j + i) + 1] = rgb[1];
         _image[3 * (_width * j + i) + 2] = rgb[2];
-
     }
 
     std::vector<float> _image;
@@ -88,35 +89,3 @@ public:
 
     bool writeImage(const char *filename);
 };
-
-bool image::writeImage(const char *filename)
-{
-    FILE *file;
-    int t;
-
-    file = fopen(filename, "wb");
-    if (!file) {
-        printf("Dump file problem... fopen\n");
-        return false;
-    }
-
-    fprintf(file, "P6\n%i %i\n255\n", _width, _height);
-
-    std::vector<unsigned char> imageC(_image.size());
-
-    for (unsigned int i = 0; i < _image.size(); ++i) {
-        imageC[i] = (unsigned char)(_image[i] * 255.f);
-    }
-
-    t = (int)fwrite(&(imageC[0]), _width * _height * 3, 1, file);
-
-    if (t != 1)
-    {
-        printf("Dump file problem... fwrite\n");
-        return false;
-    }
-    
-    fclose(file);
-
-    return true;
-}

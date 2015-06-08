@@ -12,6 +12,7 @@
 		800460901B24934A001CFCF0 /* raytracing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460891B24934A001CFCF0 /* raytracing.cpp */; };
 		800460941B2495A2001CFCF0 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800460931B2495A2001CFCF0 /* OpenGL.framework */; };
 		800460961B2495A6001CFCF0 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800460951B2495A6001CFCF0 /* GLUT.framework */; };
+		8004609A1B25CF3F001CFCF0 /* image_writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460991B25CF3F001CFCF0 /* image_writer.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -45,6 +46,8 @@
 		800460931B2495A2001CFCF0 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		800460951B2495A6001CFCF0 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		800460981B25028A001CFCF0 /* platform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
+		800460991B25CF3F001CFCF0 /* image_writer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = image_writer.cpp; sourceTree = "<group>"; };
+		8004609B1B25D36B001CFCF0 /* compiler_opt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = compiler_opt.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +97,7 @@
 			isa = PBXGroup;
 			children = (
 				800460841B24934A001CFCF0 /* image_writer.h */,
+				800460991B25CF3F001CFCF0 /* image_writer.cpp */,
 				800460851B24934A001CFCF0 /* main.cpp */,
 				800460861B24934A001CFCF0 /* matrix.h */,
 				800460871B24934A001CFCF0 /* mesh.cpp */,
@@ -104,6 +108,7 @@
 				8004608C1B24934A001CFCF0 /* vector3.h */,
 				8004608D1B24934A001CFCF0 /* vertex.h */,
 				800460981B25028A001CFCF0 /* platform.h */,
+				8004609B1B25D36B001CFCF0 /* compiler_opt.h */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -180,6 +185,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8004609A1B25CF3F001CFCF0 /* image_writer.cpp in Sources */,
 				800460901B24934A001CFCF0 /* raytracing.cpp in Sources */,
 				8004608F1B24934A001CFCF0 /* mesh.cpp in Sources */,
 				8004608E1B24934A001CFCF0 /* main.cpp in Sources */,
