@@ -15,18 +15,18 @@ const unsigned int LINE_LEN = 256;
 
 #pragma mark - Normal calculations
 
-void mesh::computeVertexNormals () {
-    for (unsigned int i = 0; i < vertices.size (); i++) {
+void mesh::computeVertexNormals() {
+    for (unsigned int i = 0; i < vertices.size (); ++i) {
         vertices[i].n = vector3f (0.0, 0.0, 0.0);
     }
 
     // Sum up neighboring normals
-    for (unsigned int i = 0; i < triangles.size (); i++) {
+    for (unsigned int i = 0; i < triangles.size (); ++i) {
         vector3f edge01 = vertices[triangles[i].v[1]].p -  vertices[triangles[i].v[0]].p;
         vector3f edge02 = vertices[triangles[i].v[2]].p -  vertices[triangles[i].v[0]].p;
         vector3f n = edge01.cross(edge02);
         n.normalize ();
-        for (unsigned int j = 0; j < 3; j++) {
+        for (unsigned int j = 0; j < 3; ++j) {
             vertices[triangles[i].v[j]].n += n;
         }
     }
@@ -39,7 +39,7 @@ void mesh::computeVertexNormals () {
 
 #pragma mark - Drawing
 
-void mesh::drawSmooth(){
+void mesh::drawSmooth() {
     glBegin(GL_TRIANGLES);
 
     for (unsigned int i=0;i<triangles.size();++i) {
@@ -143,7 +143,8 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
 
     while(in && !feof(in) && fgets(s, LINE_LEN, in)) {
         // comment
-        if (s[0] == '#' || isspace(s[0]) || s[0] == '\0') continue;
+        if (s[0] == '#' || isspace(s[0]) || s[0] == '\0')
+            continue;
 
         // material file
         else if (strncmp(s, "mtllib ", 7) == 0) {
@@ -155,9 +156,10 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
             p1 = p0;
 
             std::string t = p1;
-            int i;
+            size_t i;
             for (i = 0; i < t.length(); ++i) {
-                if (t[i] < 32 || t[i] == (char)255) break;
+                if (t[i] < 32 || t[i] == (char)255)
+                    break;
             }
 
             if (t.length() == i) {
@@ -172,14 +174,17 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
         // usemtl
         else if (strncmp(s, "usemtl ", 7) == 0) {
             char *p0 = s + 6, *p1;
-            while(isspace(*++p0)) {};
+
+            while(isspace(*++p0)) {
+            };
+
             p1 = p0;
 
             while(!isspace(*p1)) {
                 ++p1;
             }
 
-            *p1='\0';
+            *p1 = '\0';
             matname = p0;
 
             if (materialIndex.find(matname) == materialIndex.end()) {

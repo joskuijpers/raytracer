@@ -13,7 +13,7 @@ vector3f testRayDestination;
 
 
 //use this function for any preprocessing of the mesh.
-void init()
+void init(void)
 {
     //load the mesh file
     //please realize that not all OBJ files will successfully load.
@@ -22,47 +22,51 @@ void init()
     //PLEASE ADAPT THE LINE BELOW TO THE FULL PATH OF THE dodgeColorTest.obj
     //model, e.g., "C:/temp/myData/GraphicsIsFun/dodgeColorTest.obj",
     //otherwise the application will not load properly
-    MyMesh.loadMesh("resource/dodgeColorTest.obj", true);
-    MyMesh.computeVertexNormals();
+    g_mainMesh.loadMesh("resource/dodgeColorTest.obj", true);
+    g_mainMesh.computeVertexNormals();
 
     //one first move: initialize the first light source
     //at least ONE light source has to be in the scene!!!
     //here, we set it to the current location of the camera
-    MyLightPositions.push_back(MyCameraPosition);
+    g_lightPositions.push_back(g_cameraPosition);
 }
 
-//return the color of your pixel.
-vector3f performRayTracing(const vector3f &origin, const vector3f &dest)
+/**
+ * @return return the color of the pixel
+ */
+vector3f performRayTracing(const vector3f &origin __attribute__((unused)), const vector3f &dest)
 {
     return vector3f(dest[0], dest[1], dest[2]);
 }
 
+void drawLights(void)
+{
+    // Draw the lights as white dits
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
 
+    // Disable lighting
+    glDisable(GL_LIGHTING);
+    glColor3f(1,1,1);
+    glPointSize(10);
+    glBegin(GL_POINTS);
 
-void yourDebugDraw()
+    for (size_t i = 0; i < g_lightPositions.size(); ++i) {
+        glVertex3fv(g_lightPositions[i].pointer());
+    }
+
+    glEnd();
+    glPopAttrib();
+}
+
+void yourDebugDraw(void)
 {
     //draw open gl debug stuff
     //this function is called every frame
 
     //let's draw the mesh
-    MyMesh.draw();
+    g_mainMesh.draw();
 
-    //let's draw the lights in the scene as points
-    glPushAttrib(GL_ALL_ATTRIB_BITS); //store all GL attributes
-    glDisable(GL_LIGHTING);
-    glColor3f(1,1,1);
-    glPointSize(10);
-    glBegin(GL_POINTS);
-    for (int i = 0; i < MyLightPositions.size(); ++i) {
-        glVertex3fv(MyLightPositions[i].pointer());
-    }
-    glEnd();
-    glPopAttrib(); //restore all GL attributes
-    //The Attrib commands maintain the state.
-    //e.g., even though inside the two calls, we set
-    //the color to white, it will be reset to the previous
-    //state after the pop.
-
+    drawLights();
 
     //as an example: we draw the test ray, which is set by the keyboard function
     glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -75,7 +79,7 @@ void yourDebugDraw()
     glEnd();
     glPointSize(10);
     glBegin(GL_POINTS);
-    glVertex3fv(MyLightPositions[0].pointer());
+    glVertex3fv(g_lightPositions[0].pointer());
     glEnd();
     glPopAttrib();
 

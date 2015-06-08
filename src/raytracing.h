@@ -4,11 +4,11 @@
 
 #include "mesh.h"
 
-extern mesh MyMesh; // Main mesh
-extern std::vector<vector3f> MyLightPositions;
-extern vector3f MyCameraPosition; // currCamera
-extern unsigned int WindowSize_X; // window resolution width
-extern unsigned int WindowSize_Y; // window resolution height
+extern mesh g_mainMesh; // Main mesh
+extern std::vector<vector3f> g_lightPositions;
+extern vector3f g_cameraPosition; // currCamera
+extern unsigned int g_windowSizeX; // window resolution width
+extern unsigned int g_windowSizeY; // window resolution height
 extern unsigned int RayTracingResolutionX; // larger window
 extern unsigned int RayTracingResolutionY; // larger window
 
