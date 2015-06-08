@@ -1,3 +1,6 @@
+# Program result file
+result.ppm
+
 # Compiled Object files
 *.slo
 *.lo
