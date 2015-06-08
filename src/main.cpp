@@ -224,7 +224,7 @@ void keyboard(unsigned char key, int x, int y)
             for (unsigned int y = 0; y < g_windowSizeY;++y) {
                 for (unsigned int x = 0; x < g_windowSizeX;++x) {
                     float xscale, yscale;
-                    vector3f rgb;
+                    rgb_value rgb;
 
                     // produce the rays for each pixel, by interpolating
                     // the four rays of the frustum corners.
@@ -241,7 +241,7 @@ void keyboard(unsigned char key, int x, int y)
                     rgb = performRayTracing(origin, dest);
 
                     // store the result in an image
-                    result.setPixel(x,y, rgb_value(rgb[0], rgb[1], rgb[2]));
+                    result.setPixel(x,y, rgb);
                 }
             }
 
