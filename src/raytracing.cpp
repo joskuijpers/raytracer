@@ -70,17 +70,23 @@ void yourDebugDraw(void)
 
     //as an example: we draw the test ray, which is set by the keyboard function
     glPushAttrib(GL_ALL_ATTRIB_BITS);
+
     glDisable(GL_LIGHTING);
+
     glBegin(GL_LINES);
-    glColor3f(0,1,1);
-    glVertex3f(testRayOrigin[0], testRayOrigin[1], testRayOrigin[2]);
-    glColor3f(0,0,1);
-    glVertex3f(testRayDestination[0], testRayDestination[1], testRayDestination[2]);
+        glColor3f(0,1,1);
+        glVertex3f(testRayOrigin[0], testRayOrigin[1], testRayOrigin[2]);
+
+        glColor3f(0,0,1);
+        glVertex3f(testRayDestination[0], testRayDestination[1], testRayDestination[2]);
     glEnd();
+
     glPointSize(10);
+
     glBegin(GL_POINTS);
-    glVertex3fv(g_lightPositions[0].pointer());
+        glVertex3fv(g_lightPositions[0].pointer());
     glEnd();
+
     glPopAttrib();
 
     //draw whatever else you want...
@@ -109,7 +115,7 @@ void yourDebugDraw(void)
 //    the target of the ray - see the code above), but once you replaced
 //    this function and raytracing is in place, it might take a
 //    while to complete...
-void yourKeyboardFunc(char t, int x, int y, const vector3f &rayOrigin, const vector3f &rayDestination)
+void yourKeyboardFunc(char t, int mouseX, int mouseY, const vector3f &rayOrigin, const vector3f &rayDestination)
 {
 
     //here, as an example, I use the ray to fill in the values for my upper global ray variable
@@ -123,5 +129,5 @@ void yourKeyboardFunc(char t, int x, int y, const vector3f &rayOrigin, const vec
     //...
 
 
-    std::cout << t << " pressed! The mouse was in location " << x << ", " << y << "!" <<std::endl;
+    std::cout << t << " pressed! The mouse was in location " << mouseX << ", " << mouseY << "!" << std::endl;
 }
