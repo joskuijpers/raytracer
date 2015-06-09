@@ -76,7 +76,7 @@ public:
     const char *name;
 
     vector<shared_ptr<scene_node>> children;
-    weak_ptr<scene_node> parent;
+//    weak_ptr<scene_node> parent;
 
     vector3f translation;
     vector3f scale;

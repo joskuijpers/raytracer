@@ -47,8 +47,7 @@ hit_result scene::hit(ray ray) {
         hit_result nodeResult;
 
         // Transform ray by applying translation of object
-        ray.origin += node->translation;
-        // TODO: rotation, scale
+        ray.transform(node->translation, node->scale, node->rotation, node->rotationAngle);
 
         // Try to hit the node
         nodeResult = node->hit(ray);
