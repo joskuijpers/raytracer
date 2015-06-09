@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-bool image::writeImage(const char *filename)
+bool Image::write(const char *filename)
 {
     FILE *file;
     int t;
@@ -16,15 +16,15 @@ bool image::writeImage(const char *filename)
         return false;
     }
 
-    fprintf(file, "P6\n%i %i\n255\n", _width, _height);
+    fprintf(file, "P6\n%i %i\n255\n", width, height);
 
-    std::vector<unsigned char> imageC(_image.size());
+    std::vector<unsigned char> imageC(image.size());
 
-    for (unsigned int i = 0; i < _image.size(); ++i) {
-        imageC[i] = (unsigned char)(_image[i] * 255.f);
+    for (unsigned int i = 0; i < image.size(); ++i) {
+        imageC[i] = (unsigned char)(image[i] * 255.f);
     }
 
-    t = (int)fwrite(&(imageC[0]), _width * _height * 3, 1, file);
+    t = (int)fwrite(&(imageC[0]), width * height * 3, 1, file);
 
     if (t != 1)
     {

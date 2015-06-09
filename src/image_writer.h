@@ -6,86 +6,29 @@
 #include <cassert>
 #include <vector>
 
-#include "vector3.h"
-
-class rgb_value
-{
-public:
-    rgb_value(float r = 0.f, float g = 0.f, float b = 0.f) : r(r), g(g), b(b)
-    {
-        if (r > 1.f)
-            this->r = 1.f;
-        else if (r < 0.f)
-            this->r = 0.f;
-
-        if (g > 1.f)
-            this->g = 1.f;
-        else if (g < 0.f)
-            this->g = 0.f;
-
-        if (b > 1.f)
-            this->b = 1.f;
-        else if (b < 0.f)
-            this->b = 0.f;
-    };
-
-    /// Convert from vector to rgb
-    rgb_value(vector3f vector) : rgb_value(vector[0], vector[1], vector[2]) {}
-
-    float operator[](int i) const
-    {
-        switch(i)
-        {
-            case 0:
-                return r;
-            case 1:
-                return g;
-            case 2:
-                return b;
-            default:
-                return r;
-        }
-    }
-
-    float& operator[](int i)
-    {
-        switch(i)
-        {
-            case 0:
-                return r;
-            case 1:
-                return g;
-            case 2:
-                return b;
-            default:
-                return r;
-        }
-    }
-
-    float r, g, b;
-};
+#include "color.h"
 
 /**
  * Image class.
  *
  * Can write an image to file in PPM format.
  */
-class image
+class Image
 {
 public:
-    image(int width, int height) : _width(width), _height(height) {
-        _image.resize(3 * _width * _height);
+    Image(int width, int height) : width(width), height(height) {
+        image.resize(3 * width * height);
     }
 
-    void setPixel(int i, int j, const rgb_value &rgb) {
-        _image[3 * (_width * j + i)] = rgb[0];
-        _image[3 * (_width * j + i) + 1] = rgb[1];
-        _image[3 * (_width * j + i) + 2] = rgb[2];
+    void setPixel(int i, int j, const color3 &rgb) {
+        image[3 * (width * j + i)] = rgb[0];
+        image[3 * (width * j + i) + 1] = rgb[1];
+        image[3 * (width * j + i) + 2] = rgb[2];
     }
 
-    std::vector<float> _image;
-    int _width;
-    int _height;
+    std::vector<float> image;
+    int width;
+    int height;
 
-    bool writeImage(const char *filename);
+    bool write(const char *filename);
 };
