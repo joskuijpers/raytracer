@@ -245,7 +245,7 @@ void keyboard(unsigned char key, int x, int y)
 
             cout << "Finished raytracing!" << endl;
 
-            result.writeImage("result.ppm");
+            result.writeImage("result.bmp");
             break;
         }
         case 27:     // touche ESC

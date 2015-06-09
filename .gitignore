@@ -1,5 +1,5 @@
 # Program result file
-result.ppm
+*.bmp
 
 # Compiled Object files
 *.slo
