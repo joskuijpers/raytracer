@@ -74,7 +74,9 @@ public:
 /**
  * Mesh class.
  *
- * Warning: can't be used on stack!
+ * All objects that consist of triangles. Loaded from file.
+ *
+ * @warning Can't be used on stack!
  */
 class mesh : public scene_node
 {

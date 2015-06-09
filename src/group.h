@@ -2,6 +2,11 @@
 
 #include "scene_node.h"
 
+/**
+ * A scene group, to group objects together.
+ *
+ * Do not use the base class scene_node for this task.
+ */
 class group : public scene_node
 {
 public:
@@ -14,4 +19,6 @@ public:
 
     /// The hit method, to detect ray hits.
     hit_result hit(ray ray);
+
+    // aabb
 };

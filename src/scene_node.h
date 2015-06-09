@@ -13,6 +13,11 @@ using namespace std;
 
 class scene_node;
 
+/**
+ * Hit result information.
+ *
+ * @todo Move this to the raytracing file if possible?
+ */
 class hit_result {
 public:
 #pragma mark - Constructor
@@ -44,6 +49,7 @@ public:
 /**
  * A node in the scene.
  *
+ * @note For grouping objects together, use the group class.
  * @warning Can't be used from stack!
  */
 class scene_node : public enable_shared_from_this<scene_node>
