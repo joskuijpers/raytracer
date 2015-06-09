@@ -18,7 +18,7 @@ public:
 #pragma mark - Raytracing
 
     /// The hit method, to detect ray hits.
-    hit_result hit(ray ray);
+    hit_result hit(Ray ray);
 
     // aabb
 };

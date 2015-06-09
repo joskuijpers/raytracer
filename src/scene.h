@@ -38,7 +38,7 @@ public:
 #pragma mark - Raytracing
 
     void prepare();
-    hit_result hit(ray ray);
+    hit_result hit(Ray ray);
 
 #pragma mark - Properties
 

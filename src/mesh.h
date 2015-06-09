@@ -99,11 +99,11 @@ public:
 
 #pragma mark - Raytracing
 
-    hit_result hit(ray ray);
+    hit_result hit(Ray ray);
     color3 apply(unsigned int level, hit_result hit_info);
 
 private:
-    int rayTriangleIntersect(ray ray, triangle triangle, vector3f &point, float &hitDistance);
+    int rayTriangleIntersect(Ray ray, triangle triangle, vector3f &point, float &hitDistance);
 
 public:
 
@@ -128,5 +128,5 @@ public:
 
     // using the material index, you can then recover the material from this vector
     // the class material is defined just above
-    std::vector<material> materials;
+    std::vector<Material> materials;
 };

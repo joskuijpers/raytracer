@@ -49,7 +49,7 @@ enum intersection_result : int {
     OUTSIDE = 3
 };
 
-hit_result mesh::hit(ray ray)
+hit_result mesh::hit(Ray ray)
 {
     hit_result result;
     size_t triangleIndex = 0;
@@ -87,7 +87,7 @@ hit_result mesh::hit(ray ray)
     return result;
 }
 
-int mesh::rayTriangleIntersect(ray ray, triangle triangle, vector3f &point, float &hitDistance)
+int mesh::rayTriangleIntersect(Ray ray, triangle triangle, vector3f &point, float &hitDistance)
 {
     vector3f v0, v1, v2;
     vector3f u, v, n;
@@ -153,7 +153,7 @@ int mesh::rayTriangleIntersect(ray ray, triangle triangle, vector3f &point, floa
 
 color3 mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
 {
-    material mat;
+    Material mat;
 
     mat = materials[triangleMaterials[hit_info.sInfo]];
 
@@ -229,7 +229,7 @@ void mesh::draw() {
 #pragma mark - Loading
 
 bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
-    material defaultMat;
+    Material defaultMat;
     map<string, unsigned int> materialIndex;
     char s[LINE_LEN];
     float x, y, z;
@@ -475,7 +475,7 @@ bool mesh::loadMaterial(const char *filename, std::map<string, unsigned int> &ma
     char line[LINE_LEN];
     std::string textureName;
     std::string key;
-    material mat;
+    Material mat;
     float f1,f2,f3;
     bool indef = false;
 

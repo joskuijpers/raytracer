@@ -27,7 +27,11 @@ void scene::draw(void) {
 
     // Draw all sub-objects
     for(auto &obj : nodes) {
+        glPushMatrix();
+
         obj->draw();
+
+        glPopMatrix();
     }
 }
 
@@ -35,7 +39,7 @@ void scene::prepare() {
 
 }
 
-hit_result scene::hit(ray ray) {
+hit_result scene::hit(Ray ray) {
     hit_result result;
 
     // check against bounding box
@@ -44,13 +48,14 @@ hit_result scene::hit(ray ray) {
     //  return;
 
     for(auto& node : this->nodes) {
+        Ray transfRay;
         hit_result nodeResult;
 
         // Transform ray by applying translation of object
-        ray.transform(node->translation, node->scale, node->rotation, node->rotationAngle);
+        transfRay = ray.transform(node->translation, node->scale, node->rotation, node->rotationAngle);
 
         // Try to hit the node
-        nodeResult = node->hit(ray);
+        nodeResult = node->hit(transfRay);
 
         if(!nodeResult.is_hit())
             continue;

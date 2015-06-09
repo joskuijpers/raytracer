@@ -67,7 +67,7 @@ public:
 #pragma mark - Raytracing
 
     /// The hit method, to detect ray hits.
-    virtual hit_result hit(ray ray) = 0;
+    virtual hit_result hit(Ray ray) = 0;
 
     // Apply method: applies the hit.
     virtual color3 apply(unsigned int level, hit_result hit_info) = 0;

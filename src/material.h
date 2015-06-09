@@ -5,18 +5,18 @@
  *
  * A material is the CAS colors, plus the texture name and tex coords.
  */
-class material
+class Material
 {
 public:
-    material() {
+    Material() {
         cleanup();
     };
 
-    material(const material &m) {
+    Material(const Material &m) {
         *this = m;
     };
 
-    material& operator=(const material &m) {
+    Material& operator=(const Material &m) {
         Kd = m.Kd;
         Kd_is_set = m.Kd_is_set; // diffuse
         Ka = m.Ka;

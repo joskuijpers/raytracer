@@ -2,11 +2,14 @@
 
 #include <cstdio>
 #include <cfloat>
+#include <cassert>
 #include <memory>
 
 #include "platform.h"
 #include "compiler_opt.h"
+
 #include "mesh.h"
+#include "sphere.h"
 
 using std::endl;
 using std::cout;
@@ -24,6 +27,7 @@ void init(void)
 {
     unique_ptr<mesh> cube(new mesh("cube"));
     unique_ptr<mesh> cube2(new mesh("cube2"));
+    unique_ptr<Sphere> sphere(new Sphere("sphere"));
 
     cube->loadMesh("resource/cube.obj", true);
     cube->computeVertexNormals();
@@ -33,8 +37,17 @@ void init(void)
     cube2->translation = vector3f(-2,0,0);
     cube2->scale = vector3f(.8f,.8f,.8f);
 
+    sphere->translation = vector3f(-.5f, .5f, -1.f);
+    sphere->radius = .5f;
+
+    Material mat;
+    mat.setKd(.4f, 0.4f, 0.f);
+
+    sphere->material = mat;
+
     g_scene.nodes.push_back(move(cube));
     g_scene.nodes.push_back(move(cube2));
+    g_scene.nodes.push_back(move(sphere));
 
     // Create a single light
     g_scene.lights.push_back(unique_ptr<light>(new light(g_scene.camera)));
@@ -48,7 +61,7 @@ void init(void)
  */
 color3 performRayTracing(const vector3f &origin, const vector3f &dest)
 {
-    ray ray(origin, dest);
+    Ray ray(origin, dest);
     color3 col;
 
     // Hit the scene with the first ray
@@ -63,6 +76,8 @@ color3 performRayTracing(const vector3f &origin, const vector3f &dest)
         // reflection
 
     // Apply the hit, this is recursive.
+    assert(result.node != nullptr && "A positive hit result must have node info");
+
     col = result.node->apply(1, result);
 
     return col;
