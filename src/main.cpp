@@ -8,6 +8,7 @@
 #include "mesh.h"
 #include "trackball.h"
 #include "image_writer.h"
+#include "scene.h"
 
 using namespace std;
 
@@ -15,10 +16,7 @@ void display(void);
 void reshape(int w, int h);
 void keyboard(unsigned char key, int x, int y);
 
-vector3f g_cameraPosition;
-vector<vector3f> g_lightPositions;
-
-mesh g_mainMesh;
+scene g_scene;
 
 // resolution
 unsigned int g_windowSizeX = 800;
@@ -37,7 +35,7 @@ void drawFrame() {
  * animation is called for every image on the screen once
  */
 void animate() {
-    g_cameraPosition = getCameraPosition();
+    g_scene.camera = getCameraPosition();
 
     glutPostRedisplay();
 }
@@ -66,7 +64,7 @@ int main(int argc, char *argv[])
     tbInitTransform();
     tbHelp();
 
-    g_cameraPosition = getCameraPosition();
+    g_scene.camera = getCameraPosition();
 
     // activate the light following the camera
     glEnable(GL_LIGHTING);
@@ -193,10 +191,10 @@ void keyboard(unsigned char key, int x, int y)
     {
             // add/update a light based on the camera position.
         case 'L':
-            g_lightPositions.push_back(getCameraPosition());
+            g_scene.lights.push_back(unique_ptr<light>(new light(getCameraPosition())));
             break;
         case 'l':
-            g_lightPositions[g_lightPositions.size()-1] = getCameraPosition();
+            g_scene.lights[g_scene.lights.size() - 1] = unique_ptr<light>(new light(getCameraPosition()));
             break;
         case 'r':
         {
@@ -204,7 +202,7 @@ void keyboard(unsigned char key, int x, int y)
             cout << "Raytracing" << endl;
 
             // Setup an image with the size of the current image.
-            image result(g_windowSizeX, g_windowSizeX);
+            Image result(g_windowSizeX, g_windowSizeX);
 
             // produce the rays for each pixel, by first computing
             // the rays for the corners of the frustum.
@@ -222,7 +220,7 @@ void keyboard(unsigned char key, int x, int y)
             for (unsigned int y = 0; y < g_windowSizeY;++y) {
                 for (unsigned int x = 0; x < g_windowSizeX;++x) {
                     float xscale, yscale;
-                    rgb_value rgb;
+                    color3 rgb;
 
                     // produce the rays for each pixel, by interpolating
                     // the four rays of the frustum corners.
@@ -244,8 +242,8 @@ void keyboard(unsigned char key, int x, int y)
             }
 
             cout << "Finished raytracing!" << endl;
+            result.write("result.bmp");
 
-            result.writeImage("result.bmp");
             break;
         }
         case 27:     // touche ESC

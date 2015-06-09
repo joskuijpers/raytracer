@@ -9,6 +9,8 @@
 #include <iostream>
 #include <fstream>
 
+#include "compiler_opt.h"
+
 using namespace std;
 
 const unsigned int LINE_LEN = 256;
@@ -37,9 +39,141 @@ void mesh::computeVertexNormals() {
     }
 }
 
+#pragma mark - Ray tracing
+
+enum intersection_result : int {
+    DEGENERATE = -1, // triangle is a line or point
+    DISJOINT = 0, // no intersection
+    INTERSECT = 1,
+    PARALLEL = 2,
+    OUTSIDE = 3
+};
+
+hit_result mesh::hit(ray ray)
+{
+    hit_result result;
+    size_t triangleIndex = 0;
+    triangle nearestTriangle;
+
+    for(size_t it = 0; it < this->triangles.size(); ++it) {
+        int intersectResult;
+        vector3f intPoint;
+        float hit;
+        triangle t = this->triangles[it];
+
+        intersectResult = rayTriangleIntersect(ray, t, intPoint, hit);
+
+        if (likely(intersectResult != INTERSECT))
+            continue;
+
+        // Skip if not nearer than prev hit.
+        if(hit >= result.depth)
+            continue;
+
+        result.depth = hit;
+        nearestTriangle = t;
+        triangleIndex = it;
+    }
+
+    // If no hit, return unhit result
+    if(result.depth == FLT_MAX)
+        return result;
+
+    // Otherwise, mark as hit and add apply info.
+    result.hit = true;
+    result.sInfo = triangleIndex;
+    result.node = shared_from_this();
+
+    return result;
+}
+
+int mesh::rayTriangleIntersect(ray ray, triangle triangle, vector3f &point, float &hitDistance)
+{
+    vector3f v0, v1, v2;
+    vector3f u, v, n;
+    vector3f w0, w; // a thing?
+    float a, b;
+
+    // get the vertices
+    v0 = this->vertices[triangle.v[0]].p;
+    v1 = this->vertices[triangle.v[1]].p;
+    v2 = this->vertices[triangle.v[2]].p;
+
+    u = v1 - v0;
+    v = v2 - v0;
+
+    n = u.cross(v);
+    if(n.getLength() == 0)
+        return DEGENERATE;
+
+    w0 = ray.origin - v0;
+    a = -(n.dot(w0));
+    b = n.dot(ray.direction);
+
+    // Angle is much much tiny: parallel
+    if (unlikely(fabs(b) < 0.00000001f)) {
+        if(a == 0.f)
+            return PARALLEL;
+        else
+            return DISJOINT;
+    }
+
+    // get intersection point
+    hitDistance = a / b;
+    if (hitDistance < 0.f)
+        return DISJOINT;
+
+    point = ray.origin + hitDistance * ray.direction;
+
+    // test if the point lies inside the triangle, not only in its plane
+
+    // these dot products are used multiple times. Precompute them
+    float uu, uv, vv, wu, wv, denominator;
+
+    uu = u.dot(u);
+    uv = u.dot(v);
+    vv = v.dot(v);
+    w = point - v0;
+    wu = w.dot(u);
+    wv = w.dot(v);
+    denominator = uv * uv - uu * vv;
+
+    float s, t;
+
+    s = (uv * wv - vv * wu) / denominator;
+    if (s < 0.0 || s > 1.0)
+        return OUTSIDE;
+
+    t = (uv * wu - uu * wv) / denominator;
+    if (t < 0.0 || (s + t) > 1.0)
+        return OUTSIDE;
+    
+    return INTERSECT;
+}
+
+color3 mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
+{
+    material mat;
+
+    mat = materials[triangleMaterials[hit_info.sInfo]];
+
+    // TODO: use info of triangle and material to shoot rays for refrection and reflection
+    // Then apply the hit info for those rays, and
+    // use them and other stuff to calculate the color.
+    // Write a couple of static methods in the raytracer class for calculating the
+    // actual shading with all the gathered information.
+
+    // Only grab diffuse color
+    vector3f diffuse = mat.getKd();
+
+    return color3(diffuse);
+}
+
 #pragma mark - Drawing
 
 void mesh::drawSmooth() {
+    scene_node::draw();
+
     glBegin(GL_TRIANGLES);
 
     for (unsigned int i=0;i<triangles.size();++i) {
@@ -60,6 +194,8 @@ void mesh::drawSmooth() {
 }
 
 void mesh::draw() {
+    scene_node::draw();
+
     glBegin(GL_TRIANGLES);
 
     for (unsigned int i = 0;i < triangles.size(); ++i) {
@@ -89,6 +225,8 @@ void mesh::draw() {
 
     glEnd();
 }
+
+#pragma mark - Loading
 
 bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
     material defaultMat;
@@ -323,7 +461,6 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
     fclose(in);
     return true;
 }
-
 
 bool mesh::loadMaterial(const char *filename, std::map<string, unsigned int> &materialIndex)
 {

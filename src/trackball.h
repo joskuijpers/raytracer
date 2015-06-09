@@ -212,6 +212,7 @@ vector3f getCameraPosition()
 	LightPos[2]=LightP[2];
 	return LightPos;
 }
+
 vector3f getWorldPositionOfPixel(unsigned int px, unsigned int py)
 {
 
