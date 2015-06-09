@@ -164,7 +164,7 @@ color3 mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
     // actual shading with all the gathered information.
 
     // Only grab diffuse color
-    vector3f diffuse = mat.getKd();g
+    vector3f diffuse = mat.getKd();
 
     return color3(diffuse);
 }
