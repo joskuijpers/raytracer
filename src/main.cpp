@@ -214,12 +214,10 @@ void keyboard(unsigned char key, int x, int y)
             vector3f origin11, dest11;
             vector3f origin, dest;
 
-
             produceRay(0, 0, &origin00, &dest00);
             produceRay(0, g_windowSizeY - 1, &origin01, &dest01);
             produceRay(g_windowSizeX - 1, 0, &origin10, &dest10);
             produceRay(g_windowSizeX - 1, g_windowSizeY - 1, &origin11, &dest11);
-
 
             for (unsigned int y = 0; y < g_windowSizeY;++y) {
                 for (unsigned int x = 0; x < g_windowSizeX;++x) {
@@ -242,12 +240,10 @@ void keyboard(unsigned char key, int x, int y)
 
                     // store the result in an image
                     result.setPixel(x,y, rgb);
-
-                    if (x % 1000 == 0) {
-                        cout << "Pixel(" << x << ", " << y << ") calculated." << endl;
-                    }
                 }
             }
+
+            cout << "Finished raytracing!" << endl;
 
             result.writeImage("result.ppm");
             break;
