@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <set>
 #include <string>
 #include <cfloat>
 
@@ -69,7 +70,7 @@ public:
 #pragma mark - Raytracing
 
     /// The hit method, to detect ray hits.
-    virtual hit_result hit(Ray ray) = 0;
+    virtual hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr) = 0;
 
     // Apply method: applies the hit.
     virtual vector3f apply(unsigned int level, hit_result hit_info) = 0;

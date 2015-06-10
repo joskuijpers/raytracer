@@ -39,7 +39,7 @@ public:
 #pragma mark - Raytracing
 
     void prepare();
-    hit_result hit(Ray ray);
+    hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr);
 
 #pragma mark - Properties
 

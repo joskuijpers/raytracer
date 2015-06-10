@@ -13,7 +13,7 @@ void Sphere::draw()
     glutSolidSphere(this->radius, 15, 15);
 }
 
-hit_result Sphere::hit(Ray ray [[gnu::unused]])
+hit_result Sphere::hit(Ray ray, shared_ptr<scene_node> skip [[gnu::unused]])
 {
     hit_result result;
     float a, b, c, discriminant;
@@ -53,7 +53,7 @@ hit_result Sphere::hit(Ray ray [[gnu::unused]])
     return result;
 }
 
-vector3f Sphere::apply(unsigned int level [[gnu::unused]], hit_result hit_info [[gnu::unused]])
+vector3f Sphere::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
 {
     vector3f color;
     auto& light = g_scene.lights[0];
@@ -63,6 +63,13 @@ vector3f Sphere::apply(unsigned int level [[gnu::unused]], hit_result hit_info [
     vector3f l = ls / ls.getLength();
 
     color = light->ambient * material.getKa() + l.dot(hit_info.normal) * light->diffuse * material.getKd();
+
+    // Check for shadows
+    Ray shadowRay(hit_info.hitPosition, light->position);
+    hit_result shadowRes = g_scene.hit(shadowRay, shared_from_this());
+
+    if(shadowRes.is_hit())
+        color = light->ambient * material.getKa();
 
     return color;
 }

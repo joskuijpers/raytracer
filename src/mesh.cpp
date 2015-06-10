@@ -10,6 +10,7 @@
 #include <fstream>
 
 #include "compiler_opt.h"
+#include "raytracing.h"
 
 using namespace std;
 
@@ -49,7 +50,7 @@ enum intersection_result : int {
     OUTSIDE = 3
 };
 
-hit_result mesh::hit(Ray ray)
+hit_result mesh::hit(Ray ray, shared_ptr<scene_node> skip [[gnu::unused]])
 {
     hit_result result;
     size_t triangleIndex = 0;
@@ -83,6 +84,11 @@ hit_result mesh::hit(Ray ray)
     result.hit = true;
     result.sInfo = triangleIndex;
     result.node = shared_from_this();
+
+    result.hitPosition = ray.origin + result.depth * ray.direction;
+
+    // Interpolate normal with the 3 vertex normals
+//    result.normal = nearestTriangle.;
 
     return result;
 }

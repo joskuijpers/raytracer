@@ -25,6 +25,8 @@ vector3f testRayDestination;
  */
 void init(void)
 {
+    g_scene.background_color = vector3f(.6f,.2f,.1f);
+
     unique_ptr<mesh> cube(new mesh("cube"));
     unique_ptr<mesh> cube2(new mesh("cube2"));
     unique_ptr<Sphere> sphere(new Sphere("sphere"));
@@ -37,7 +39,7 @@ void init(void)
     cube2->translation = vector3f(-2,0,0);
     cube2->scale = vector3f(.8f,.8f,.8f);
 
-    sphere->translation = vector3f(-.5f, .5f, -1.f);
+    sphere->translation = vector3f(0, .5f, -1.f);
     sphere->radius = .5f;
 
     Material mat;
@@ -68,8 +70,20 @@ vector3f performRayTracing(const vector3f &origin, const vector3f &dest)
     // Hit the scene with the first ray
     hit_result result = g_scene.hit(ray);
 
-    if(!result.is_hit())
-        return g_scene.background_color;
+    if(!result.is_hit()) {
+        // Check screen shadows. Darken the background if current pixel
+        // is not lit by light.
+
+        // Intersect with light(s)
+        auto& light = g_scene.lights[0];
+
+        hit_result shadowRes = g_scene.hit(Ray(origin, light->position), nullptr);
+
+        if(shadowRes.is_hit())
+            return .5f * g_scene.background_color;
+        else
+            return g_scene.background_color;
+    }
 
     // If hit, apply the ray:
         // shading

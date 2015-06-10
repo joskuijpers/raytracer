@@ -18,7 +18,7 @@ public:
 #pragma mark - Raytracing
 
     /// The hit method, to detect ray hits.
-    hit_result hit(Ray ray);
+    hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr);
 
     // aabb
 };

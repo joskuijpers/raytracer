@@ -14,7 +14,7 @@ void group::draw() {
     }
 }
 
-hit_result group::hit(Ray ray) {
+hit_result group::hit(Ray ray, shared_ptr<scene_node> skip) {
     hit_result result;
 
     // check against bounding box
@@ -28,11 +28,14 @@ hit_result group::hit(Ray ray) {
         Ray transfRay;
         hit_result nodeResult;
 
+        if(skip == node)
+            continue;
+
         // Transform ray by applying translation of object
         transfRay = ray.transform(node->translation, node->scale, node->rotation, node->rotationAngle);
 
         // Try to hit the node
-        nodeResult = node->hit(transfRay);
+        nodeResult = node->hit(transfRay, skip);
 
         if(!nodeResult.is_hit())
             continue;

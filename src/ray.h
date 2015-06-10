@@ -5,7 +5,7 @@
 class Ray {
 public:
 #pragma mark - Constructor
-    Ray(vector3f origin, vector3f dest) : origin(origin) {
+    Ray(vector3f origin, vector3f dest) : origin(origin), dest(dest) {
         direction = dest - origin;
 
         // make unit vector
@@ -45,6 +45,6 @@ public:
 
 #pragma mark - Properties
 
-    vector3f origin;
+    vector3f origin, dest;
     vector3f direction; // should be unit vector
 };
