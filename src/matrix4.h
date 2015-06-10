@@ -7,6 +7,7 @@
 #include <iomanip>
 
 /// @note: used some code from http://www.songho.ca/opengl/gl_matrix.html
+/// @note: inversion code from http://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix
 
 template<typename T> class Matrix4;
 
