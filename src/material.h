@@ -64,17 +64,17 @@ public:
     bool hasTr(void) { return Tr_is_set; }
 
     void setKd(float r, float g, float b) {
-        Kd = vector3f(r,g,b);
+        Kd = Vector3f(r,g,b);
         Kd_is_set = true;
     }
 
     void setKa(float r, float g, float b) {
-        Ka = vector3f(r,g,b);
+        Ka = Vector3f(r,g,b);
         Ka_is_set = true;
     }
 
     void setKs(float r, float g, float b) {
-        Ks = vector3f(r,g,b);
+        Ks = Vector3f(r,g,b);
         Ks_is_set = true;
     }
 
@@ -106,9 +106,9 @@ public:
         name = s;
     }
 
-    const vector3f& getKd(void) const { return Kd; }
-    const vector3f& getKa(void) const { return Ka; }
-    const vector3f& getKs(void) const { return Ks; }
+    const Vector3f& getKd(void) const { return Kd; }
+    const Vector3f& getKa(void) const { return Ka; }
+    const Vector3f& getKs(void) const { return Ks; }
 
     float getNi(void) const { return Ni; }
     float getNs(void) const { return Ns; } // shininess
@@ -127,15 +127,15 @@ public:
 private:
 
     // diffuse
-    vector3f Kd;
+    Vector3f Kd;
     bool Kd_is_set;
 
     // ambient
-    vector3f Ka;
+    Vector3f Ka;
     bool Ka_is_set;
 
     // specular
-    vector3f Ks;
+    Vector3f Ks;
     bool Ks_is_set;
 
     // shininess

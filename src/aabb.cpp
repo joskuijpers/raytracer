@@ -8,14 +8,14 @@ using namespace std;
 
 void AABoundingBox::draw() {
     // All corners
-    vector3f mmm = min;
-    vector3f Mmm = vector3f(max[0],min[1],min[2]);
-    vector3f mMm = vector3f(min[0],max[1],min[2]);
-    vector3f MMm = vector3f(max[0],max[1],min[2]);
-    vector3f mmM = vector3f(min[0],min[1],max[2]);
-    vector3f MmM = vector3f(max[0],min[1],max[2]);
-    vector3f mMM = vector3f(min[0],max[1],max[2]);
-    vector3f MMM = max;
+    Vector3f mmm = min;
+    Vector3f Mmm = Vector3f(max[0],min[1],min[2]);
+    Vector3f mMm = Vector3f(min[0],max[1],min[2]);
+    Vector3f MMm = Vector3f(max[0],max[1],min[2]);
+    Vector3f mmM = Vector3f(min[0],min[1],max[2]);
+    Vector3f MmM = Vector3f(max[0],min[1],max[2]);
+    Vector3f mMM = Vector3f(min[0],max[1],max[2]);
+    Vector3f MMM = max;
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     glDisable(GL_LIGHTING);

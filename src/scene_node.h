@@ -5,7 +5,7 @@
 #include <string>
 #include <cfloat>
 
-#include "vector3.h"
+#include "Vector3.h"
 #include "ray.h"
 #include "color.h"
 #include "aabb.h"
@@ -46,7 +46,7 @@ public:
     /// size_t sized information for apply method.
     size_t sInfo;
 
-    vector3f hitPosition, normal;
+    Vector3f hitPosition, normal;
 };
 
 /**
@@ -58,7 +58,7 @@ public:
 class scene_node : public enable_shared_from_this<scene_node>
 {
 public:
-    scene_node(const char *name) : name(name), translation(vector3f(0,0,0)), scale(vector3f(1,1,1)), rotation(vector3f(1,1,1)), rotationAngle(0.f) {}
+    scene_node(const char *name) : name(name), translation(Vector3f(0,0,0)), scale(Vector3f(1,1,1)), rotation(Vector3f(1,1,1)), rotationAngle(0.f) {}
 
     // abstract calculateBoundingBox()
 
@@ -77,7 +77,7 @@ public:
     virtual hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr) = 0;
 
     // Apply method: applies the hit.
-    virtual vector3f apply(unsigned int level, hit_result hit_info) = 0;
+    virtual Vector3f apply(unsigned int level, hit_result hit_info) = 0;
 
 #pragma mark - Properties
     const char *name;
@@ -85,9 +85,9 @@ public:
     vector<shared_ptr<scene_node>> children;
 //    weak_ptr<scene_node> parent;
 
-    vector3f translation;
-    vector3f scale;
-    vector3f rotation;
+    Vector3f translation;
+    Vector3f scale;
+    Vector3f rotation;
     float rotationAngle;
 
     AABoundingBox boundingBox;

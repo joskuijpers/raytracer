@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 
-#include "vector3.h"
+#include "Vector3.h"
 #include "scene_node.h"
 
 using namespace std;
@@ -17,16 +17,16 @@ class Light
 {
 public:
 
-    Light(vector3f position) : position(position) {
-        ambient = vector3f(0.5f,0.5f,0.5f);
-        diffuse = vector3f(0.5f,0.5f,0.5f);
+    Light(Vector3f position) : position(position) {
+        ambient = Vector3f(0.5f,0.5f,0.5f);
+        diffuse = Vector3f(0.5f,0.5f,0.5f);
     }
 
 #pragma mark - Properties
-    vector3f position;
+    Vector3f position;
 
-    vector3f ambient;
-    vector3f diffuse;
+    Vector3f ambient;
+    Vector3f diffuse;
 };
 
 class scene
@@ -44,9 +44,9 @@ public:
 #pragma mark - Properties
 
     /// Camera location
-    vector3f camera;
+    Vector3f camera;
 
-    vector3f background_color;
+    Vector3f background_color;
 
     /// Lights within the scene
     // TODO: special light object in the graph

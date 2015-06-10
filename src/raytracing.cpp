@@ -17,15 +17,15 @@ using std::cout;
 //temporary variables
 //these are only used to illustrate
 //a simple debug drawing. A ray
-vector3f testRayOrigin;
-vector3f testRayDestination;
+Vector3f testRayOrigin;
+Vector3f testRayDestination;
 
 /**
  * Initialize the scene.
  */
 void init(void)
 {
-    g_scene.background_color = vector3f(.6f,.2f,.1f);
+    g_scene.background_color = Vector3f(.6f,.2f,.1f);
 
     /*
     unique_ptr<mesh> cube(new mesh("cube"));
@@ -37,10 +37,10 @@ void init(void)
 
     cube2->loadMesh("resource/cube.obj", true);
     cube2->computeVertexNormals();
-    cube2->translation = vector3f(-2,0,0);
-    cube2->scale = vector3f(.8f,.8f,.8f);
+    cube2->translation = Vector3f(-2,0,0);
+    cube2->scale = Vector3f(.8f,.8f,.8f);
 
-    sphere->translation = vector3f(0, .5f, -1.f);
+    sphere->translation = Vector3f(0, .5f, -1.f);
     sphere->radius = .5f;
 
     Material mat;
@@ -71,10 +71,10 @@ void init(void)
 /**
  * @return return the color of the pixel
  */
-vector3f performRayTracing(const vector3f &origin, const vector3f &dest)
+Vector3f performRayTracing(const Vector3f &origin, const Vector3f &dest)
 {
     Ray ray(origin, dest);
-    vector3f col;
+    Vector3f col;
 
     // Hit the scene with the first ray
     hit_result result = g_scene.hit(ray);
@@ -137,7 +137,7 @@ void yourDebugDraw(void)
     glPopAttrib();
 }
 
-void yourKeyboardFunc(char t, int mouseX, int mouseY, const vector3f &rayOrigin, const vector3f &rayDestination)
+void yourKeyboardFunc(char t, int mouseX, int mouseY, const Vector3f &rayOrigin, const Vector3f &rayDestination)
 {
     //here, as an example, I use the ray to fill in the values for my upper global ray variable
     //I use these variables in the debugDraw function to draw the corresponding ray.

@@ -4,70 +4,70 @@
 #include <iostream>
 #include <cassert>
 
-template<typename T> class vector3;
+template<typename T> class Vector3;
 template<typename T> class vector4;
 
-template <class T> bool operator!= (const vector3<T> &p1, const vector3<T> &p2) {
+template <class T> bool operator!= (const Vector3<T> &p1, const Vector3<T> &p2) {
     return (p1[0] != p2[0] ||
             p1[1] != p2[1] ||
             p1[2] != p2[2]);
 }
 
-template <class T> const vector3<T> operator* (const vector3<T> &p, float factor) {
-    return vector3<T> (p[0] * factor,
+template <class T> const Vector3<T> operator* (const Vector3<T> &p, float factor) {
+    return Vector3<T> (p[0] * factor,
                        p[1] * factor,
                        p[2] * factor);
 }
 
-template <class T> const vector3<T> operator* (float factor, const vector3<T> &p) {
-    return vector3<T> (p[0] * factor,
+template <class T> const Vector3<T> operator* (float factor, const Vector3<T> &p) {
+    return Vector3<T> (p[0] * factor,
                        p[1] * factor,
                        p[2] * factor);
 }
 
-template <class T> const vector3<T> operator* (const vector3<T> &p1, const vector3<T> &p2) {
-    return vector3<T> (p1[0] * p2[0],
+template <class T> const Vector3<T> operator* (const Vector3<T> &p1, const Vector3<T> &p2) {
+    return Vector3<T> (p1[0] * p2[0],
                        p1[1] * p2[1],
                        p1[2] * p2[2]);
 }
 
-template <class T> const vector3<T> operator+ (const vector3<T> &p1, const vector3<T> &p2) {
-    return vector3<T> (p1[0] + p2[0],
+template <class T> const Vector3<T> operator+ (const Vector3<T> &p1, const Vector3<T> &p2) {
+    return Vector3<T> (p1[0] + p2[0],
                        p1[1] + p2[1],
                        p1[2] + p2[2]);
 }
 
-template <class T> const vector3<T> operator- (const vector3<T> &p1, const vector3<T> &p2) {
-    return vector3<T> (p1[0] - p2[0],
+template <class T> const Vector3<T> operator- (const Vector3<T> &p1, const Vector3<T> &p2) {
+    return Vector3<T> (p1[0] - p2[0],
                        p1[1] - p2[1],
                        p1[2] - p2[2]);
 }
 
-template <class T> const vector3<T> operator- (const vector3<T> &p) {
-    return vector3<T> (-p[0],
+template <class T> const Vector3<T> operator- (const Vector3<T> &p) {
+    return Vector3<T> (-p[0],
                        -p[1],
                        -p[2]);
 }
 
-template <class T> const vector3<T> operator/ (const vector3<T> &p, float divisor) {
-    return vector3<T> (p[0]/divisor,
+template <class T> const Vector3<T> operator/ (const Vector3<T> &p, float divisor) {
+    return Vector3<T> (p[0]/divisor,
                        p[1]/divisor,
                        p[2]/divisor);
 }
 
-template <class T> bool operator== (const vector3<T> &p1, const vector3<T> &p2) {
+template <class T> bool operator== (const Vector3<T> &p1, const Vector3<T> &p2) {
     return (p1[0] == p2[0] &&
             p1[1] == p2[1] &&
             p1[2] == p2[2]);
 }
 
-template <class T> bool operator< (const vector3<T> &a, const vector3<T> &b) {
+template <class T> bool operator< (const Vector3<T> &a, const Vector3<T> &b) {
     return (a[0] < b[0] &&
             a[1] < b[1] &&
             a[2] < b[2]);
 }
 
-template <class T> bool operator>= (const vector3<T> &a, const vector3<T> &b) {
+template <class T> bool operator>= (const Vector3<T> &a, const Vector3<T> &b) {
     return (a[0] >= b[0] ||
             a[1] >= b[1] ||
             a[2] >= b[2]);
@@ -78,7 +78,7 @@ template <class T> bool operator>= (const vector3<T> &a, const vector3<T> &b) {
  * Vector in 3 dimensions, with basics operators overloaded.
  */
 template <typename T>
-class vector3 {
+class Vector3 {
 
 #pragma mark - Instance variables
 
@@ -86,27 +86,27 @@ private:
     T p[3];
 
 public:
-    inline vector3(void)	{
+    inline Vector3(void)	{
         p[0] = p[1] = p[2] = T ();
     }
 
-    inline vector3(T p0, T p1, T p2) {
+    inline Vector3(T p0, T p1, T p2) {
         p[0] = p0;
         p[1] = p1;
         p[2] = p2;
     }
 
-    inline vector3(const vector3 &v) {
+    inline Vector3(const Vector3 &v) {
         init(v[0], v[1], v[2]);
     }
 
-    inline vector3(const vector4<T> &v) {
+    inline Vector3(const vector4<T> &v) {
         assert(v[3] == 1.f);
 
         init(v[0], v[1], v[2]);
     }
 
-    inline vector3(T* pp) {
+    inline Vector3(T* pp) {
         p[0] = pp[0];
         p[1] = pp[1];
         p[2] = pp[2];
@@ -122,49 +122,49 @@ public:
         return p[Index];
     }
 
-    inline vector3& operator= (const vector3 &P) {
+    inline Vector3& operator= (const Vector3 &P) {
         p[0] = P[0];
         p[1] = P[1];
         p[2] = P[2];
         return (*this);
     }
 
-    inline vector3& operator+= (const vector3 &P) {
+    inline Vector3& operator+= (const Vector3 &P) {
         p[0] += P[0];
         p[1] += P[1];
         p[2] += P[2];
         return (*this);
     }
 
-    inline vector3& operator-= (const vector3 &P) {
+    inline Vector3& operator-= (const Vector3 &P) {
         p[0] -= P[0];
         p[1] -= P[1];
         p[2] -= P[2];
         return (*this);
     }
 
-    inline vector3& operator*= (const vector3 &P) {
+    inline Vector3& operator*= (const Vector3 &P) {
         p[0] *= P[0];
         p[1] *= P[1];
         p[2] *= P[2];
         return (*this);
     }
 
-    inline vector3& operator*= (T s) {
+    inline Vector3& operator*= (T s) {
         p[0] *= s;
         p[1] *= s;
         p[2] *= s;
         return (*this);
     }
 
-    inline vector3& operator/= (const vector3 &P) {
+    inline Vector3& operator/= (const Vector3 &P) {
         p[0] /= P[0];
         p[1] /= P[1];
         p[2] /= P[2];
         return (*this);
     }
 
-    inline vector3& operator/= (T s) {
+    inline Vector3& operator/= (T s) {
         p[0] /= s;
         p[1] /= s;
         p[2] /= s;
@@ -173,7 +173,7 @@ public:
 
 #pragma mark - Methods
 
-    inline vector3 & init (T x, T y, T z) {
+    inline Vector3 & init (T x, T y, T z) {
         p[0] = x;
         p[1] = y;
         p[2] = z;
@@ -202,28 +202,28 @@ public:
         return length;
     }
 
-    inline void fromTo(const vector3 &P1, const vector3 &P2) {
+    inline void fromTo(const Vector3 &P1, const Vector3 &P2) {
         p[0] = P2[0] - P1[0];
         p[1] = P2[1] - P1[1];
         p[2] = P2[2] - P1[2];
     }
 
-    inline void getTwoOrthogonals(vector3 &u, vector3 &v) const {
+    inline void getTwoOrthogonals(Vector3 &u, Vector3 &v) const {
         if (fabs(p[0]) < fabs(p[1])) {
             if (fabs(p[0]) < fabs(p[2]))
-                u = vector3 (0, -p[2], p[1]);
+                u = Vector3 (0, -p[2], p[1]);
             else
-                u = vector3 (-p[1], p[0], 0);
+                u = Vector3 (-p[1], p[0], 0);
         } else {
             if (fabs(p[1]) < fabs(p[2]))
-                u = vector3 (p[2], 0, -p[0]);
+                u = Vector3 (p[2], 0, -p[0]);
             else
-                u = vector3(-p[1], p[0], 0);
+                u = Vector3(-p[1], p[0], 0);
         }
         v = crossProduct (*this, u);
     }
 
-    inline vector3 projectOn(const vector3 &N, const vector3 &P) const {
+    inline Vector3 projectOn(const Vector3 &N, const Vector3 &P) const {
         T w;
 
         w = dotProduct (((*this) - P), N);
@@ -231,8 +231,8 @@ public:
         return (*this) - (N * w);
     }
 
-    static inline vector3 segment (const vector3 & a, const vector3 & b) {
-        vector3 r;
+    static inline Vector3 segment (const Vector3 & a, const Vector3 & b) {
+        Vector3 r;
 
         r[0] = b[0] - a[0];
         r[1] = b[1] - a[1];
@@ -241,12 +241,12 @@ public:
         return r;
     }
 
-    inline T dot(const vector3 &v) const {
+    inline T dot(const Vector3 &v) const {
         return p[0] * v[0] + p[1] * v[1] + p[2] * v[2];
     }
 
-    inline vector3 cross(const vector3 &v) const {
-        vector3 result;
+    inline Vector3 cross(const Vector3 &v) const {
+        Vector3 result;
 
         result[0] = p[1] * v[2] - p[2] * v[1];
         result[1] = p[2] * v[0] - p[0] * v[2];
@@ -255,23 +255,23 @@ public:
         return result;
     }
 
-    static inline T squaredDistance(const vector3 &u, const vector3 &v) {
-        vector3 tmp;
+    static inline T squaredDistance(const Vector3 &u, const Vector3 &v) {
+        Vector3 tmp;
 
         tmp = u - v;
 
         return tmp.getSquaredLength();
     }
 
-    static inline T distance(const vector3 &u, const vector3 &v) {
-        vector3 tmp;
+    static inline T distance(const Vector3 &u, const Vector3 &v) {
+        Vector3 tmp;
 
         tmp = u - v;
 
         return tmp.getLength();
     }
 
-    static inline vector3 interpolate(const vector3 &u, const vector3 &v, T alpha) {
+    static inline Vector3 interpolate(const Vector3 &u, const Vector3 &v, T alpha) {
         return u * (1.0f - alpha) + v * alpha;
     }
 
@@ -282,8 +282,8 @@ public:
      * [1] = angle with z-axis
      * [2] = angle of projection into x,y, plane with x-axis
      */
-    static inline vector3 cartesianToPolar(const vector3 &v) {
-        vector3 polar;
+    static inline Vector3 cartesianToPolar(const Vector3 &v) {
+        Vector3 polar;
 
         polar[0] = v.getLength();
 
@@ -313,8 +313,8 @@ public:
      * [1] = angle with z-axis
      * [2] = angle of projection into x,y, plane with x-axis
      */
-    static inline vector3 polarToCartesian(const vector3 &v) {
-        vector3 cart;
+    static inline Vector3 polarToCartesian(const Vector3 &v) {
+        Vector3 cart;
 
         cart[0] = v[0] * (T) sin (v[1]) * (T) cos (v[2]);
         cart[1] = v[0] * (T) sin (v[1]) * (T) sin (v[2]);
@@ -325,16 +325,16 @@ public:
 
     //attention, this function might not do, what you expect if v2 is not normalized.
     //This is no bug, but wanted for some applications.
-    static inline vector3 projectOntoVector(const vector3 &u, const vector3 &v) {
+    static inline Vector3 projectOntoVector(const Vector3 &u, const Vector3 &v) {
         return v * u.dot(v);
     }
 
-    inline vector3 transformIn(const vector3 &pos, const vector3 &n, const vector3 &u, const vector3 & v) const {
-        vector3 q;
+    inline Vector3 transformIn(const Vector3 &pos, const Vector3 &n, const Vector3 &u, const Vector3 & v) const {
+        Vector3 q;
 
         q = (*this) - pos;
 
-        return vector3(u.dot(q),
+        return Vector3(u.dot(q),
                        v.dot(q),
                        n.dot(q));
     }
@@ -355,26 +355,26 @@ public:
     }
 };
 
-template <class T> inline vector3<T> swap (vector3<T> &u, vector3<T> &v) {
-    vector3<T> tmp;
+template <class T> inline Vector3<T> swap (Vector3<T> &u, Vector3<T> &v) {
+    Vector3<T> tmp;
 
     tmp = u;
     u = v;
     v = tmp;
 }
 
-template <class T> std::ostream& operator<< (std::ostream &output, const vector3<T> &v) {
+template <class T> std::ostream& operator<< (std::ostream &output, const Vector3<T> &v) {
     output << v[0] << " " << v[1] << " " << v[2];
     
     return output;
 }
 
-template <class T> std::istream& operator>> (std::istream &input, vector3<T> &v) {
+template <class T> std::istream& operator>> (std::istream &input, Vector3<T> &v) {
     input >> v[0] >> v[1] >> v[2];
     
     return input;
 }
 
-typedef vector3<float> vector3f;
-typedef vector3<double> vector3d;
-typedef vector3<int> vector3i;
+typedef Vector3<float> Vector3f;
+typedef Vector3<double> Vector3d;
+typedef Vector3<int> Vector3i;

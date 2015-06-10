@@ -20,14 +20,14 @@ const unsigned int LINE_LEN = 256;
 
 void mesh::computeVertexNormals() {
     for (unsigned int i = 0; i < vertices.size (); ++i) {
-        vertices[i].n = vector3f (0.0, 0.0, 0.0);
+        vertices[i].n = Vector3f (0.0, 0.0, 0.0);
     }
 
     // Sum up neighboring normals
     for (unsigned int i = 0; i < triangles.size (); ++i) {
-        vector3f edge01 = vertices[triangles[i].v[1]].p -  vertices[triangles[i].v[0]].p;
-        vector3f edge02 = vertices[triangles[i].v[2]].p -  vertices[triangles[i].v[0]].p;
-        vector3f n = edge01.cross(edge02);
+        Vector3f edge01 = vertices[triangles[i].v[1]].p -  vertices[triangles[i].v[0]].p;
+        Vector3f edge02 = vertices[triangles[i].v[2]].p -  vertices[triangles[i].v[0]].p;
+        Vector3f n = edge01.cross(edge02);
         n.normalize ();
         for (unsigned int j = 0; j < 3; ++j) {
             vertices[triangles[i].v[j]].n += n;
@@ -64,7 +64,7 @@ hit_result mesh::hit(Ray ray, shared_ptr<scene_node> skip [[gnu::unused]])
 
     for(size_t it = 0; it < this->triangles.size(); ++it) {
         int intersectResult;
-        vector3f intPoint;
+        Vector3f intPoint;
         float hit;
         triangle t = this->triangles[it];
 
@@ -99,11 +99,11 @@ hit_result mesh::hit(Ray ray, shared_ptr<scene_node> skip [[gnu::unused]])
     return result;
 }
 
-int mesh::rayTriangleIntersect(Ray ray, triangle triangle, vector3f &point, float &hitDistance)
+int mesh::rayTriangleIntersect(Ray ray, triangle triangle, Vector3f &point, float &hitDistance)
 {
-    vector3f v0, v1, v2;
-    vector3f u, v, n;
-    vector3f w0, w; // a thing?
+    Vector3f v0, v1, v2;
+    Vector3f u, v, n;
+    Vector3f w0, w; // a thing?
     float a, b;
 
     // get the vertices
@@ -163,7 +163,7 @@ int mesh::rayTriangleIntersect(Ray ray, triangle triangle, vector3f &point, floa
     return INTERSECT;
 }
 
-vector3f mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
+Vector3f mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
 {
     Material mat;
 
@@ -176,7 +176,7 @@ vector3f mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
     // actual shading with all the gathered information.
 
     // Only grab diffuse color
-    vector3f diffuse = mat.getKd();
+    Vector3f diffuse = mat.getKd();
 
     return diffuse;
 }
@@ -189,7 +189,7 @@ void mesh::drawSmooth() {
     glBegin(GL_TRIANGLES);
 
     for (unsigned int i=0;i<triangles.size();++i) {
-        vector3f col = this->materials[triangleMaterials[i]].Kd;
+        Vector3f col = this->materials[triangleMaterials[i]].Kd;
 
         glColor3fv(col.pointer());
         for (int v = 0; v < 3; v++) {
@@ -211,7 +211,7 @@ void mesh::draw() {
     glBegin(GL_TRIANGLES);
 
     for (unsigned int i = 0;i < triangles.size(); ++i) {
-        vector3f col, edge01, edge02, n;
+        Vector3f col, edge01, edge02, n;
         unsigned int triMat;
 
         triMat = triangleMaterials.at(i);
@@ -245,7 +245,7 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
     map<string, unsigned int> materialIndex;
     char s[LINE_LEN];
     float x, y, z;
-    std::vector<vector3f> normals;
+    std::vector<Vector3f> normals;
     std::string matname, path, realFilename, temp;
     std::vector<int> vhandles, texhandles;
     size_t pos;
@@ -345,12 +345,12 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
         // vertex
         else if (strncmp(s, "v ", 2) == 0) {
             sscanf(s, "v %f %f %f", &x, &y, &z);
-            vertices.push_back(vector3f(x, y, z));
+            vertices.push_back(Vector3f(x, y, z));
         }
         // texture coord
         else if (strncmp(s, "vt ", 3) == 0) {
             //we do nothing
-            vector3f texCoords(0, 0, 0);
+            Vector3f texCoords(0, 0, 0);
 
             //we only support 2d tex coords
             sscanf(s, "vt %f %f", &texCoords[0], &texCoords[1]);

@@ -101,10 +101,10 @@ public:
 
     void createBoundingBox();
     hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr);
-    vector3f apply(unsigned int level, hit_result hit_info);
+    Vector3f apply(unsigned int level, hit_result hit_info);
 
 private:
-    int rayTriangleIntersect(Ray ray, triangle triangle, vector3f &point, float &hitDistance);
+    int rayTriangleIntersect(Ray ray, triangle triangle, Vector3f &point, float &hitDistance);
 
 public:
 
@@ -115,8 +115,8 @@ public:
 
     // texCoords are the texture coordinates, these are DIFFERENT indices in triangles.
     // in the current version, if you use textures, then you have to use texture coords everywhere
-    // for convenience, vector3f is used, although only 2D tex coordinates are stored (x,y entry of the vector3f).
-    std::vector<vector3f> texcoords;
+    // for convenience, Vector3f is used, although only 2D tex coordinates are stored (x,y entry of the Vector3f).
+    std::vector<Vector3f> texcoords;
 
     // triangles are the indices of the vertices involved in a triangle.
     // A triangle, thus, contains a triplet of values corresponding to the 3 vertices of a triangle.

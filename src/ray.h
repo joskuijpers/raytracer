@@ -1,11 +1,11 @@
 #pragma once
 
-#include "vector3.h"
+#include "Vector3.h"
 
 class Ray {
 public:
 #pragma mark - Constructor
-    Ray(vector3f origin, vector3f dest) : origin(origin), dest(dest) {
+    Ray(Vector3f origin, Vector3f dest) : origin(origin), dest(dest) {
         direction = dest - origin;
 
         // make unit vector
@@ -25,7 +25,7 @@ public:
      * objects is same as inverse applying the transformations to the ray.
      * P_ws = M * Pos, P_os = M^-1 * P_ws
      */
-    Ray transform(vector3f translation, vector3f scale [[gnu::unused]], vector3f rotation [[gnu::unused]], float rotationAngle [[gnu::unused]]) const {
+    Ray transform(Vector3f translation, Vector3f scale [[gnu::unused]], Vector3f rotation [[gnu::unused]], float rotationAngle [[gnu::unused]]) const {
         Ray r;
 
         r.origin = origin - translation;
@@ -38,13 +38,13 @@ public:
         // Step2: invert the matrix
         // Step3: make two homogenous vectors, origin and direction
         // Step4: multiply by the inv matrix
-        // Step5: Make vector3 and store
+        // Step5: Make Vector3 and store
 
         return r;
     }
 
 #pragma mark - Properties
 
-    vector3f origin, dest;
-    vector3f direction; // should be unit vector
+    Vector3f origin, dest;
+    Vector3f direction; // should be unit vector
 };

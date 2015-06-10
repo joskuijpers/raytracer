@@ -7,15 +7,15 @@ void Sphere::draw()
 {
     scene_node::draw();
 
-    vector3f color = this->material.getKd();
+    Vector3f color = this->material.getKd();
     glColor3f(color[0], color[1], color[2]);
 
     glutSolidSphere(this->radius, 15, 15);
 }
 
 void Sphere::createBoundingBox() {
-    boundingBox.min = vector3f(-radius,-radius,-radius);
-    boundingBox.max = vector3f(+radius,+radius,+radius);
+    boundingBox.min = Vector3f(-radius,-radius,-radius);
+    boundingBox.max = Vector3f(+radius,+radius,+radius);
 }
 
 hit_result Sphere::hit(Ray ray, shared_ptr<scene_node> skip [[gnu::unused]])
@@ -58,14 +58,14 @@ hit_result Sphere::hit(Ray ray, shared_ptr<scene_node> skip [[gnu::unused]])
     return result;
 }
 
-vector3f Sphere::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
+Vector3f Sphere::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
 {
-    vector3f color;
+    Vector3f color;
     auto& light = g_scene.lights[0];
 
 
-    vector3f ls = light->position - hit_info.hitPosition;
-    vector3f l = ls / ls.getLength();
+    Vector3f ls = light->position - hit_info.hitPosition;
+    Vector3f l = ls / ls.getLength();
 
     color = light->ambient * material.getKa() + l.dot(hit_info.normal) * light->diffuse * material.getKd();
 

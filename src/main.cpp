@@ -160,7 +160,7 @@ void reshape(int w, int h)
  *
  * transform the x, y position on the screen into the corresponding 3D world position
  */
-void produceRay(int pX, int pY, vector3f *origin, vector3f *dest)
+void produceRay(int pX, int pY, Vector3f *origin, Vector3f *dest)
 {
     int viewport[4];
     double modelview[16], projection[16];
@@ -206,11 +206,11 @@ void keyboard(unsigned char key, int x, int y)
 
             // produce the rays for each pixel, by first computing
             // the rays for the corners of the frustum.
-            vector3f origin00, dest00;
-            vector3f origin01, dest01;
-            vector3f origin10, dest10;
-            vector3f origin11, dest11;
-            vector3f origin, dest;
+            Vector3f origin00, dest00;
+            Vector3f origin01, dest01;
+            Vector3f origin10, dest10;
+            Vector3f origin11, dest11;
+            Vector3f origin, dest;
 
             produceRay(0, 0, &origin00, &dest00);
             produceRay(0, g_windowSizeY - 1, &origin01, &dest01);
@@ -220,7 +220,7 @@ void keyboard(unsigned char key, int x, int y)
             for (unsigned int y = 0; y < g_windowSizeY;++y) {
                 for (unsigned int x = 0; x < g_windowSizeX;++x) {
                     float xscale, yscale;
-                    vector3f rgb;
+                    Vector3f rgb;
 
                     // produce the rays for each pixel, by interpolating
                     // the four rays of the frustum corners.
@@ -252,7 +252,7 @@ void keyboard(unsigned char key, int x, int y)
     
     
     //produce the ray for the current mouse position
-    vector3f testRayOrigin, testRayDestination;
+    Vector3f testRayOrigin, testRayDestination;
     produceRay(x, y, &testRayOrigin, &testRayDestination);
     
     yourKeyboardFunc(key, x, y, testRayOrigin, testRayDestination);

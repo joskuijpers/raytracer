@@ -2,7 +2,7 @@
 
 #include <cfloat>
 
-#include "vector3.h"
+#include "Vector3.h"
 #include "ray.h"
 
 /**
@@ -13,14 +13,14 @@ class AABoundingBox
 public:
 #pragma mark - Constructors
     AABoundingBox()
-    : min(vector3f(FLT_MAX,FLT_MAX,FLT_MAX)),
-    max(vector3f(FLT_MIN,FLT_MIN,FLT_MIN)),
-    color(vector3f(.302f,.824f,.851f)){}
+    : min(Vector3f(FLT_MAX,FLT_MAX,FLT_MAX)),
+    max(Vector3f(FLT_MIN,FLT_MIN,FLT_MIN)),
+    color(Vector3f(.302f,.824f,.851f)){}
 
 #pragma mark - Methods
 
     /// Extend the boundix boxes' minimum vector to contain given vector.
-    inline void extendMin(vector3f other) {
+    inline void extendMin(Vector3f other) {
         if(other[0] < min[0])
             min[0] = other[0];
 
@@ -32,7 +32,7 @@ public:
     };
 
     /// Extend the boundix boxes' maximum vector to contain given vector.
-    inline void extendMax(vector3f other) {
+    inline void extendMax(Vector3f other) {
         if(other[0] > max[0])
             max[0] = other[0];
 
@@ -44,7 +44,7 @@ public:
     };
 
     /// Extend the boundix boxes' bounds to contain given vector.
-    inline void extend(vector3f other) {
+    inline void extend(Vector3f other) {
         if(other[0] > max[0])
             max[0] = other[0];
         else if(other[0] < min[0])
@@ -77,8 +77,8 @@ public:
 
 #pragma mark - Properties
 
-    vector3f min, max;
-    vector3f color;
+    Vector3f min, max;
+    Vector3f color;
 };
 
 std::ostream& operator<< (std::ostream &output, const AABoundingBox &bb);

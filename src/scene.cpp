@@ -53,7 +53,7 @@ void scene::draw(void) {
 
 /// Prepare the scene, recursively
 void scene::prepare() {
-    boundingBox.color = vector3f(.851f,.604f,.302f);
+    boundingBox.color = Vector3f(.851f,.604f,.302f);
 
     // Create children bounding boxes, and expand our own to contain them
     for(auto& obj : nodes) {
