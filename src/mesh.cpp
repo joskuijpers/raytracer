@@ -151,7 +151,7 @@ int mesh::rayTriangleIntersect(Ray ray, triangle triangle, vector3f &point, floa
     return INTERSECT;
 }
 
-color3 mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
+vector3f mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
 {
     Material mat;
 
@@ -166,7 +166,7 @@ color3 mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
     // Only grab diffuse color
     vector3f diffuse = mat.getKd();
 
-    return color3(diffuse);
+    return diffuse;
 }
 
 #pragma mark - Drawing

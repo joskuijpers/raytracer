@@ -17,7 +17,7 @@ public:
 #pragma mark - Raytracing
 
     hit_result hit(Ray ray);
-    color3 apply(unsigned int level, hit_result hit_info);
+    vector3f apply(unsigned int level, hit_result hit_info);
 
 #pragma mark - Properties
     float radius;

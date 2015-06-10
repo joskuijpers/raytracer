@@ -41,7 +41,8 @@ void init(void)
     sphere->radius = .5f;
 
     Material mat;
-    mat.setKd(.4f, 0.4f, 0.f);
+    mat.setKd(.9f, .9f, .9f);
+    mat.setKa(.1f, .1f, .1f);
 
     sphere->material = mat;
 
@@ -50,7 +51,7 @@ void init(void)
     g_scene.nodes.push_back(move(sphere));
 
     // Create a single light
-    g_scene.lights.push_back(unique_ptr<light>(new light(g_scene.camera)));
+    g_scene.lights.push_back(unique_ptr<Light>(new Light(g_scene.camera)));
 
     // TODO:
     // g_scene.prepare();
@@ -59,10 +60,10 @@ void init(void)
 /**
  * @return return the color of the pixel
  */
-color3 performRayTracing(const vector3f &origin, const vector3f &dest)
+vector3f performRayTracing(const vector3f &origin, const vector3f &dest)
 {
     Ray ray(origin, dest);
-    color3 col;
+    vector3f col;
 
     // Hit the scene with the first ray
     hit_result result = g_scene.hit(ray);

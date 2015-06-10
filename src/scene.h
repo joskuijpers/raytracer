@@ -5,7 +5,6 @@
 
 #include "vector3.h"
 #include "scene_node.h"
-#include "color.h"
 
 using namespace std;
 
@@ -14,18 +13,20 @@ class aabb
     // boolean hit(ray, out float distance, out triangle t, )
 };
 
-class light
+class Light
 {
 public:
 
-    light(vector3f position) : position(position) {
+    Light(vector3f position) : position(position) {
+        ambient = vector3f(0.5f,0.5f,0.5f);
+        diffuse = vector3f(0.5f,0.5f,0.5f);
     }
 
 #pragma mark - Properties
     vector3f position;
 
-    // size
-    // etc
+    vector3f ambient;
+    vector3f diffuse;
 };
 
 class scene
@@ -45,11 +46,11 @@ public:
     /// Camera location
     vector3f camera;
 
-    color3 background_color;
+    vector3f background_color;
 
     /// Lights within the scene
     // TODO: special light object in the graph
-    vector<unique_ptr<light>> lights;
+    vector<unique_ptr<Light>> lights;
 
     /// Nodes within the scene
     vector<shared_ptr<scene_node>> nodes;

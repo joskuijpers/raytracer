@@ -1,6 +1,7 @@
 #include "sphere.h"
 
 #include "platform.h"
+#include "raytracing.h"
 
 void Sphere::draw()
 {
@@ -17,9 +18,13 @@ hit_result Sphere::hit(Ray ray [[gnu::unused]])
     hit_result result;
     float a, b, c, discriminant;
 
+    // HACK
+    ray.origin += translation;
+    // END
+
     a = ray.direction.dot(ray.direction);
-    b = 2 * ray.direction.dot(ray.origin);
-    c = ray.origin.dot(ray.origin) - radius * radius;
+    b = 2 * ray.direction.dot(ray.origin - translation);
+    c = translation.dot(translation) + ray.origin.dot(ray.origin) - 2 * translation.dot(ray.origin) - radius * radius;
 
     discriminant = b * b - 4 * a * c;
     if (discriminant < 0.f)
@@ -32,7 +37,7 @@ hit_result Sphere::hit(Ray ray [[gnu::unused]])
     // Calculate closest distance
     result.depth = (-b + sqrtf(discriminant)) / 2 * a;
 
-    if(result.depth < 0 && discriminant > 0.f) {
+    if(discriminant > 0.f) {
         float t;
 
         t = (-b - sqrtf(discriminant)) / 2 * a;
@@ -40,10 +45,24 @@ hit_result Sphere::hit(Ray ray [[gnu::unused]])
             result.depth = t;
     }
 
+    result.hitPosition = ray.origin + result.depth * ray.direction;
+
+    result.normal = result.hitPosition - translation;
+    result.normal.normalize();
+
     return result;
 }
 
-color3 Sphere::apply(unsigned int level [[gnu::unused]], hit_result hit_info [[gnu::unused]])
+vector3f Sphere::apply(unsigned int level [[gnu::unused]], hit_result hit_info [[gnu::unused]])
 {
-    return color3(material.getKd());
+    vector3f color;
+    auto& light = g_scene.lights[0];
+
+
+    vector3f ls = light->position - hit_info.hitPosition;
+    vector3f l = ls / ls.getLength();
+
+    color = light->ambient * material.getKa() + l.dot(hit_info.normal) * light->diffuse * material.getKd();
+
+    return color;
 }
