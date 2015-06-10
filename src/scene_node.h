@@ -6,6 +6,7 @@
 #include <cfloat>
 
 #include "vector3.h"
+#include "matrix4.h"
 #include "ray.h"
 #include "color.h"
 #include "aabb.h"
@@ -46,7 +47,11 @@ public:
     /// size_t sized information for apply method.
     size_t sInfo;
 
-    Vector3f hitPosition, normal;
+    /// Position of the hit. OBJECT SPACE? WORLD SPACE?
+    Vector3f hitPosition;
+
+    /// Normal at that location.
+    Vector3f normal;
 };
 
 /**
@@ -71,7 +76,16 @@ public:
 #pragma mark - Raytracing
 
     /// Create the bounding box
-    virtual void createBoundingBox() = 0;
+    virtual void createBoundingBox(void) = 0;
+
+    /// Create world space BB
+    void createWsBoundingBox(void);
+
+    // Create transform matrix
+    void createTransformationMatrix(void);
+
+    /// Create WorldSpace transformation matrix
+    void createWsTransformationMatrix(void);
 
     /// The hit method, to detect ray hits.
     virtual hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr) = 0;
@@ -83,12 +97,24 @@ public:
     const char *name;
 
     vector<shared_ptr<scene_node>> children;
-//    weak_ptr<scene_node> parent;
+    weak_ptr<scene_node> parent;
+
+    AABoundingBox boundingBox;
+
+    /// Same as above bounding box, but in world space.
+    /// Min and Max are multiplied by the ws_transformationMatrix.
+    AABoundingBox ws_boundingBox;
+
+#pragma mark - Transformation properties
 
     Vector3f translation;
     Vector3f scale;
     Vector3f rotation;
     float rotationAngle;
 
-    AABoundingBox boundingBox;
+    /// Transformation matrix. Must be updated if you change the above values.
+    Matrix4f transformationMatrix;
+
+    /// Transformation matrix, in world space.
+    Matrix4f ws_transformationMatrix;
 };

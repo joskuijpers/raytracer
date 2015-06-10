@@ -16,3 +16,15 @@ void scene_node::draw() {
 void scene_node::drawBoundingBox() {
     boundingBox.draw();
 }
+
+void scene_node::createTransformationMatrix(void) {
+    
+}
+
+void scene_node::createWsBoundingBox(void) {
+
+}
+
+void scene_node::createWsTransformationMatrix(void) {
+
+}
