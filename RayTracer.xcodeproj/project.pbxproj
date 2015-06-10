@@ -66,6 +66,8 @@
 		800460B21B279F2B001CFCF0 /* group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = group.h; sourceTree = "<group>"; };
 		800460B41B28553E001CFCF0 /* aabb.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = aabb.cpp; sourceTree = "<group>"; };
 		800460B51B28553E001CFCF0 /* aabb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aabb.h; sourceTree = "<group>"; };
+		800460B71B286716001CFCF0 /* matrix4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = matrix4.h; sourceTree = "<group>"; };
+		800460B81B28671F001CFCF0 /* vector4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vector4.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +164,8 @@
 			children = (
 				800460861B24934A001CFCF0 /* matrix.h */,
 				8004608C1B24934A001CFCF0 /* vector3.h */,
+				800460B71B286716001CFCF0 /* matrix4.h */,
+				800460B81B28671F001CFCF0 /* vector4.h */,
 			);
 			name = math;
 			sourceTree = "<group>";

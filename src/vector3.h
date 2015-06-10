@@ -2,8 +2,10 @@
 
 #include <cmath>
 #include <iostream>
+#include <cassert>
 
 template<typename T> class vector3;
+template<typename T> class vector4;
 
 template <class T> bool operator!= (const vector3<T> &p1, const vector3<T> &p2) {
     return (p1[0] != p2[0] ||
@@ -95,6 +97,12 @@ public:
     }
 
     inline vector3(const vector3 &v) {
+        init(v[0], v[1], v[2]);
+    }
+
+    inline vector3(const vector4<T> &v) {
+        assert(v[3] == 1.f);
+
         init(v[0], v[1], v[2]);
     }
 
