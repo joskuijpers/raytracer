@@ -208,7 +208,7 @@ public:
 
     /// Return length after normalization
     inline T normalize(void) {
-        T length = getLength();
+        T length = length();
 
         if (length == 0.0f)
             return 0;
