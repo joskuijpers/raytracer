@@ -67,8 +67,5 @@ void scene::prepare() {
 
         // Extend our BB to cover this node
         boundingBox.extend(obj->ws_boundingBox);
-
-        cout << "found BB for node " << obj->name << ": " << obj->boundingBox.min <<"," << obj->boundingBox.max << endl;
-        cout << boundingBox << endl;
     }
 }

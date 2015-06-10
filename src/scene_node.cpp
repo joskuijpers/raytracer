@@ -58,10 +58,8 @@ void SceneNode::updateTransformationMatrix(void) {
 }
 
 void SceneNode::createWsBoundingBox(void) {
-    cout << name << " create ws bbox with bb " << boundingBox << " and mat " << endl << ws_transformationMatrix << endl;
     ws_boundingBox.min = ws_transformationMatrix * boundingBox.min;
     ws_boundingBox.max = ws_transformationMatrix * boundingBox.max;
-    cout << "result" << endl << ws_boundingBox << endl;
 }
 
 #pragma mark - Raytracing
