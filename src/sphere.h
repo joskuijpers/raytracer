@@ -24,4 +24,9 @@ public:
     float radius;
 
     Material material;
+
+private:
+    Vector3f scale [[deprecated]];
+    Vector3f rotation [[deprecated]];
+    float rotationAngle [[deprecated]];
 };

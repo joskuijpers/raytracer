@@ -75,17 +75,13 @@ hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip) {
     // Either 0, and this method is called by child class
     // or >0 children and this is a collection.
     for(auto& node : this->children) {
-        Ray transfRay;
         hit_result nodeResult;
 
         if(skip == node)
             continue;
 
-        // Transform ray by applying translation of object
-        transfRay = ray.transform(node->translation, node->scale, node->rotation, node->rotationAngle);
-
         // Try to hit the node
-        nodeResult = node->hit(transfRay, skip);
+        nodeResult = node->hit(ray, skip);
 
         if(!nodeResult.is_hit())
             continue;

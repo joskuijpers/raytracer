@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Vector3.h"
+#include "vector3.h"
+#include "matrix4.h"
 
 class Ray {
 public:
@@ -9,7 +10,7 @@ public:
         direction = dest - origin;
 
         // make unit vector
-        direction /= direction.length();
+        direction.normalize();
     }
 
     inline Ray() {}
@@ -25,20 +26,25 @@ public:
      * objects is same as inverse applying the transformations to the ray.
      * P_ws = M * Pos, P_os = M^-1 * P_ws
      */
-    Ray transform(Vector3f translation, Vector3f scale [[gnu::unused]], Vector3f rotation [[gnu::unused]], float rotationAngle [[gnu::unused]]) const {
+    Ray transform(Matrix4f transformationMatrix) const {
         Ray r;
-
-        r.origin = origin - translation;
-        r.direction = direction;
 
         // origin_os = m^-1 origin_ws
         // dir_os = m^-1 direction_ws
 
-        // Step1: build 4x4 transformation matrix
+        // Step1: build 4x4 transformation matrix (param)
         // Step2: invert the matrix
-        // Step3: make two homogenous vectors, origin and direction
+        transformationMatrix.invert(); // TODO: cache
+
+        // Step3: make two homogenous vectors, origin and direction (auto)
         // Step4: multiply by the inv matrix
-        // Step5: Make Vector3 and store
+        // Step5: Make Vector3 and store (auto)
+        r.origin = transformationMatrix * origin;
+        r.direction = direction;
+        r.dest = dest;
+
+//        r.direction = transformationMatrix * direction;
+//        r.direction.normalize();
 
         return r;
     }

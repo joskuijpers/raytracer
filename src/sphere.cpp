@@ -23,10 +23,6 @@ hit_result Sphere::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     hit_result result;
     float a, b, c, discriminant;
 
-    // HACK
-    ray.origin += translation;
-    // END
-
     a = ray.direction.dot(ray.direction);
     b = 2 * ray.direction.dot(ray.origin - translation);
     c = translation.dot(translation) + ray.origin.dot(ray.origin) - 2 * translation.dot(ray.origin) - radius * radius;

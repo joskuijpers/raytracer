@@ -62,6 +62,9 @@ hit_result mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     size_t triangleIndex = 0;
     triangle nearestTriangle;
 
+    // Transform the ray, effectively transforming this object
+    ray = ray.transform(ws_transformationMatrix);
+
     for(size_t it = 0; it < this->triangles.size(); ++it) {
         int intersectResult;
         Vector3f intPoint;
