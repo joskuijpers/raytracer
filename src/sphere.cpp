@@ -61,7 +61,7 @@ hit_result Sphere::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
 Vector3f Sphere::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
 {
     Vector3f color;
-    auto& light = g_scene.lights[0];
+    auto& light = g_scene->lights[0];
 
 
     Vector3f ls = light->position - hit_info.hitPosition;
@@ -71,7 +71,7 @@ Vector3f Sphere::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
 
     // Check for shadows
     Ray shadowRay(hit_info.hitPosition, light->position);
-    hit_result shadowRes = g_scene.hit(shadowRay, shared_from_this());
+    hit_result shadowRes = g_scene->hit(shadowRay, shared_from_this());
 
     if(shadowRes.is_hit())
         color = light->ambient * material.getKa();

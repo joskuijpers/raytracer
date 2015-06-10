@@ -5,7 +5,7 @@
 #include <cassert>
 
 template<typename T> class Vector3;
-template<typename T> class vector4;
+template<typename T> class Vector4;
 
 template <class T> bool operator!= (const Vector3<T> &p1, const Vector3<T> &p2) {
     return (p1[0] != p2[0] ||
@@ -100,7 +100,7 @@ public:
         init(v[0], v[1], v[2]);
     }
 
-    inline Vector3(const vector4<T> &v) {
+    inline Vector3(const Vector4<T> &v) {
         assert(v[3] == 1.f);
 
         init(v[0], v[1], v[2]);

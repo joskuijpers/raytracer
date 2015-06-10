@@ -76,19 +76,16 @@ public:
 #pragma mark - Raytracing
 
     /// Create the bounding box
-    virtual void createBoundingBox(void) = 0;
+    virtual void createBoundingBox(void);
 
     /// Create world space BB
     void createWsBoundingBox(void);
 
-    // Create transform matrix
-    void createTransformationMatrix(void);
-
-    /// Create WorldSpace transformation matrix
-    void createWsTransformationMatrix(void);
+    // Update OS transform matrix, and the WS matrix (using parent)
+    void updateTransformationMatrix(void);
 
     /// The hit method, to detect ray hits.
-    virtual hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr) = 0;
+    virtual hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
 
     // Apply method: applies the hit.
     virtual Vector3f apply(unsigned int level, hit_result hit_info) = 0;

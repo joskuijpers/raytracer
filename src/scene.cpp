@@ -31,7 +31,7 @@ void scene::draw(void) {
         boundingBox.draw();
 
     // Draw all sub-objects
-    for(auto &obj : nodes) {
+    for(auto &obj : children) {
         glPushMatrix();
 
         obj->draw();
@@ -40,13 +40,8 @@ void scene::draw(void) {
     }
 
     if(showBoundingBoxes) {
-        for(auto& obj : nodes) {
-            glPushMatrix();
-
-            obj->SceneNode::draw(); // transform
+        for(auto& obj : children) {
             obj->drawBoundingBox();
-            
-            glPopMatrix();
         }
     }
 }
@@ -55,47 +50,25 @@ void scene::draw(void) {
 void scene::prepare() {
     boundingBox.color = Vector3f(.851f,.604f,.302f);
 
+    // Create transformation matrices
+    // Create WS transformation matrix (top down)
+    // Create bounding boxes (bottom up)
+        // + Create WS bounding boxes
+
+    // Create our own transformation matrix. Also updates WS matrix, and all our children.
+    updateTransformationMatrix();
+
     // Create children bounding boxes, and expand our own to contain them
-    for(auto& obj : nodes) {
+    for(auto& obj : children) {
         obj->createBoundingBox();
 
-        boundingBox.extend(obj->boundingBox);
+        // At this point, the ws matrix is filled
+        obj->createWsBoundingBox();
+
+        // Extend our BB to cover this node
+        boundingBox.extend(obj->ws_boundingBox);
 
         cout << "found BB for node " << obj->name << ": " << obj->boundingBox.min <<"," << obj->boundingBox.max << endl;
         cout << boundingBox << endl;
     }
-}
-
-/// Discover a hit
-hit_result scene::hit(Ray ray, shared_ptr<SceneNode> skip) {
-    hit_result result;
-
-    // check against bounding box
-    // if(!hit_aabb)
-    //  result.int_res = DISJOINT;
-    //  return;
-
-    for(auto& node : this->nodes) {
-        Ray transfRay;
-        hit_result nodeResult;
-
-        if(skip == node)
-            continue;
-
-        // Transform ray by applying translation of object
-        transfRay = ray.transform(node->translation, node->scale, node->rotation, node->rotationAngle);
-
-        // Try to hit the node
-        nodeResult = node->hit(transfRay, skip);
-
-        if(!nodeResult.is_hit())
-            continue;
-
-        // If nearer, store result
-        if(nodeResult.depth < result.depth) {
-            result = nodeResult;
-        }
-    }
-
-    return result;
 }

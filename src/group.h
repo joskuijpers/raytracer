@@ -13,12 +13,4 @@ public:
 #pragma mark - Drawing
 
     void draw(void);
-    void drawBoundingBox(void);
-
-#pragma mark - Raytracing
-
-    void createBoundingBox();
-
-    /// The hit method, to detect ray hits.
-    hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
 };

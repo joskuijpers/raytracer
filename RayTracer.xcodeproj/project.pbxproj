@@ -148,13 +148,12 @@
 		800460A01B25DEC0001CFCF0 /* scene */ = {
 			isa = PBXGroup;
 			children = (
+				800460B91B28E091001CFCF0 /* boundingboxes */,
 				800460A31B25DEEB001CFCF0 /* objects */,
 				8004608D1B24934A001CFCF0 /* vertex.h */,
 				8004609F1B25DABD001CFCF0 /* material.h */,
 				8004609C1B25DA0C001CFCF0 /* scene.cpp */,
 				8004609D1B25DA0C001CFCF0 /* scene.h */,
-				800460B41B28553E001CFCF0 /* aabb.cpp */,
-				800460B51B28553E001CFCF0 /* aabb.h */,
 			);
 			name = scene;
 			sourceTree = "<group>";
@@ -202,6 +201,15 @@
 				800460AF1B277E2D001CFCF0 /* ray.h */,
 			);
 			name = raytracing;
+			sourceTree = "<group>";
+		};
+		800460B91B28E091001CFCF0 /* boundingboxes */ = {
+			isa = PBXGroup;
+			children = (
+				800460B41B28553E001CFCF0 /* aabb.cpp */,
+				800460B51B28553E001CFCF0 /* aabb.h */,
+			);
+			name = boundingboxes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

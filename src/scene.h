@@ -29,9 +29,10 @@ public:
     Vector3f diffuse;
 };
 
-class scene
+class scene : public SceneNode
 {
 public:
+    scene() : SceneNode("scene") {};
 #pragma mark - Drawing
 
     void draw(void);
@@ -39,7 +40,12 @@ public:
 #pragma mark - Raytracing
 
     void prepare();
-    hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
+
+    // Unused
+    void createBoundingBox(void) {};
+    Vector3f apply(unsigned int level [[gnu::unused]], hit_result hit_info [[gnu::unused]]) {
+        return Vector3f();
+    };
 
 #pragma mark - Properties
 
@@ -51,12 +57,6 @@ public:
     /// Lights within the scene
     // TODO: special light object in the graph
     vector<unique_ptr<Light>> lights;
-
-    /// Nodes within the scene
-    vector<shared_ptr<SceneNode>> nodes;
-
-    /// Scene bounding box
-    AABoundingBox boundingBox;
 
     /// Whether to draw the bounding boxes of objects and scene.
     bool showBoundingBoxes = true;

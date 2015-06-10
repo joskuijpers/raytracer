@@ -37,18 +37,21 @@ public:
     }
 
     inline Matrix4(T m00, T m01, T m02, T m03,
-                   T m10, T m11, T m12, T m13,
-                   T m20, T m21, T m22, T m23,
-                   T m30, T m31, T m32, T m33) {
+                   T m04, T m05, T m06, T m07,
+                   T m08, T m09, T m10, T m11,
+                   T m12, T m13, T m14, T m15) {
         set(m00, m01, m02, m03,
-            m10, m11, m12, m13,
-            m20, m21, m22, m23,
-            m30, m31, m32, m33);
+            m04, m05, m06, m07,
+            m08, m09, m10, m11,
+            m12, m13, m14, m15);
     }
 
 
     inline void set(const float src[16]) {
-        set(src);
+        m[0] = src[0];  m[1] = src[1];  m[2] = src[2];  m[3] = src[3];
+        m[4] = src[4];  m[5] = src[5];  m[6] = src[6];  m[7] = src[7];
+        m[8] = src[8];  m[9] = src[9];  m[10]= src[10]; m[11]= src[11];
+        m[12]= src[12]; m[13]= src[13]; m[14]= src[14]; m[15]= src[15];
     }
 
     inline void set(T m00, T m01, T m02, T m03,
@@ -84,10 +87,8 @@ public:
 #pragma mark - Matrix operations
 
     inline Matrix4& identity(void) {
-        set(1,0,0,0,
-            0,1,0,0,
-            0,0,1,0,
-            0,0,0,1);
+        m[0] = m[5] = m[10] = m[15] = 1.0f;
+        m[1] = m[2] = m[3] = m[4] = m[6] = m[7] = m[8] = m[9] = m[11] = m[12] = m[13] = m[14] = 0.0f;
 
         return (*this);
     }
@@ -397,108 +398,122 @@ public:
 
 #pragma mark - Making addine transformations
 
-    static inline Matrix4& makeTranslation(T x, T y, T z) {
-        Matrix4 mat;
+    inline const Matrix4 makeTranslation(T x, T y, T z) {
+        set(1,0,0,0,
+            0,1,0,0,
+            0,0,1,0,
+            x,y,z,1);
 
-        mat.set(1,0,0,x,
-                0,1,0,y,
-                0,0,1,z,
-                0,0,0,1);
-
-        return mat;
+        return (*this);
     }
 
-    static inline Matrix4& makeTranslation(Vector3<T> v) {
+    inline const Matrix4 makeTranslation(Vector3<T>& v) {
         return makeTranslation(v[0],v[1],v[2]);
     }
 
-    static inline Matrix4& makeRotationX(float angle) {
-        Matrix4 mat;
-
+    inline const Matrix4 makeRotationX(float angle) {
         T c = cos(angle);
         T s = sin(angle);
 
-        mat.set(1,0, 0,0,
-                0,c,-s,0,
-                0,s, c,0,
-                0,0, 0,1);
+        set(1,0, 0,0,
+            0,c,s,0,
+            0,-s, c,0,
+            0,0, 0,1);
 
-        return mat;
+        return (*this);
     }
 
-    static inline Matrix4& makeRotationY(float angle) {
-        Matrix4 mat;
-
+    inline const Matrix4 makeRotationY(float angle) {
         T c = cos(angle);
         T s = sin(angle);
 
-        mat.set( c,0, s,0,
-                 0,1,-s,0,
-                -s,0, c,0,
-                 0,0, 0,1);
-
-        return mat;
+        set(c, 0,-s,0,
+            0, 1, 0,0,
+            s,-s, c,0,
+            0, 0, 0,1);
+        
+        return (*this);
     }
 
-    static inline Matrix4& makeRotationZ(float angle) {
-        Matrix4 mat;
-
+    inline const Matrix4 makeRotationZ(float angle) {
         T c = cos(angle);
         T s = sin(angle);
 
-        mat.set(c,-s,0,0,
-                s, c,0,0,
-                0, 0,1,0,
-                0, 0,0,1);
+        set( c,s,0,0,
+            -s,c,0,0,
+             0,0,1,0,
+             0,0,0,1);
 
-        return mat;
+        return (*this);
     }
 
-    static inline Matrix4& makeRotation(float angle, T x, T y, T z) {
-        Matrix4 mat;
+    inline const Matrix4 makeRotation(float angle, T x, T y, T z) {
+        T c = cosf(angle * DEG2RAD);
+        T s = sinf(angle * DEG2RAD);
+        T c1 = 1.f - c;
 
-        T c = cos(angle);
-        T s = sin(angle);
-        T t = 1.f - c;
-        T tx = t * x, ty = t * y, tz = t * z;
+        T m0 = m[0],  m4 = m[4],  m8 = m[8],  m12= m[12],
+        m1 = m[1],  m5 = m[5],  m9 = m[9],  m13= m[13],
+        m2 = m[2],  m6 = m[6],  m10= m[10], m14= m[14];
 
-        mat.set(tx * x + c, tx * y - s * z, tx * z + s * y, 0,
-                tx * y + s * z, ty * y + c, ty * z - s * x, 0,
-                tx * z - s * y, ty * z + s * x, t * z * z + c, 0,
-                0, 0, 0, 1);
+        // build rotation matrix
+        T r0 = x * x * c1 + c;
+        T r1 = x * y * c1 + z * s;
+        T r2 = x * z * c1 - y * s;
+        T r4 = x * y * c1 - z * s;
+        T r5 = y * y * c1 + c;
+        T r6 = y * z * c1 + x * s;
+        T r8 = x * z * c1 + y * s;
+        T r9 = y * z * c1 - x * s;
+        T r10= z * z * c1 + c;
 
-        return mat;
+        // multiply rotation matrix
+        m[0] = r0 * m0 + r4 * m1 + r8 * m2;
+        m[1] = r1 * m0 + r5 * m1 + r9 * m2;
+        m[2] = r2 * m0 + r6 * m1 + r10* m2;
+
+        m[4] = r0 * m4 + r4 * m5 + r8 * m6;
+        m[5] = r1 * m4 + r5 * m5 + r9 * m6;
+        m[6] = r2 * m4 + r6 * m5 + r10* m6;
+
+        m[8] = r0 * m8 + r4 * m9 + r8 * m10;
+        m[9] = r1 * m8 + r5 * m9 + r9 * m10;
+        m[10]= r2 * m8 + r6 * m9 + r10* m10;
+        
+        m[12]= r0 * m12+ r4 * m13+ r8 * m14;
+        m[13]= r1 * m12+ r5 * m13+ r9 * m14;
+        m[14]= r2 * m12+ r6 * m13+ r10* m14;
+
+        return (*this);
     }
 
-    static inline Matrix4& makeRotation(float angle, const Vector3<T> v) {
+    inline const Matrix4 makeRotation(float angle, const Vector3<T>& v) {
         return makeRotation(angle, v[0], v[1], v[2]);
     }
 
-    static inline Matrix4& makeScale(T x, T y, T z) {
-        Matrix4 mat;
+    inline const Matrix4 makeScale(T x, T y, T z) {
+        set(x, 0, 0, 0,
+            0, y, 0, 0,
+            0, 0, z, 0,
+            0, 0, 0, 1);
 
-        mat.set(x, 0, 0, 0,
-                0, y, 0, 0,
-                0, 0, z, 0,
-                0, 0, 0, 1);
-
-        return mat;
+        return (*this);
     }
 
-    static inline Matrix4& makeScale(const Vector3<T> v) {
+    inline const Matrix4 makeScale(const Vector3<T>& v) {
         return makeScale(v[0], v[1], v[2]);
     }
 
 #pragma mark - Operators
 
-    inline Matrix4& operator+ (const Matrix4& rhs) {
+    inline Matrix4& operator+ (const Matrix4& rhs) const {
         return Matrix4(m[0]+rhs[0],   m[1]+rhs[1],   m[2]+rhs[2],   m[3]+rhs[3],
                        m[4]+rhs[4],   m[5]+rhs[5],   m[6]+rhs[6],   m[7]+rhs[7],
                        m[8]+rhs[8],   m[9]+rhs[9],   m[10]+rhs[10], m[11]+rhs[11],
                        m[12]+rhs[12], m[13]+rhs[13], m[14]+rhs[14], m[15]+rhs[15]);
     }
 
-    inline Matrix4& operator- (const Matrix4& rhs) {
+    inline Matrix4& operator- (const Matrix4& rhs) const {
         return Matrix4(m[0]-rhs[0],   m[1]-rhs[1],   m[2]-rhs[2],   m[3]-rhs[3],
                        m[4]-rhs[4],   m[5]-rhs[5],   m[6]-rhs[6],   m[7]-rhs[7],
                        m[8]-rhs[8],   m[9]-rhs[9],   m[10]-rhs[10], m[11]-rhs[11],
@@ -523,24 +538,24 @@ public:
         return (*this);
     }
 
-    inline Matrix4& operator* (const Matrix4& n) {
-        return Matrix4(m[0]*n[0]  + m[4]*n[1]  + m[8]*n[2]  + m[12]*n[3],   m[1]*n[0]  + m[5]*n[1]  + m[9]*n[2]  + m[13]*n[3],   m[2]*n[0]  + m[6]*n[1]  + m[10]*n[2]  + m[14]*n[3],   m[3]*n[0]  + m[7]*n[1]  + m[11]*n[2]  + m[15]*n[3],
-                       m[0]*n[4]  + m[4]*n[5]  + m[8]*n[6]  + m[12]*n[7],   m[1]*n[4]  + m[5]*n[5]  + m[9]*n[6]  + m[13]*n[7],   m[2]*n[4]  + m[6]*n[5]  + m[10]*n[6]  + m[14]*n[7],   m[3]*n[4]  + m[7]*n[5]  + m[11]*n[6]  + m[15]*n[7],
-                       m[0]*n[8]  + m[4]*n[9]  + m[8]*n[10] + m[12]*n[11],  m[1]*n[8]  + m[5]*n[9]  + m[9]*n[10] + m[13]*n[11],  m[2]*n[8]  + m[6]*n[9]  + m[10]*n[10] + m[14]*n[11],  m[3]*n[8]  + m[7]*n[9]  + m[11]*n[10] + m[15]*n[11],
-                       m[0]*n[12] + m[4]*n[13] + m[8]*n[14] + m[12]*n[15],  m[1]*n[12] + m[5]*n[13] + m[9]*n[14] + m[13]*n[15],  m[2]*n[12] + m[6]*n[13] + m[10]*n[14] + m[14]*n[15],  m[3]*n[12] + m[7]*n[13] + m[11]*n[14] + m[15]*n[15]);
+    inline const Matrix4 operator* (const Matrix4& n) const {
+        return Matrix4<T>(m[0]*n[0]  + m[4]*n[1]  + m[8]*n[2]  + m[12]*n[3],   m[1]*n[0]  + m[5]*n[1]  + m[9]*n[2]  + m[13]*n[3],   m[2]*n[0]  + m[6]*n[1]  + m[10]*n[2]  + m[14]*n[3],   m[3]*n[0]  + m[7]*n[1]  + m[11]*n[2]  + m[15]*n[3],
+                          m[0]*n[4]  + m[4]*n[5]  + m[8]*n[6]  + m[12]*n[7],   m[1]*n[4]  + m[5]*n[5]  + m[9]*n[6]  + m[13]*n[7],   m[2]*n[4]  + m[6]*n[5]  + m[10]*n[6]  + m[14]*n[7],   m[3]*n[4]  + m[7]*n[5]  + m[11]*n[6]  + m[15]*n[7],
+                          m[0]*n[8]  + m[4]*n[9]  + m[8]*n[10] + m[12]*n[11],  m[1]*n[8]  + m[5]*n[9]  + m[9]*n[10] + m[13]*n[11],  m[2]*n[8]  + m[6]*n[9]  + m[10]*n[10] + m[14]*n[11],  m[3]*n[8]  + m[7]*n[9]  + m[11]*n[10] + m[15]*n[11],
+                          m[0]*n[12] + m[4]*n[13] + m[8]*n[14] + m[12]*n[15],  m[1]*n[12] + m[5]*n[13] + m[9]*n[14] + m[13]*n[15],  m[2]*n[12] + m[6]*n[13] + m[10]*n[14] + m[14]*n[15],  m[3]*n[12] + m[7]*n[13] + m[11]*n[14] + m[15]*n[15]);
     }
 
-    inline Vector4<T>& operator* (const Vector4<T>& rhs) {
-        return Vector4<T>(m[0]*rhs.x + m[4]*rhs.y + m[8]*rhs.z  + m[12]*rhs.w,
-                       m[1]*rhs.x + m[5]*rhs.y + m[9]*rhs.z  + m[13]*rhs.w,
-                       m[2]*rhs.x + m[6]*rhs.y + m[10]*rhs.z + m[14]*rhs.w,
-                       m[3]*rhs.x + m[7]*rhs.y + m[11]*rhs.z + m[15]*rhs.w);
+    inline const Vector4<T> operator* (const Vector4<T>& rhs) const {
+        return Vector4<T>(m[0]*rhs[0] + m[4]*rhs[1] + m[8]*rhs[2]  + m[12]*rhs[3],
+                       m[1]*rhs[0] + m[5]*rhs[1] + m[9]*rhs[2]  + m[13]*rhs[3],
+                       m[2]*rhs[0] + m[6]*rhs[1] + m[10]*rhs[2] + m[14]*rhs[3],
+                       m[3]*rhs[0] + m[7]*rhs[1] + m[11]*rhs[2] + m[15]*rhs[3]);
     }
 
-    inline Vector3<T>& operator* (const Vector3<T>& rhs) {
-        return Vector3<T>(m[0]*rhs.x + m[4]*rhs.y + m[8]*rhs.z,
-                       m[1]*rhs.x + m[5]*rhs.y + m[9]*rhs.z,
-                       m[2]*rhs.x + m[6]*rhs.y + m[10]*rhs.z);
+    /// Transform rhs to homogenous coordinate, multiply, remove last.
+    inline const Vector3<T> operator* (const Vector3<T>& rhs) const {
+        Vector4<T> res = *this * Vector4<T>(rhs);
+        return Vector3<T>(res);
     }
 
     inline Matrix4& operator*= (const Matrix4& rhs) {
@@ -548,14 +563,14 @@ public:
         return (*this);
     }
 
-    inline bool operator== (const Matrix4& n) {
+    inline bool operator== (const Matrix4& n) const {
         return (m[0] == n[0])  && (m[1] == n[1])  && (m[2] == n[2])  && (m[3] == n[3])  &&
         (m[4] == n[4])  && (m[5] == n[5])  && (m[6] == n[6])  && (m[7] == n[7])  &&
         (m[8] == n[8])  && (m[9] == n[9])  && (m[10]== n[10]) && (m[11]== n[11]) &&
         (m[12]== n[12]) && (m[13]== n[13]) && (m[14]== n[14]) && (m[15]== n[15]);
     }
 
-    inline bool operator!= (const Matrix4& n) {
+    inline bool operator!= (const Matrix4& n) const {
         return (m[0] != n[0])  || (m[1] != n[1])  || (m[2] != n[2])  || (m[3] != n[3])  ||
         (m[4] != n[4])  || (m[5] != n[5])  || (m[6] != n[6])  || (m[7] != n[7])  ||
         (m[8] != n[8])  || (m[9] != n[9])  || (m[10]!= n[10]) || (m[11]!= n[11]) ||
@@ -589,23 +604,27 @@ template <class T> inline Matrix4<T> swap (Matrix4<T> &u, Matrix4<T> &v) {
     v = tmp;
 }
 
-template <class T>  inline Matrix4<T> operator-(const Matrix4<T>& rhs) {
+template <class T>  inline const Matrix4<T> operator- (const Matrix4<T>& rhs) {
     return Matrix4<T>(-rhs[0], -rhs[1], -rhs[2], -rhs[3], -rhs[4], -rhs[5], -rhs[6], -rhs[7], -rhs[8], -rhs[9], -rhs[10], -rhs[11], -rhs[12], -rhs[13], -rhs[14], -rhs[15]);
 }
 
-template <class T> inline Matrix4<T> operator*(T s, const Matrix4<T>& rhs) {
+template <class T>  inline const Matrix4<T> operator* (const Matrix4<T>& lhs, const Matrix4<T>& rhs) {
+    return lhs * rhs;
+}
+
+template <class T> inline const Matrix4<T> operator* (T s, const Matrix4<T>& rhs) {
     return Matrix4<T>(s*rhs[0], s*rhs[1], s*rhs[2], s*rhs[3], s*rhs[4], s*rhs[5], s*rhs[6], s*rhs[7], s*rhs[8], s*rhs[9], s*rhs[10], s*rhs[11], s*rhs[12], s*rhs[13], s*rhs[14], s*rhs[15]);
 }
 
-template <class T> inline Vector4<T> operator*(const Vector4<T>& v, const Matrix4<T>& m) {
+template <class T> inline const Vector4<T> operator* (const Vector4<T>& v, const Matrix4<T>& m) {
     return Vector4<T>(v.x*m[0] + v.y*m[1] + v.z*m[2] + v.w*m[3],  v.x*m[4] + v.y*m[5] + v.z*m[6] + v.w*m[7],  v.x*m[8] + v.y*m[9] + v.z*m[10] + v.w*m[11], v.x*m[12] + v.y*m[13] + v.z*m[14] + v.w*m[15]);
 }
 
-template <class T> inline Vector3<T> operator*(const Vector3<T>& v, const Matrix4<T>& m) {
+template <class T> inline const Vector3<T> operator* (const Vector3<T>& v, const Matrix4<T>& m) {
     return Vector3<T>(v.x*m[0] + v.y*m[1] + v.z*m[2],  v.x*m[4] + v.y*m[5] + v.z*m[6],  v.x*m[8] + v.y*m[9] + v.z*m[10]);
 }
 
-template <class T> inline std::ostream& operator<<(std::ostream& os, const Matrix4<T>& m)
+template <class T> inline std::ostream& operator<< (std::ostream& os, const Matrix4<T>& m)
 {
     os << std::fixed << std::setprecision(5);
     os << "[" << std::setw(10) << m[0] << " " << std::setw(10) << m[4] << " " << std::setw(10) << m[8]  <<  " " << std::setw(10) << m[12] << "]\n"

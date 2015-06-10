@@ -16,7 +16,7 @@ void display(void);
 void reshape(int w, int h);
 void keyboard(unsigned char key, int x, int y);
 
-scene g_scene;
+shared_ptr<scene> g_scene(new scene());
 
 // resolution
 unsigned int g_windowSizeX = 800;
@@ -35,7 +35,7 @@ void drawFrame() {
  * animation is called for every image on the screen once
  */
 void animate() {
-    g_scene.camera = getCameraPosition();
+    g_scene->camera = getCameraPosition();
 
     glutPostRedisplay();
 }
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
     tbInitTransform();
     tbHelp();
 
-    g_scene.camera = getCameraPosition();
+    g_scene->camera = getCameraPosition();
 
     // activate the light following the camera
     glEnable(GL_LIGHTING);
@@ -191,10 +191,10 @@ void keyboard(unsigned char key, int x, int y)
     {
             // add/update a light based on the camera position.
         case 'L':
-            g_scene.lights.push_back(unique_ptr<Light>(new Light(getCameraPosition())));
+            g_scene->lights.push_back(unique_ptr<Light>(new Light(getCameraPosition())));
             break;
         case 'l':
-            g_scene.lights[g_scene.lights.size() - 1] = unique_ptr<Light>(new Light(getCameraPosition()));
+            g_scene->lights[g_scene->lights.size() - 1] = unique_ptr<Light>(new Light(getCameraPosition()));
             break;
         case 'r':
         {
