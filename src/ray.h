@@ -2,15 +2,19 @@
 
 #include "vector3.h"
 
-class ray {
+class Ray {
 public:
 #pragma mark - Constructor
-    ray(vector3f origin, vector3f dest) : origin(origin) {
+    Ray(vector3f origin, vector3f dest) : origin(origin), dest(dest) {
         direction = dest - origin;
 
         // make unit vector
         direction /= direction.getLength();
     }
+
+    inline Ray() {}
+
+public:
 
 #pragma mark - Methods
 
@@ -21,8 +25,11 @@ public:
      * objects is same as inverse applying the transformations to the ray.
      * P_ws = M * Pos, P_os = M^-1 * P_ws
      */
-    void transform(vector3f translation, vector3f scale [[gnu::unused]], vector3f rotation [[gnu::unused]], float rotationAngle [[gnu::unused]]) {
-        origin += translation;
+    Ray transform(vector3f translation, vector3f scale [[gnu::unused]], vector3f rotation [[gnu::unused]], float rotationAngle [[gnu::unused]]) const {
+        Ray r;
+
+        r.origin = origin - translation;
+        r.direction = direction;
 
         // origin_os = m^-1 origin_ws
         // dir_os = m^-1 direction_ws
@@ -32,10 +39,12 @@ public:
         // Step3: make two homogenous vectors, origin and direction
         // Step4: multiply by the inv matrix
         // Step5: Make vector3 and store
+
+        return r;
     }
 
 #pragma mark - Properties
 
-    vector3f origin;
+    vector3f origin, dest;
     vector3f direction; // should be unit vector
 };

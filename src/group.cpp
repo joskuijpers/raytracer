@@ -14,7 +14,7 @@ void group::draw() {
     }
 }
 
-hit_result group::hit(ray ray) {
+hit_result group::hit(Ray ray, shared_ptr<scene_node> skip) {
     hit_result result;
 
     // check against bounding box
@@ -25,13 +25,17 @@ hit_result group::hit(ray ray) {
     // Either 0, and this method is called by child class
     // or >0 children and this is a collection.
     for(auto& node : this->children) {
+        Ray transfRay;
         hit_result nodeResult;
 
+        if(skip == node)
+            continue;
+
         // Transform ray by applying translation of object
-        ray.transform(node->translation, node->scale, node->rotation, node->rotationAngle);
+        transfRay = ray.transform(node->translation, node->scale, node->rotation, node->rotationAngle);
 
         // Try to hit the node
-        nodeResult = node->hit(ray);
+        nodeResult = node->hit(transfRay, skip);
 
         if(!nodeResult.is_hit())
             continue;

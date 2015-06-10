@@ -24,7 +24,7 @@ void init();
 void produceRay(int x_I, int y_I, vector3f &origin, vector3f &dest);
 
 // your main function to rewrite
-color3 performRayTracing(const vector3f &origin, const vector3f &dest);
+vector3f performRayTracing(const vector3f &origin, const vector3f &dest);
 
 // a function to debug --- you can draw in OpenGL here
 void yourDebugDraw();

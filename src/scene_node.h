@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <set>
 #include <string>
 #include <cfloat>
 
@@ -44,6 +45,8 @@ public:
 
     /// size_t sized information for apply method.
     size_t sInfo;
+
+    vector3f hitPosition, normal;
 };
 
 /**
@@ -67,10 +70,10 @@ public:
 #pragma mark - Raytracing
 
     /// The hit method, to detect ray hits.
-    virtual hit_result hit(ray ray) = 0;
+    virtual hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr) = 0;
 
     // Apply method: applies the hit.
-    virtual color3 apply(unsigned int level, hit_result hit_info) = 0;
+    virtual vector3f apply(unsigned int level, hit_result hit_info) = 0;
 
 #pragma mark - Properties
     const char *name;

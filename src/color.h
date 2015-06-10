@@ -2,10 +2,10 @@
 
 #include "vector3.h"
 
-class color3
+class Color3
 {
 public:
-    color3(float r = 0.f, float g = 0.f, float b = 0.f) : r(r), g(g), b(b)
+    Color3(float r = 0.f, float g = 0.f, float b = 0.f) : r(r), g(g), b(b)
     {
         if (r > 1.f)
             this->r = 1.f;
@@ -24,7 +24,7 @@ public:
     };
 
     /// Convert from vector to rgb
-    color3(vector3f vector) : color3(vector[0], vector[1], vector[2]) {}
+    Color3(vector3f vector) : Color3(vector[0], vector[1], vector[2]) {}
 
     float operator[](int i) const
     {

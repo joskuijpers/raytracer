@@ -115,10 +115,10 @@
 				800460991B25CF3F001CFCF0 /* image_writer.cpp */,
 				800460B01B279A0B001CFCF0 /* color.h */,
 				800460851B24934A001CFCF0 /* main.cpp */,
+				8004608B1B24934A001CFCF0 /* trackball.h */,
 				800460A11B25DECA001CFCF0 /* math */,
 				800460A01B25DEC0001CFCF0 /* scene */,
 				800460AE1B277DF3001CFCF0 /* raytracing */,
-				8004608B1B24934A001CFCF0 /* trackball.h */,
 				800460A21B25DED4001CFCF0 /* misc */,
 			);
 			path = src;
@@ -143,9 +143,9 @@
 		800460A01B25DEC0001CFCF0 /* scene */ = {
 			isa = PBXGroup;
 			children = (
+				800460A31B25DEEB001CFCF0 /* objects */,
 				8004608D1B24934A001CFCF0 /* vertex.h */,
 				8004609F1B25DABD001CFCF0 /* material.h */,
-				800460A31B25DEEB001CFCF0 /* objects */,
 				8004609C1B25DA0C001CFCF0 /* scene.cpp */,
 				8004609D1B25DA0C001CFCF0 /* scene.h */,
 			);
@@ -347,6 +347,7 @@
 		800460791B2490FF001CFCF0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_OPTIMIZATION_LEVEL = 3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;

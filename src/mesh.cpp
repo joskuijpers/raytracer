@@ -10,6 +10,7 @@
 #include <fstream>
 
 #include "compiler_opt.h"
+#include "raytracing.h"
 
 using namespace std;
 
@@ -49,7 +50,7 @@ enum intersection_result : int {
     OUTSIDE = 3
 };
 
-hit_result mesh::hit(ray ray)
+hit_result mesh::hit(Ray ray, shared_ptr<scene_node> skip [[gnu::unused]])
 {
     hit_result result;
     size_t triangleIndex = 0;
@@ -84,10 +85,15 @@ hit_result mesh::hit(ray ray)
     result.sInfo = triangleIndex;
     result.node = shared_from_this();
 
+    result.hitPosition = ray.origin + result.depth * ray.direction;
+
+    // Interpolate normal with the 3 vertex normals
+//    result.normal = nearestTriangle.;
+
     return result;
 }
 
-int mesh::rayTriangleIntersect(ray ray, triangle triangle, vector3f &point, float &hitDistance)
+int mesh::rayTriangleIntersect(Ray ray, triangle triangle, vector3f &point, float &hitDistance)
 {
     vector3f v0, v1, v2;
     vector3f u, v, n;
@@ -151,9 +157,9 @@ int mesh::rayTriangleIntersect(ray ray, triangle triangle, vector3f &point, floa
     return INTERSECT;
 }
 
-color3 mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
+vector3f mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
 {
-    material mat;
+    Material mat;
 
     mat = materials[triangleMaterials[hit_info.sInfo]];
 
@@ -166,7 +172,7 @@ color3 mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
     // Only grab diffuse color
     vector3f diffuse = mat.getKd();
 
-    return color3(diffuse);
+    return diffuse;
 }
 
 #pragma mark - Drawing
@@ -229,7 +235,7 @@ void mesh::draw() {
 #pragma mark - Loading
 
 bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
-    material defaultMat;
+    Material defaultMat;
     map<string, unsigned int> materialIndex;
     char s[LINE_LEN];
     float x, y, z;
@@ -475,7 +481,7 @@ bool mesh::loadMaterial(const char *filename, std::map<string, unsigned int> &ma
     char line[LINE_LEN];
     std::string textureName;
     std::string key;
-    material mat;
+    Material mat;
     float f1,f2,f3;
     bool indef = false;
 

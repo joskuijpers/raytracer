@@ -191,10 +191,10 @@ void keyboard(unsigned char key, int x, int y)
     {
             // add/update a light based on the camera position.
         case 'L':
-            g_scene.lights.push_back(unique_ptr<light>(new light(getCameraPosition())));
+            g_scene.lights.push_back(unique_ptr<Light>(new Light(getCameraPosition())));
             break;
         case 'l':
-            g_scene.lights[g_scene.lights.size() - 1] = unique_ptr<light>(new light(getCameraPosition()));
+            g_scene.lights[g_scene.lights.size() - 1] = unique_ptr<Light>(new Light(getCameraPosition()));
             break;
         case 'r':
         {
@@ -220,7 +220,7 @@ void keyboard(unsigned char key, int x, int y)
             for (unsigned int y = 0; y < g_windowSizeY;++y) {
                 for (unsigned int x = 0; x < g_windowSizeX;++x) {
                     float xscale, yscale;
-                    color3 rgb;
+                    vector3f rgb;
 
                     // produce the rays for each pixel, by interpolating
                     // the four rays of the frustum corners.
@@ -237,7 +237,7 @@ void keyboard(unsigned char key, int x, int y)
                     rgb = performRayTracing(origin, dest);
 
                     // store the result in an image
-                    result.setPixel(x,y, rgb);
+                    result.setPixel(x,y, Color3(rgb));
                 }
             }
 
