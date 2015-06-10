@@ -213,21 +213,29 @@ void mesh::draw() {
     for (unsigned int i = 0;i < triangles.size(); ++i) {
         Vector3f col, edge01, edge02, n;
         unsigned int triMat;
+        bool useTriNormals = false;
 
         triMat = triangleMaterials.at(i);
         col = this->materials.at(triMat).Kd;
 
         glColor3fv(col.pointer());
 
-        edge01 = vertices[triangles[i].v[1]].p - vertices[triangles[i].v[0]].p;
-        edge02 = vertices[triangles[i].v[2]].p - vertices[triangles[i].v[0]].p;
-        n = edge01.cross(edge02);
-        n.normalize ();
-        glNormal3f(n[0],
-                   n[1],
-                   n[2]);
+        if(triangles[i].has_normal()) {
+            useTriNormals = true;
+        } else {
+            edge01 = vertices[triangles[i].v[1]].p - vertices[triangles[i].v[0]].p;
+            edge02 = vertices[triangles[i].v[2]].p - vertices[triangles[i].v[0]].p;
+            n = edge01.cross(edge02);
+            n.normalize ();
+            glNormal3f(n[0],
+                       n[1],
+                       n[2]);
+        }
 
         for(int v = 0; v < 3; v++) {
+            if(useTriNormals)
+                glNormal3fv(normals[triangles[i].n[v]].pointer());
+
             glVertex3f(vertices[triangles[i].v[v]].p[0],
                        vertices[triangles[i].v[v]].p[1],
                        vertices[triangles[i].v[v]].p[2]);
@@ -245,9 +253,8 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
     map<string, unsigned int> materialIndex;
     char s[LINE_LEN];
     float x, y, z;
-    std::vector<Vector3f> normals;
     std::string matname, path, realFilename, temp;
-    std::vector<int> vhandles, texhandles;
+    std::vector<int> vhandles, texhandles, nhandles;
     size_t pos;
     FILE *in;
 
@@ -358,7 +365,10 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
         }
         // normal
         else if (strncmp(s, "vn ", 3) == 0) {
-            //are recalculated
+            Vector3f normal(0, 0, 0);
+
+            sscanf(s, "vn %f %f %f", &normal[0], &normal[1], &normal[2]);
+            normals.push_back(normal);
         }
         // face
         else if (strncmp(s, "f ", 2) == 0) {
@@ -368,6 +378,7 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
 
             vhandles.clear();
             texhandles.clear();
+            nhandles.clear();
 
             while (*p1 == ' ') {
                 ++p1; // skip white-spaces
@@ -403,24 +414,23 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
                 // read next vertex component
                 if (*p0 != '\0') {
                     switch (component) {
-                        case 0: // vertex
-                        {
+                        case 0: { // vertex
                             int tmp = atoi(p0) - 1;
                             vhandles.push_back(tmp);
                         }
                             break;
-
-                        case 1: // texture coord
-                        {
+                        case 1: { // texture coord
                             int tmp = atoi(p0) - 1;
                             texhandles.push_back(tmp);
                         }
                             break;
-
-                        case 2: // normal
+                        case 2: { // normal
                             //assert(!vhandles.empty());
                             //assert((unsigned int)(atoi(p0)-1) < normals.size());
                             //_bi.set_normal(vhandles.back(), normals[atoi(p0)-1]);
+                            int tmp = atoi(p0) - 1;
+                            nhandles.push_back(tmp);
+                        }
                             break;
                     }
                 }
@@ -458,10 +468,19 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
                                                  vhandles[v2], texhandles[t2]));
                     triangleMaterials.push_back(m);
                 }
-            } else if (vhandles.size()==3) {
-                triangles.push_back(triangle(vhandles[0], texhandles[0],
-                                             vhandles[1], texhandles[1],
-                                             vhandles[2], texhandles[2]));
+            } else if (vhandles.size() == 3) {
+                triangle t(vhandles[0], texhandles[0],
+                           vhandles[1], texhandles[1],
+                           vhandles[2], texhandles[2]);
+
+                if(nhandles.size() == 3 && normals.size() > 0) {
+                    t.n[0] = nhandles[0];
+                    t.n[1] = nhandles[1];
+                    t.n[2] = nhandles[2];
+                }
+
+                triangles.push_back(t);
+
                 triangleMaterials.push_back((materialIndex.find(matname))->second);
             } else {
                 fprintf(stderr, "Trimesh::LOAD: Unexpected number of face vertices (<3). Ignoring face.\n");

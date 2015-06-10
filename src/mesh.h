@@ -23,6 +23,7 @@ public:
 
     inline triangle() {
         v[0] = v[1] = v[2] = 0;
+        n[0] = n[1] = n[2] = 0;
     }
 
     inline triangle (const triangle & t2) {
@@ -34,6 +35,9 @@ public:
         t[1] = t2.t[1];
         t[2] = t2.t[2];
 
+        n[0] = t2.n[0];
+        n[1] = t2.n[1];
+        n[2] = t2.n[2];
     }
 
     inline triangle (unsigned int v0, unsigned int t0, unsigned int v1, unsigned int t1, unsigned int v2, unsigned int t2) {
@@ -44,9 +48,17 @@ public:
         t[0] = t0;
         t[1] = t1;
         t[2] = t2;
+
+        n[0] = 0;
+        n[1] = 0;
+        n[2] = 0;
     }
 
     inline virtual ~triangle () {}
+
+    inline bool has_normal(void) {
+        return !(n[0] == 0 && n[1] == 0 && n[2] == 0);
+    }
 
 #pragma mark - Operators
 
@@ -59,6 +71,10 @@ public:
         t[1] = other.t[1];
         t[2] = other.t[2];
 
+        n[0] = other.n[0];
+        n[1] = other.n[1];
+        n[2] = other.n[2];
+
         return (*this);
     }
 
@@ -69,6 +85,9 @@ public:
 
     // texture coordinate
     unsigned int t[3];
+
+    // normal
+    unsigned int n[3];
 };
 
 /**
@@ -121,6 +140,8 @@ public:
     // triangles are the indices of the vertices involved in a triangle.
     // A triangle, thus, contains a triplet of values corresponding to the 3 vertices of a triangle.
     std::vector<triangle> triangles;
+
+    std::vector<Vector3f> normals;
 
     // These are the material properties
     // each triangle (!), NOT (!) each vertex, has a material.
