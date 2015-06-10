@@ -180,26 +180,26 @@ public:
         return (*this);
     }
 
-    inline T getSquaredLength() const {
+    inline T squaredLength() const {
         return this->dot(*this);
     }
 
-    inline T getLength() const {
-        return (T)sqrt(getSquaredLength());
+    inline T length() const {
+        return (T)sqrt(squaredLength());
     }
 
     /// Return length after normalization
     inline T normalize(void) {
-        T length = getLength();
+        T len = length();
 
-        if (length == 0.0f)
+        if (len == 0.0f)
             return 0;
 
-        T rezLength = 1.0f / length;
+        T rezLength = 1.0f / len;
         p[0] *= rezLength;
         p[1] *= rezLength;
         p[2] *= rezLength;
-        return length;
+        return len;
     }
 
     inline void fromTo(const Vector3 &P1, const Vector3 &P2) {

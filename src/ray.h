@@ -9,7 +9,7 @@ public:
         direction = dest - origin;
 
         // make unit vector
-        direction /= direction.getLength();
+        direction /= direction.length();
     }
 
     inline Ray() {}

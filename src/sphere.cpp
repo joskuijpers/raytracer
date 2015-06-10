@@ -65,7 +65,7 @@ Vector3f Sphere::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
 
 
     Vector3f ls = light->position - hit_info.hitPosition;
-    Vector3f l = ls / ls.getLength();
+    Vector3f l = ls / ls.length();
 
     color = light->ambient * material.getKa() + l.dot(hit_info.normal) * light->diffuse * material.getKd();
 

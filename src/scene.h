@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 
-#include "Vector3.h"
+#include "vector3.h"
 #include "scene_node.h"
 
 using namespace std;

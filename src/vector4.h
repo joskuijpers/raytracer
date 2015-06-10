@@ -198,12 +198,12 @@ public:
         return (*this);
     }
 
-    inline T getSquaredLength() const {
+    inline T squaredLength() const {
         return this->dot(*this);
     }
 
-    inline T getLength() const {
-        return (T)sqrt(getSquaredLength());
+    inline T length() const {
+        return (T)sqrt(squaredLength());
     }
 
     /// Return length after normalization

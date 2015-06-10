@@ -5,7 +5,7 @@
 #include <string>
 #include <cfloat>
 
-#include "Vector3.h"
+#include "vector3.h"
 #include "ray.h"
 #include "color.h"
 #include "aabb.h"

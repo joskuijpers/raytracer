@@ -115,7 +115,7 @@ int mesh::rayTriangleIntersect(Ray ray, triangle triangle, Vector3f &point, floa
     v = v2 - v0;
 
     n = u.cross(v);
-    if(n.getLength() == 0)
+    if(n.length() == 0)
         return DEGENERATE;
 
     w0 = ray.origin - v0;
