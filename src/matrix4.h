@@ -8,6 +8,7 @@
 
 /// @note: used some code from http://www.songho.ca/opengl/gl_matrix.html
 /// @note: inversion code from http://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix
+/// @note: transformation code from https://github.com/mrdoob/three.js/blob/master/src/math/Matrix4.js
 
 template<typename T> class Matrix4;
 
@@ -73,7 +74,7 @@ public:
         return tm;
     }
 
-    T getDeterminant(void) const {
+    T determinant(void) const {
         return m[0] * getCofactor(m[5],m[6],m[7], m[9],m[10],m[11], m[13],m[14],m[15]) -
                 m[1] * getCofactor(m[4],m[6],m[7], m[8],m[10],m[11], m[12],m[14],m[15]) +
                 m[2] * getCofactor(m[4],m[5],m[7], m[8],m[9], m[11], m[12],m[13],m[15]) -
@@ -375,10 +376,12 @@ public:
         return rotate(angle,0,0,1);
     }
 
+    /// Multiply columns by s
     inline Matrix4& scale(T s) {
         return scale(s,s,s);
     }
 
+    /// Multiply columns by x,y,z
     inline Matrix4& scale(T x, T y, T z) {
         m[0] *= x;  m[4] *= x;  m[8] *= x;  m[12] *= x;
         m[1] *= y;  m[5] *= y;  m[9] *= y;  m[13] *= y;
@@ -387,8 +390,103 @@ public:
         return (*this);
     }
 
+    // Multiply columns by v
     inline Matrix4& scale(const Vector3<T>& v) {
         return scale(v[0],v[1],v[2]);
+    }
+
+#pragma mark - Making addine transformations
+
+    static inline Matrix4& makeTranslation(T x, T y, T z) {
+        Matrix4 mat;
+
+        mat.set(1,0,0,x,
+                0,1,0,y,
+                0,0,1,z,
+                0,0,0,1);
+
+        return mat;
+    }
+
+    static inline Matrix4& makeTranslation(Vector3<T> v) {
+        return makeTranslation(v[0],v[1],v[2]);
+    }
+
+    static inline Matrix4& makeRotationX(float angle) {
+        Matrix4 mat;
+
+        T c = cos(angle);
+        T s = sin(angle);
+
+        mat.set(1,0, 0,0,
+                0,c,-s,0,
+                0,s, c,0,
+                0,0, 0,1);
+
+        return mat;
+    }
+
+    static inline Matrix4& makeRotationY(float angle) {
+        Matrix4 mat;
+
+        T c = cos(angle);
+        T s = sin(angle);
+
+        mat.set( c,0, s,0,
+                 0,1,-s,0,
+                -s,0, c,0,
+                 0,0, 0,1);
+
+        return mat;
+    }
+
+    static inline Matrix4& makeRotationZ(float angle) {
+        Matrix4 mat;
+
+        T c = cos(angle);
+        T s = sin(angle);
+
+        mat.set(c,-s,0,0,
+                s, c,0,0,
+                0, 0,1,0,
+                0, 0,0,1);
+
+        return mat;
+    }
+
+    static inline Matrix4& makeRotation(float angle, T x, T y, T z) {
+        Matrix4 mat;
+
+        T c = cos(angle);
+        T s = sin(angle);
+        T t = 1.f - c;
+        T tx = t * x, ty = t * y, tz = t * z;
+
+        mat.set(tx * x + c, tx * y - s * z, tx * z + s * y, 0,
+                tx * y + s * z, ty * y + c, ty * z - s * x, 0,
+                tx * z - s * y, ty * z + s * x, t * z * z + c, 0,
+                0, 0, 0, 1);
+
+        return mat;
+    }
+
+    static inline Matrix4& makeRotation(float angle, const Vector3<T> v) {
+        return makeRotation(angle, v[0], v[1], v[2]);
+    }
+
+    static inline Matrix4& makeScale(T x, T y, T z) {
+        Matrix4 mat;
+
+        mat.set(x, 0, 0, 0,
+                0, y, 0, 0,
+                0, 0, z, 0,
+                0, 0, 0, 1);
+
+        return mat;
+    }
+
+    static inline Matrix4& makeScale(const Vector3<T> v) {
+        return makeScale(v[0], v[1], v[2]);
     }
 
 #pragma mark - Operators
