@@ -5,7 +5,7 @@
 
 void Sphere::draw()
 {
-    scene_node::draw();
+    SceneNode::draw();
 
     Vector3f color = this->material.getKd();
     glColor3f(color[0], color[1], color[2]);
@@ -18,7 +18,7 @@ void Sphere::createBoundingBox() {
     boundingBox.max = Vector3f(+radius,+radius,+radius);
 }
 
-hit_result Sphere::hit(Ray ray, shared_ptr<scene_node> skip [[gnu::unused]])
+hit_result Sphere::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
 {
     hit_result result;
     float a, b, c, discriminant;

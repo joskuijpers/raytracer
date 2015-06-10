@@ -5,9 +5,9 @@
 /**
  * A scene group, to group objects together.
  *
- * Do not use the base class scene_node for this task.
+ * Do not use the base class SceneNode for this task.
  */
-class Group : public scene_node
+class Group : public SceneNode
 {
 public:
 #pragma mark - Drawing
@@ -20,5 +20,5 @@ public:
     void createBoundingBox();
 
     /// The hit method, to detect ray hits.
-    hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr);
+    hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
 };

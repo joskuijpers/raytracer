@@ -2,7 +2,7 @@
 #include "platform.h"
 
 void Group::draw() {
-    scene_node::draw();
+    SceneNode::draw();
 
     // Draw all sub-objects
     for(auto &obj : children) {
@@ -38,7 +38,7 @@ void Group::createBoundingBox() {
     }
 }
 
-hit_result Group::hit(Ray ray, shared_ptr<scene_node> skip) {
+hit_result Group::hit(Ray ray, shared_ptr<SceneNode> skip) {
     hit_result result;
 
     // check against bounding box

@@ -43,7 +43,7 @@ void scene::draw(void) {
         for(auto& obj : nodes) {
             glPushMatrix();
 
-            obj->scene_node::draw(); // transform
+            obj->SceneNode::draw(); // transform
             obj->drawBoundingBox();
             
             glPopMatrix();
@@ -67,7 +67,7 @@ void scene::prepare() {
 }
 
 /// Discover a hit
-hit_result scene::hit(Ray ray, shared_ptr<scene_node> skip) {
+hit_result scene::hit(Ray ray, shared_ptr<SceneNode> skip) {
     hit_result result;
 
     // check against bounding box

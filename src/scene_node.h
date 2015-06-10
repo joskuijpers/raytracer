@@ -13,7 +13,7 @@
 
 using namespace std;
 
-class scene_node;
+class SceneNode;
 
 /**
  * Hit result information.
@@ -42,7 +42,7 @@ public:
     bool hit;
 
     /// The hit node
-    shared_ptr<scene_node> node;
+    shared_ptr<SceneNode> node;
 
     /// size_t sized information for apply method.
     size_t sInfo;
@@ -60,10 +60,10 @@ public:
  * @note For grouping objects together, use the group class.
  * @warning Can't be used from stack!
  */
-class scene_node : public enable_shared_from_this<scene_node>
+class SceneNode : public enable_shared_from_this<SceneNode>
 {
 public:
-    scene_node(const char *name) : name(name), translation(Vector3f(0,0,0)), scale(Vector3f(1,1,1)), rotation(Vector3f(1,1,1)), rotationAngle(0.f) {}
+    SceneNode(const char *name) : name(name), translation(Vector3f(0,0,0)), scale(Vector3f(1,1,1)), rotation(Vector3f(1,1,1)), rotationAngle(0.f) {}
 
     // abstract calculateBoundingBox()
 
@@ -88,7 +88,7 @@ public:
     void createWsTransformationMatrix(void);
 
     /// The hit method, to detect ray hits.
-    virtual hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr) = 0;
+    virtual hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr) = 0;
 
     // Apply method: applies the hit.
     virtual Vector3f apply(unsigned int level, hit_result hit_info) = 0;
@@ -96,8 +96,8 @@ public:
 #pragma mark - Properties
     const char *name;
 
-    vector<shared_ptr<scene_node>> children;
-    weak_ptr<scene_node> parent;
+    vector<shared_ptr<SceneNode>> children;
+    weak_ptr<SceneNode> parent;
 
     AABoundingBox boundingBox;
 

@@ -56,7 +56,7 @@ enum intersection_result : int {
     OUTSIDE = 3
 };
 
-hit_result mesh::hit(Ray ray, shared_ptr<scene_node> skip [[gnu::unused]])
+hit_result mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
 {
     hit_result result;
     size_t triangleIndex = 0;
@@ -184,7 +184,7 @@ Vector3f mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
 #pragma mark - Drawing
 
 void mesh::drawSmooth() {
-    scene_node::draw();
+    SceneNode::draw();
 
     glBegin(GL_TRIANGLES);
 
@@ -206,7 +206,7 @@ void mesh::drawSmooth() {
 }
 
 void mesh::draw() {
-    scene_node::draw();
+    SceneNode::draw();
 
     glBegin(GL_TRIANGLES);
 

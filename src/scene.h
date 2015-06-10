@@ -39,7 +39,7 @@ public:
 #pragma mark - Raytracing
 
     void prepare();
-    hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr);
+    hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
 
 #pragma mark - Properties
 
@@ -53,7 +53,7 @@ public:
     vector<unique_ptr<Light>> lights;
 
     /// Nodes within the scene
-    vector<shared_ptr<scene_node>> nodes;
+    vector<shared_ptr<SceneNode>> nodes;
 
     /// Scene bounding box
     AABoundingBox boundingBox;

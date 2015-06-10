@@ -97,13 +97,13 @@ public:
  *
  * @warning Can't be used on stack!
  */
-class mesh : public scene_node
+class mesh : public SceneNode
 {
 public:
-    mesh(const char *name) : scene_node(name) {}
+    mesh(const char *name) : SceneNode(name) {}
 
     inline mesh(const std::vector<vertex> &v, const std::vector<triangle> &t)
-    : scene_node("mesh"), vertices (v), triangles (t) {}
+    : SceneNode("mesh"), vertices (v), triangles (t) {}
 
 #pragma mark - Loading
 
@@ -119,7 +119,7 @@ public:
 #pragma mark - Raytracing
 
     void createBoundingBox();
-    hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr);
+    hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
     Vector3f apply(unsigned int level, hit_result hit_info);
 
 private:
