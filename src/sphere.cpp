@@ -13,6 +13,11 @@ void Sphere::draw()
     glutSolidSphere(this->radius, 15, 15);
 }
 
+void Sphere::createBoundingBox() {
+    boundingBox.min = vector3f(-radius,-radius,-radius);
+    boundingBox.max = vector3f(+radius,+radius,+radius);
+}
+
 hit_result Sphere::hit(Ray ray, shared_ptr<scene_node> skip [[gnu::unused]])
 {
     hit_result result;

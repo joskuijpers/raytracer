@@ -3,6 +3,7 @@
 #include "platform.h"
 #include "mesh.h"
 
+/// Draw the lights in OpenGL
 void scene::drawLights(void)
 {
     // Draw the lights as white dits
@@ -22,8 +23,12 @@ void scene::drawLights(void)
     glPopAttrib();
 }
 
+/// Draw the scene in OpenGL
 void scene::draw(void) {
     drawLights();
+
+    if(showBoundingBoxes)
+        boundingBox.draw();
 
     // Draw all sub-objects
     for(auto &obj : nodes) {
@@ -33,12 +38,35 @@ void scene::draw(void) {
 
         glPopMatrix();
     }
+
+    if(showBoundingBoxes) {
+        for(auto& obj : nodes) {
+            glPushMatrix();
+
+            obj->scene_node::draw(); // transform
+            obj->drawBoundingBox();
+            
+            glPopMatrix();
+        }
+    }
 }
 
+/// Prepare the scene, recursively
 void scene::prepare() {
+    boundingBox.color = vector3f(.851f,.604f,.302f);
 
+    // Create children bounding boxes, and expand our own to contain them
+    for(auto& obj : nodes) {
+        obj->createBoundingBox();
+
+        boundingBox.extend(obj->boundingBox);
+
+        cout << "found BB for node " << obj->name << ": " << obj->boundingBox.min <<"," << obj->boundingBox.max << endl;
+        cout << boundingBox << endl;
+    }
 }
 
+/// Discover a hit
 hit_result scene::hit(Ray ray, shared_ptr<scene_node> skip) {
     hit_result result;
 

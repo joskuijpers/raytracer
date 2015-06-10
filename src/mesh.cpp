@@ -42,6 +42,12 @@ void mesh::computeVertexNormals() {
 
 #pragma mark - Ray tracing
 
+void mesh::createBoundingBox() {
+    for(vertex vert : vertices) {
+        boundingBox.extend(vert.p);
+    }
+}
+
 enum intersection_result : int {
     DEGENERATE = -1, // triangle is a line or point
     DISJOINT = 0, // no intersection

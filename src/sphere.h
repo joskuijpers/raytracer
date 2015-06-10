@@ -12,10 +12,11 @@ public:
     
 #pragma mark - Drawing
 
-    void draw();
+    void draw(void);
 
 #pragma mark - Raytracing
 
+    void createBoundingBox();
     hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr);
     vector3f apply(unsigned int level, hit_result hit_info);
 

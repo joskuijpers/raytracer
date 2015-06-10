@@ -17,6 +17,7 @@
 		800460A71B25E84F001CFCF0 /* sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460A51B25E84F001CFCF0 /* sphere.cpp */; };
 		800460AD1B2762D1001CFCF0 /* scene_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460AC1B2762D1001CFCF0 /* scene_node.cpp */; };
 		800460B31B279F2B001CFCF0 /* group.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460B11B279F2B001CFCF0 /* group.cpp */; };
+		800460B61B28553E001CFCF0 /* aabb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460B41B28553E001CFCF0 /* aabb.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -63,6 +64,8 @@
 		800460B01B279A0B001CFCF0 /* color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = color.h; sourceTree = "<group>"; };
 		800460B11B279F2B001CFCF0 /* group.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = group.cpp; sourceTree = "<group>"; };
 		800460B21B279F2B001CFCF0 /* group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = group.h; sourceTree = "<group>"; };
+		800460B41B28553E001CFCF0 /* aabb.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = aabb.cpp; sourceTree = "<group>"; };
+		800460B51B28553E001CFCF0 /* aabb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aabb.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +151,8 @@
 				8004609F1B25DABD001CFCF0 /* material.h */,
 				8004609C1B25DA0C001CFCF0 /* scene.cpp */,
 				8004609D1B25DA0C001CFCF0 /* scene.h */,
+				800460B41B28553E001CFCF0 /* aabb.cpp */,
+				800460B51B28553E001CFCF0 /* aabb.h */,
 			);
 			name = scene;
 			sourceTree = "<group>";
@@ -253,6 +258,7 @@
 			files = (
 				800460AD1B2762D1001CFCF0 /* scene_node.cpp in Sources */,
 				800460A71B25E84F001CFCF0 /* sphere.cpp in Sources */,
+				800460B61B28553E001CFCF0 /* aabb.cpp in Sources */,
 				8004609E1B25DA0C001CFCF0 /* scene.cpp in Sources */,
 				8004609A1B25CF3F001CFCF0 /* image_writer.cpp in Sources */,
 				800460901B24934A001CFCF0 /* raytracing.cpp in Sources */,
@@ -347,6 +353,7 @@
 		800460791B2490FF001CFCF0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				GCC_OPTIMIZATION_LEVEL = 3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -355,6 +362,7 @@
 		8004607A1B2490FF001CFCF0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

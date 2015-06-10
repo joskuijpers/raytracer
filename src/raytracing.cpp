@@ -27,6 +27,7 @@ void init(void)
 {
     g_scene.background_color = vector3f(.6f,.2f,.1f);
 
+    /*
     unique_ptr<mesh> cube(new mesh("cube"));
     unique_ptr<mesh> cube2(new mesh("cube2"));
     unique_ptr<Sphere> sphere(new Sphere("sphere"));
@@ -51,12 +52,20 @@ void init(void)
     g_scene.nodes.push_back(move(cube));
     g_scene.nodes.push_back(move(cube2));
     g_scene.nodes.push_back(move(sphere));
+     */
+
+    unique_ptr<mesh> car(new mesh("car"));
+    car->loadMesh("resource/dodgeColorTest.obj", true);
+    car->computeVertexNormals();
+    g_scene.nodes.push_back(move(car));
+
 
     // Create a single light
     g_scene.lights.push_back(unique_ptr<Light>(new Light(g_scene.camera)));
 
-    // TODO:
-    // g_scene.prepare();
+    // Prepare the scene for raytracing: create bounding boxes,
+    // and possibly transformation matrices
+    g_scene.prepare();
 }
 
 /**

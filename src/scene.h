@@ -55,6 +55,9 @@ public:
     /// Nodes within the scene
     vector<shared_ptr<scene_node>> nodes;
 
+    /// Scene bounding box
+    AABoundingBox boundingBox;
+
     /// Whether to draw the bounding boxes of objects and scene.
     bool showBoundingBoxes = true;
 

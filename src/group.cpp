@@ -1,7 +1,7 @@
 #include "group.h"
 #include "platform.h"
 
-void group::draw() {
+void Group::draw() {
     scene_node::draw();
 
     // Draw all sub-objects
@@ -14,7 +14,31 @@ void group::draw() {
     }
 }
 
-hit_result group::hit(Ray ray, shared_ptr<scene_node> skip) {
+void Group::drawBoundingBox() {
+
+    for(auto &obj : children) {
+        obj->drawBoundingBox();
+    }
+
+    boundingBox.draw();
+}
+
+void Group::createBoundingBox() {
+    AABoundingBox box;
+
+    // Create bounding boxes for all children
+    for(auto& obj : children) {
+        AABoundingBox child;
+
+        obj->createBoundingBox();
+        child = obj->boundingBox;
+
+        box.extendMin(child.min);
+        box.extendMax(child.max);
+    }
+}
+
+hit_result Group::hit(Ray ray, shared_ptr<scene_node> skip) {
     hit_result result;
 
     // check against bounding box

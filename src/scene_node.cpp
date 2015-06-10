@@ -12,3 +12,7 @@ void scene_node::draw() {
     glRotatef(this->rotationAngle, this->rotation[0], this->rotation[1], this->rotation[2]);
     glScalef(this->scale[0], this->scale[1], this->scale[2]);
 }
+
+void scene_node::drawBoundingBox() {
+    boundingBox.draw();
+}

@@ -8,7 +8,7 @@
 #include "vector3.h"
 #include "ray.h"
 #include "color.h"
-//#include "aabb.h"
+#include "aabb.h"
 
 using namespace std;
 
@@ -66,8 +66,12 @@ public:
 
     /// The draw method for OpenGL display. Override it.
     virtual void draw(void);
+    virtual void drawBoundingBox(void);
 
 #pragma mark - Raytracing
+
+    /// Create the bounding box
+    virtual void createBoundingBox() = 0;
 
     /// The hit method, to detect ray hits.
     virtual hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr) = 0;
@@ -86,5 +90,5 @@ public:
     vector3f rotation;
     float rotationAngle;
 
-    // aabb boundingBox;
+    AABoundingBox boundingBox;
 };
