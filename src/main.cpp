@@ -244,7 +244,7 @@ void keyboard(unsigned char key, int x, int y)
             }
 
             cout << "Finished raytracing!" << endl;
-            result.write("result.bmp");
+            result.write("result.ppm");
 
             break;
         }
