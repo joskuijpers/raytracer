@@ -178,10 +178,20 @@ Vector3f mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
     // Write a couple of static methods in the raytracer class for calculating the
     // actual shading with all the gathered information.
 
-    // Only grab diffuse color
-    Vector3f diffuse = mat.getKd();
+	// Only grab diffuse color
+	Vector3f color = mat.getKd();
 
-    return diffuse;
+	// Check for shadows
+	auto& light = g_scene->lights[0];
+	Ray shadowRay(hit_info.hitPosition, light->position);
+	shadowRay = shadowRay.transform(ws_transformationMatrix);
+	hit_result shadowRes = g_scene->hit(shadowRay, shared_from_this());
+
+	// If hit, and positie (towards light).
+	if(shadowRes.is_hit() && shadowRes.depth >= 0.f)
+		color = light->ambient * mat.getKa();
+
+	return color;
 }
 
 #pragma mark - Drawing

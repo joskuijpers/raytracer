@@ -29,8 +29,9 @@ void init(void)
 
 
     unique_ptr<mesh> cube(new mesh("cube"));
-    unique_ptr<mesh> cube2(new mesh("cube2"));
-    unique_ptr<Sphere> sphere(new Sphere("sphere"));
+	unique_ptr<mesh> cube2(new mesh("cube2"));
+	unique_ptr<Sphere> sphere(new Sphere("sphere"));
+	unique_ptr<Sphere> sphere2(new Sphere("sphere2"));
 
     cube->loadMesh("resource/cube.obj", true);
     cube->computeVertexNormals();
@@ -42,19 +43,25 @@ void init(void)
     cube2->scale = Vector3f(.8f,.8f,.8f);
     cube2->parent = g_scene;
 
-    sphere->translation = Vector3f(0, .5f, -1.f);
-    sphere->radius = .5f;
-    sphere->parent = g_scene;
+	sphere->translation = Vector3f(0, .5f, -1.f);
+	sphere->radius = .5f;
+	sphere->parent = g_scene;
+
+	sphere2->translation = Vector3f(-1.f, .2f, 2.f);
+	sphere2->radius = .2f;
+	sphere2->parent = g_scene;
 
     Material mat;
     mat.setKd(.9f, .9f, .9f);
     mat.setKa(.1f, .1f, .1f);
 
     sphere->material = mat;
+    sphere2->material = mat;
 
-//    g_scene->children.push_back(move(cube));
-    g_scene->children.push_back(move(cube2));
-    g_scene->children.push_back(move(sphere));
+    g_scene->children.push_back(move(cube));
+	g_scene->children.push_back(move(cube2));
+	g_scene->children.push_back(move(sphere));
+	g_scene->children.push_back(move(sphere2));
 
 
 //    unique_ptr<mesh> car(new mesh("car"));

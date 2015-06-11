@@ -69,13 +69,13 @@ hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip) {
 
     // check against bounding box
 
-    if(skip == nullptr && !ws_boundingBox.intersection(ray, 8.f)) {
+    /*if(skip == nullptr && !ws_boundingBox.intersection(ray, 8.f)) {
         return result;
     } else {
         result.hit = true;
         result.node = shared_from_this();
         return result;
-    }
+    }*/
 
     // Either 0, and this method is called by child class
     // or >0 children and this is a collection.
