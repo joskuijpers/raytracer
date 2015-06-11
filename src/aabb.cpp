@@ -3,8 +3,13 @@
 #include <iostream>
 
 #include "platform.h"
+#include "scene_node.h"
+#include "scene.h"
 
 using namespace std;
+
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
 
 void AABoundingBox::draw() {
     // All corners
@@ -75,8 +80,39 @@ void AABoundingBox::draw() {
     glPopAttrib();
 }
 
-std::ostream& operator<< (std::ostream &output, const AABoundingBox &bb) {
-    output << "(" << bb.min << "," << bb.max << ")";
+/// @note http://tavianator.com/cgit/dimension.git/tree/libdimension/bvh.c#n191
+bool AABoundingBox::intersection(Ray ray, float t [[gnu::unused]]) {
 
-    return output;
+    float txm = (min[0] - ray.origin[0]) * ray.direction_inv[0];
+    float txM = (max[0] - ray.origin[0]) * ray.direction_inv[0];
+
+    float tmin = MIN(txm, txM);
+    float tmax = MAX(txm, txM);
+
+    float tym = (min[1] - ray.origin[1]) * ray.direction_inv[1];
+    float tyM = (max[1] - ray.origin[1]) * ray.direction_inv[1];
+
+    tmin = MAX(tmin, MIN(tym, tyM));
+    tmax = MIN(tmax, MAX(tym, tyM));
+
+    float tzm = (min[2] - ray.origin[2]) * ray.direction_inv[2];
+    float tzM = (max[2] - ray.origin[2]) * ray.direction_inv[2];
+
+    tmin = MAX(tmin, MIN(tzm, tzM));
+    tmax = MIN(tmax, MAX(tzm, tzM));
+
+    // tmin: global entry point of box
+    // tmax: global exit point of box
+
+//    if(tmin <= tmax && tmax > 0.f) {
+//        Vector3f in, out;
+//        in = ray.origin + ray.direction * tmin;
+//        out = ray.origin + ray.direction * tmax;
+//        cout << "in " << in << " out " << out << endl;
+//    }
+
+//    return tmin <= tmax && tmax > 0.f;
+    return tmax >= MAX(0.f, tmin);// && tmin < t;
+
+//    return true;
 }

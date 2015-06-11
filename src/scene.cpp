@@ -4,7 +4,7 @@
 #include "mesh.h"
 
 /// Draw the lights in OpenGL
-void scene::drawLights(void)
+void Scene::drawLights(void)
 {
     // Draw the lights as white dits
     glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -24,7 +24,7 @@ void scene::drawLights(void)
 }
 
 /// Draw the scene in OpenGL
-void scene::draw(void) {
+void Scene::draw(void) {
     drawLights();
 
     if(showBoundingBoxes)
@@ -47,7 +47,7 @@ void scene::draw(void) {
 }
 
 /// Prepare the scene, recursively
-void scene::prepare() {
+void Scene::prepare() {
     boundingBox.color = Vector3f(.851f,.604f,.302f);
 
     // Create transformation matrices

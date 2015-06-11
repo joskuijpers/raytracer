@@ -11,6 +11,8 @@ public:
 
         // make unit vector
         direction.normalize();
+
+        direction_inv = Vector3f(1.f / direction[0], 1.f / direction[1], 1.f / direction[2]);
     }
 
     inline Ray() {}
@@ -43,14 +45,11 @@ public:
         r.direction = direction;
         r.dest = dest;
 
-//        r.direction = transformationMatrix * direction;
-//        r.direction.normalize();
-
         return r;
     }
 
 #pragma mark - Properties
 
     Vector3f origin, dest;
-    Vector3f direction; // should be unit vector
+    Vector3f direction, direction_inv;
 };

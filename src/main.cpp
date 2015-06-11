@@ -16,7 +16,7 @@ void display(void);
 void reshape(int w, int h);
 void keyboard(unsigned char key, int x, int y);
 
-shared_ptr<scene> g_scene(new scene());
+shared_ptr<Scene> g_scene(new Scene());
 
 // resolution
 unsigned int g_windowSizeX = 800;
@@ -239,6 +239,8 @@ void keyboard(unsigned char key, int x, int y)
                     // store the result in an image
                     result.setPixel(x,y, Color3(rgb));
                 }
+
+                cout << "Finished scanline " << y << endl;
             }
 
             cout << "Finished raytracing!" << endl;

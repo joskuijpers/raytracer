@@ -7,7 +7,7 @@
 #include "scene.h"
 #include "ray.h"
 
-extern shared_ptr<scene> g_scene;
+extern shared_ptr<Scene> g_scene;
 
 extern unsigned int g_windowSizeX; // window resolution width
 extern unsigned int g_windowSizeY; // window resolution height

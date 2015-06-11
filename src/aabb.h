@@ -2,8 +2,15 @@
 
 #include <cfloat>
 
-#include "Vector3.h"
+#include "vector3.h"
 #include "ray.h"
+#include <memory>
+
+using namespace std;
+
+class Scene;
+class SceneNode;
+class hit_result;
 
 /**
  * Axis Aligned Bounding Box
@@ -73,7 +80,8 @@ public:
 
 #pragma mark - Raytracing
 
-//    void hit(Ray ray);
+    // Hit the box with a ray.
+    bool intersection(Ray ray, float t);
 
 #pragma mark - Properties
 
@@ -81,4 +89,8 @@ public:
     Vector3f color;
 };
 
-std::ostream& operator<< (std::ostream &output, const AABoundingBox &bb);
+inline std::ostream& operator<< (std::ostream &output, const AABoundingBox &bb) {
+    output << "(" << bb.min << "," << bb.max << ")";
+
+    return output;
+}

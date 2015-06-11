@@ -52,7 +52,7 @@ void init(void)
 
     sphere->material = mat;
 
-    g_scene->children.push_back(move(cube));
+//    g_scene->children.push_back(move(cube));
     g_scene->children.push_back(move(cube2));
     g_scene->children.push_back(move(sphere));
 
@@ -60,7 +60,8 @@ void init(void)
 //    unique_ptr<mesh> car(new mesh("car"));
 //    car->loadMesh("resource/dodgeColorTest.obj", true);
 //    car->computeVertexNormals();
-//    g_scene->nodes.push_back(move(car));
+//    car->parent = g_scene;
+//    g_scene->children.push_back(move(car));
 
 //    unique_ptr<mesh> strawberry(new mesh("strawberry"));
 //    strawberry->loadMesh("resource/strawberry.obj", true);
@@ -92,11 +93,11 @@ Vector3f performRayTracing(const Vector3f &origin, const Vector3f &dest)
         // Intersect with light(s)
         auto& light = g_scene->lights[0];
 
-        hit_result shadowRes = g_scene->hit(Ray(origin, light->position), nullptr);
+//        hit_result shadowRes = g_scene->hit(Ray(origin, light->position), nullptr);
 
-        if(shadowRes.is_hit())
-            return .5f * g_scene->background_color;
-        else
+//        if(shadowRes.is_hit())
+//            return .5f * g_scene->background_color;
+//        else
             return g_scene->background_color;
     }
 

@@ -29,10 +29,10 @@ public:
     Vector3f diffuse;
 };
 
-class scene : public SceneNode
+class Scene : public SceneNode
 {
 public:
-    scene() : SceneNode("scene") {};
+    Scene() : SceneNode("scene") {};
 #pragma mark - Drawing
 
     void draw(void);
@@ -44,7 +44,7 @@ public:
     // Unused
     void createBoundingBox(void) {};
     Vector3f apply(unsigned int level [[gnu::unused]], hit_result hit_info [[gnu::unused]]) {
-        return Vector3f();
+        return Vector3f(1,1,1);
     };
 
 #pragma mark - Properties
