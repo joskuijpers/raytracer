@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vector3.h"
+#include "Vector3.h"
 
 class Color3
 {
@@ -24,7 +24,7 @@ public:
     };
 
     /// Convert from vector to rgb
-    Color3(vector3f vector) : Color3(vector[0], vector[1], vector[2]) {}
+    Color3(Vector3f vector) : Color3(vector[0], vector[1], vector[2]) {}
 
     float operator[](int i) const
     {

@@ -23,6 +23,7 @@ public:
 
     inline triangle() {
         v[0] = v[1] = v[2] = 0;
+        n[0] = n[1] = n[2] = 0;
     }
 
     inline triangle (const triangle & t2) {
@@ -34,6 +35,9 @@ public:
         t[1] = t2.t[1];
         t[2] = t2.t[2];
 
+        n[0] = t2.n[0];
+        n[1] = t2.n[1];
+        n[2] = t2.n[2];
     }
 
     inline triangle (unsigned int v0, unsigned int t0, unsigned int v1, unsigned int t1, unsigned int v2, unsigned int t2) {
@@ -44,9 +48,17 @@ public:
         t[0] = t0;
         t[1] = t1;
         t[2] = t2;
+
+        n[0] = 0;
+        n[1] = 0;
+        n[2] = 0;
     }
 
     inline virtual ~triangle () {}
+
+    inline bool has_normal(void) {
+        return !(n[0] == 0 && n[1] == 0 && n[2] == 0);
+    }
 
 #pragma mark - Operators
 
@@ -59,6 +71,10 @@ public:
         t[1] = other.t[1];
         t[2] = other.t[2];
 
+        n[0] = other.n[0];
+        n[1] = other.n[1];
+        n[2] = other.n[2];
+
         return (*this);
     }
 
@@ -69,6 +85,9 @@ public:
 
     // texture coordinate
     unsigned int t[3];
+
+    // normal
+    unsigned int n[3];
 };
 
 /**
@@ -78,13 +97,13 @@ public:
  *
  * @warning Can't be used on stack!
  */
-class mesh : public scene_node
+class mesh : public SceneNode
 {
 public:
-    mesh(const char *name) : scene_node(name) {}
+    mesh(const char *name) : SceneNode(name) {}
 
     inline mesh(const std::vector<vertex> &v, const std::vector<triangle> &t)
-    : scene_node("mesh"), vertices (v), triangles (t) {}
+    : SceneNode("mesh"), vertices (v), triangles (t) {}
 
 #pragma mark - Loading
 
@@ -94,16 +113,17 @@ public:
 
 #pragma mark - Drawing
 
-    void draw();
-    void drawSmooth();
+    void draw(void);
+    void drawSmooth(void);
 
 #pragma mark - Raytracing
 
-    hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr);
-    vector3f apply(unsigned int level, hit_result hit_info);
+    void createBoundingBox();
+    hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
+    Vector3f apply(unsigned int level, hit_result hit_info);
 
 private:
-    int rayTriangleIntersect(Ray ray, triangle triangle, vector3f &point, float &hitDistance);
+    int rayTriangleIntersect(Ray ray, triangle triangle, Vector3f &point, float &hitDistance);
 
 public:
 
@@ -114,12 +134,14 @@ public:
 
     // texCoords are the texture coordinates, these are DIFFERENT indices in triangles.
     // in the current version, if you use textures, then you have to use texture coords everywhere
-    // for convenience, vector3f is used, although only 2D tex coordinates are stored (x,y entry of the vector3f).
-    std::vector<vector3f> texcoords;
+    // for convenience, Vector3f is used, although only 2D tex coordinates are stored (x,y entry of the Vector3f).
+    std::vector<Vector3f> texcoords;
 
     // triangles are the indices of the vertices involved in a triangle.
     // A triangle, thus, contains a triplet of values corresponding to the 3 vertices of a triangle.
     std::vector<triangle> triangles;
+
+    std::vector<Vector3f> normals;
 
     // These are the material properties
     // each triangle (!), NOT (!) each vertex, has a material.

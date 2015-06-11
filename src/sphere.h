@@ -5,22 +5,28 @@
 
 using namespace std;
 
-class Sphere : public scene_node
+class Sphere : public SceneNode
 {
 public:
-    Sphere(const char *name) : scene_node(name) {};
+    Sphere(const char *name) : SceneNode(name) {};
     
 #pragma mark - Drawing
 
-    void draw();
+    void draw(void);
 
 #pragma mark - Raytracing
 
-    hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr);
-    vector3f apply(unsigned int level, hit_result hit_info);
+    void createBoundingBox();
+    hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
+    Vector3f apply(unsigned int level, hit_result hit_info);
 
 #pragma mark - Properties
     float radius;
 
     Material material;
+
+private:
+    Vector3f scale [[deprecated]];
+    Vector3f rotation [[deprecated]];
+    float rotationAngle [[deprecated]];
 };

@@ -10,7 +10,7 @@ Utilitaires pour appliquer une traqueboule a une fenetre OpenGL.
 #include <cstdio>
 
 #include "matrix.h"
-#include "vector3.h"
+#include "Vector3.h"
 
 static const float speedfact = 0.2;
 
@@ -201,19 +201,19 @@ void tbProject( const GLdouble* p, GLdouble* q )
     project( tb_inverse, p, q );
     //cout<<"projRep: "<<q[0]<<", "<<q[1]<<", "<<q[2]<<", "<<q[3]<<endl;
 }
-vector3f getCameraPosition()
+Vector3f getCameraPosition()
 {
 	const GLdouble p[]={0,0,0,1};
 	GLdouble LightP[4];
 	tbProject(p, LightP);
-	vector3f LightPos;
+	Vector3f LightPos;
 	LightPos[0]=LightP[0];
 	LightPos[1]=LightP[1];
 	LightPos[2]=LightP[2];
 	return LightPos;
 }
 
-vector3f getWorldPositionOfPixel(unsigned int px, unsigned int py)
+Vector3f getWorldPositionOfPixel(unsigned int px, unsigned int py)
 {
 
 	double mv[16];
@@ -228,5 +228,5 @@ vector3f getWorldPositionOfPixel(unsigned int px, unsigned int py)
 
 
 
-	return vector3f(x,y,z);
+	return Vector3f(x,y,z);
 }

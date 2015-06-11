@@ -17,72 +17,95 @@ using std::cout;
 //temporary variables
 //these are only used to illustrate
 //a simple debug drawing. A ray
-vector3f testRayOrigin;
-vector3f testRayDestination;
+Vector3f testRayOrigin;
+Vector3f testRayDestination;
 
 /**
  * Initialize the scene.
  */
 void init(void)
 {
-    g_scene.background_color = vector3f(.6f,.2f,.1f);
+    g_scene->background_color = Vector3f(.6f,.2f,.1f);
+
 
     unique_ptr<mesh> cube(new mesh("cube"));
-    unique_ptr<mesh> cube2(new mesh("cube2"));
-    unique_ptr<Sphere> sphere(new Sphere("sphere"));
+	unique_ptr<mesh> cube2(new mesh("cube2"));
+	unique_ptr<Sphere> sphere(new Sphere("sphere"));
+	unique_ptr<Sphere> sphere2(new Sphere("sphere2"));
 
     cube->loadMesh("resource/cube.obj", true);
     cube->computeVertexNormals();
+    cube->parent = g_scene;
 
     cube2->loadMesh("resource/cube.obj", true);
     cube2->computeVertexNormals();
-    cube2->translation = vector3f(-2,0,0);
-    cube2->scale = vector3f(.8f,.8f,.8f);
+    cube2->translation = Vector3f(-2,0,0);
+    cube2->scale = Vector3f(.8f,.8f,.8f);
+    cube2->parent = g_scene;
 
-    sphere->translation = vector3f(0, .5f, -1.f);
-    sphere->radius = .5f;
+	sphere->translation = Vector3f(0, .5f, -1.f);
+	sphere->radius = .5f;
+	sphere->parent = g_scene;
+
+	sphere2->translation = Vector3f(-1.f, .2f, 2.f);
+	sphere2->radius = .2f;
+	sphere2->parent = g_scene;
 
     Material mat;
     mat.setKd(.9f, .9f, .9f);
     mat.setKa(.1f, .1f, .1f);
 
     sphere->material = mat;
+    sphere2->material = mat;
 
-    g_scene.nodes.push_back(move(cube));
-    g_scene.nodes.push_back(move(cube2));
-    g_scene.nodes.push_back(move(sphere));
+    g_scene->children.push_back(move(cube));
+	g_scene->children.push_back(move(cube2));
+	g_scene->children.push_back(move(sphere));
+	g_scene->children.push_back(move(sphere2));
 
-    // Create a single light
-    g_scene.lights.push_back(unique_ptr<Light>(new Light(g_scene.camera)));
 
-    // TODO:
-    // g_scene.prepare();
+//    unique_ptr<mesh> car(new mesh("car"));
+//    car->loadMesh("resource/dodgeColorTest.obj", true);
+//    car->computeVertexNormals();
+//    car->parent = g_scene;
+//    g_scene->children.push_back(move(car));
+
+//    unique_ptr<mesh> strawberry(new mesh("strawberry"));
+//    strawberry->loadMesh("resource/strawberry.obj", true);
+//    g_scene->nodes.push_back(move(strawberry));
+
+    // Create a single lighblendert
+    g_scene->lights.push_back(unique_ptr<Light>(new Light(g_scene->camera)));
+
+    // Prepare the scene for raytracing: create bounding boxes,
+    // and possibly transformation matrices
+    g_scene->prepare();
 }
 
 /**
  * @return return the color of the pixel
  */
-vector3f performRayTracing(const vector3f &origin, const vector3f &dest)
+Vector3f performRayTracing(const Vector3f &origin, const Vector3f &dest)
 {
     Ray ray(origin, dest);
-    vector3f col;
+    Vector3f col;
 
     // Hit the scene with the first ray
-    hit_result result = g_scene.hit(ray);
+    hit_result result = g_scene->hit(ray);
 
     if(!result.is_hit()) {
         // Check screen shadows. Darken the background if current pixel
         // is not lit by light.
 
         // Intersect with light(s)
-        auto& light = g_scene.lights[0];
+        auto& light = g_scene->lights[0];
 
-        hit_result shadowRes = g_scene.hit(Ray(origin, light->position), nullptr);
+//        hit_result shadowRes = g_scene->hit(Ray(origin, light->position), nullptr);
 
-        if(shadowRes.is_hit())
-            return .5f * g_scene.background_color;
-        else
-            return g_scene.background_color;
+//        if(shadowRes.is_hit())
+//            return .5f * g_scene->background_color;
+//        else
+            return g_scene->background_color;
     }
 
     // If hit, apply the ray:
@@ -104,7 +127,7 @@ void yourDebugDraw(void)
     //this function is called every frame
 
     // Draw the scene
-    g_scene.draw();
+    g_scene->draw();
 
     //as an example: we draw the test ray, which is set by the keyboard function
     glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -122,13 +145,13 @@ void yourDebugDraw(void)
     glPointSize(10);
 
     glBegin(GL_POINTS);
-        glVertex3fv(g_scene.lights[0]->position.pointer());
+        glVertex3fv(g_scene->lights[0]->position.pointer());
     glEnd();
 
     glPopAttrib();
 }
 
-void yourKeyboardFunc(char t, int mouseX, int mouseY, const vector3f &rayOrigin, const vector3f &rayDestination)
+void yourKeyboardFunc(char t, int mouseX, int mouseY, const Vector3f &rayOrigin, const Vector3f &rayDestination)
 {
     //here, as an example, I use the ray to fill in the values for my upper global ray variable
     //I use these variables in the debugDraw function to draw the corresponding ray.

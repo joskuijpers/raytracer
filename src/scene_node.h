@@ -6,13 +6,14 @@
 #include <cfloat>
 
 #include "vector3.h"
+#include "matrix4.h"
 #include "ray.h"
 #include "color.h"
-//#include "aabb.h"
+#include "aabb.h"
 
 using namespace std;
 
-class scene_node;
+class SceneNode;
 
 /**
  * Hit result information.
@@ -41,12 +42,16 @@ public:
     bool hit;
 
     /// The hit node
-    shared_ptr<scene_node> node;
+    shared_ptr<SceneNode> node;
 
     /// size_t sized information for apply method.
     size_t sInfo;
 
-    vector3f hitPosition, normal;
+    /// Position of the hit. OBJECT SPACE? WORLD SPACE?
+    Vector3f hitPosition;
+
+    /// Normal at that location.
+    Vector3f normal;
 };
 
 /**
@@ -55,10 +60,10 @@ public:
  * @note For grouping objects together, use the group class.
  * @warning Can't be used from stack!
  */
-class scene_node : public enable_shared_from_this<scene_node>
+class SceneNode : public enable_shared_from_this<SceneNode>
 {
 public:
-    scene_node(const char *name) : name(name), translation(vector3f(0,0,0)), scale(vector3f(1,1,1)), rotation(vector3f(1,1,1)), rotationAngle(0.f) {}
+    SceneNode(const char *name) : name(name), translation(Vector3f(0,0,0)), scale(Vector3f(1,1,1)), rotation(Vector3f(1,1,1)), rotationAngle(0.f) {}
 
     // abstract calculateBoundingBox()
 
@@ -66,25 +71,47 @@ public:
 
     /// The draw method for OpenGL display. Override it.
     virtual void draw(void);
+    virtual void drawBoundingBox(void);
 
 #pragma mark - Raytracing
 
+    /// Create the bounding box
+    virtual void createBoundingBox(void);
+
+    /// Create world space BB
+    void createWsBoundingBox(void);
+
+    // Update OS transform matrix, and the WS matrix (using parent)
+    void updateTransformationMatrix(void);
+
     /// The hit method, to detect ray hits.
-    virtual hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr) = 0;
+    virtual hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
 
     // Apply method: applies the hit.
-    virtual vector3f apply(unsigned int level, hit_result hit_info) = 0;
+    virtual Vector3f apply(unsigned int level, hit_result hit_info) = 0;
 
 #pragma mark - Properties
     const char *name;
 
-    vector<shared_ptr<scene_node>> children;
-//    weak_ptr<scene_node> parent;
+    vector<shared_ptr<SceneNode>> children;
+    weak_ptr<SceneNode> parent;
 
-    vector3f translation;
-    vector3f scale;
-    vector3f rotation;
+    AABoundingBox boundingBox;
+
+    /// Same as above bounding box, but in world space.
+    /// Min and Max are multiplied by the ws_transformationMatrix.
+    AABoundingBox ws_boundingBox;
+
+#pragma mark - Transformation properties
+
+    Vector3f translation;
+    Vector3f scale;
+    Vector3f rotation;
     float rotationAngle;
 
-    // aabb boundingBox;
+    /// Transformation matrix. Must be updated if you change the above values.
+    Matrix4f transformationMatrix;
+
+    /// Transformation matrix, in world space.
+    Matrix4f ws_transformationMatrix;
 };

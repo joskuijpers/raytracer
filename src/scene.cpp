@@ -3,7 +3,8 @@
 #include "platform.h"
 #include "mesh.h"
 
-void scene::drawLights(void)
+/// Draw the lights in OpenGL
+void Scene::drawLights(void)
 {
     // Draw the lights as white dits
     glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -22,52 +23,49 @@ void scene::drawLights(void)
     glPopAttrib();
 }
 
-void scene::draw(void) {
+/// Draw the scene in OpenGL
+void Scene::draw(void) {
     drawLights();
 
+    if(showBoundingBoxes)
+        boundingBox.draw();
+
     // Draw all sub-objects
-    for(auto &obj : nodes) {
+    for(auto &obj : children) {
         glPushMatrix();
 
         obj->draw();
 
         glPopMatrix();
     }
-}
 
-void scene::prepare() {
-
-}
-
-hit_result scene::hit(Ray ray, shared_ptr<scene_node> skip) {
-    hit_result result;
-
-    // check against bounding box
-    // if(!hit_aabb)
-    //  result.int_res = DISJOINT;
-    //  return;
-
-    for(auto& node : this->nodes) {
-        Ray transfRay;
-        hit_result nodeResult;
-
-        if(skip == node)
-            continue;
-
-        // Transform ray by applying translation of object
-        transfRay = ray.transform(node->translation, node->scale, node->rotation, node->rotationAngle);
-
-        // Try to hit the node
-        nodeResult = node->hit(transfRay, skip);
-
-        if(!nodeResult.is_hit())
-            continue;
-
-        // If nearer, store result
-        if(nodeResult.depth < result.depth) {
-            result = nodeResult;
+    if(showBoundingBoxes) {
+        for(auto& obj : children) {
+            obj->drawBoundingBox();
         }
     }
+}
 
-    return result;
+/// Prepare the scene, recursively
+void Scene::prepare() {
+    boundingBox.color = Vector3f(.851f,.604f,.302f);
+
+    // Create transformation matrices
+    // Create WS transformation matrix (top down)
+    // Create bounding boxes (bottom up)
+        // + Create WS bounding boxes
+
+    // Create our own transformation matrix. Also updates WS matrix, and all our children.
+    updateTransformationMatrix();
+
+    // Create children bounding boxes, and expand our own to contain them
+    for(auto& obj : children) {
+        obj->createBoundingBox();
+
+        // At this point, the ws matrix is filled
+        obj->createWsBoundingBox();
+
+        // Extend our BB to cover this node
+        boundingBox.extend(obj->ws_boundingBox);
+    }
 }

@@ -16,7 +16,7 @@ void display(void);
 void reshape(int w, int h);
 void keyboard(unsigned char key, int x, int y);
 
-scene g_scene;
+shared_ptr<Scene> g_scene(new Scene());
 
 // resolution
 unsigned int g_windowSizeX = 800;
@@ -35,7 +35,7 @@ void drawFrame() {
  * animation is called for every image on the screen once
  */
 void animate() {
-    g_scene.camera = getCameraPosition();
+    g_scene->camera = getCameraPosition();
 
     glutPostRedisplay();
 }
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
     tbInitTransform();
     tbHelp();
 
-    g_scene.camera = getCameraPosition();
+    g_scene->camera = getCameraPosition();
 
     // activate the light following the camera
     glEnable(GL_LIGHTING);
@@ -160,7 +160,7 @@ void reshape(int w, int h)
  *
  * transform the x, y position on the screen into the corresponding 3D world position
  */
-void produceRay(int pX, int pY, vector3f *origin, vector3f *dest)
+void produceRay(int pX, int pY, Vector3f *origin, Vector3f *dest)
 {
     int viewport[4];
     double modelview[16], projection[16];
@@ -191,10 +191,10 @@ void keyboard(unsigned char key, int x, int y)
     {
             // add/update a light based on the camera position.
         case 'L':
-            g_scene.lights.push_back(unique_ptr<Light>(new Light(getCameraPosition())));
+            g_scene->lights.push_back(unique_ptr<Light>(new Light(getCameraPosition())));
             break;
         case 'l':
-            g_scene.lights[g_scene.lights.size() - 1] = unique_ptr<Light>(new Light(getCameraPosition()));
+            g_scene->lights[g_scene->lights.size() - 1] = unique_ptr<Light>(new Light(getCameraPosition()));
             break;
         case 'r':
         {
@@ -206,11 +206,11 @@ void keyboard(unsigned char key, int x, int y)
 
             // produce the rays for each pixel, by first computing
             // the rays for the corners of the frustum.
-            vector3f origin00, dest00;
-            vector3f origin01, dest01;
-            vector3f origin10, dest10;
-            vector3f origin11, dest11;
-            vector3f origin, dest;
+            Vector3f origin00, dest00;
+            Vector3f origin01, dest01;
+            Vector3f origin10, dest10;
+            Vector3f origin11, dest11;
+            Vector3f origin, dest;
 
             produceRay(0, 0, &origin00, &dest00);
             produceRay(0, g_windowSizeY - 1, &origin01, &dest01);
@@ -220,7 +220,7 @@ void keyboard(unsigned char key, int x, int y)
             for (unsigned int y = 0; y < g_windowSizeY;++y) {
                 for (unsigned int x = 0; x < g_windowSizeX;++x) {
                     float xscale, yscale;
-                    vector3f rgb;
+                    Vector3f rgb;
 
                     // produce the rays for each pixel, by interpolating
                     // the four rays of the frustum corners.
@@ -239,6 +239,8 @@ void keyboard(unsigned char key, int x, int y)
                     // store the result in an image
                     result.setPixel(x,y, Color3(rgb));
                 }
+
+                cout << "Finished scanline " << y << endl;
             }
 
             cout << "Finished raytracing!" << endl;
@@ -252,7 +254,7 @@ void keyboard(unsigned char key, int x, int y)
     
     
     //produce the ray for the current mouse position
-    vector3f testRayOrigin, testRayDestination;
+    Vector3f testRayOrigin, testRayDestination;
     produceRay(x, y, &testRayOrigin, &testRayDestination);
     
     yourKeyboardFunc(key, x, y, testRayOrigin, testRayDestination);

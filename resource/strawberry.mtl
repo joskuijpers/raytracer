@@ -1,0 +1,33 @@
+# Blender MTL File: 'lemon.blend'
+# Material Count: 1
+
+newmtl Lemon
+Ns 135.294118
+Ka 0.000000 0.000000 0.000000
+Kd 0.653397 0.653397 0.653397
+Ks 0.836 0.986 0.752
+Ni 1.000000
+Ns 70
+d 1.000000
+illum 1
+
+# Ns    specular exponent. focus of specular light
+# Ni    optical density, index of refraction. glass = 1.5
+# Tf    transmission filter on any ray passing though object (0 1 0 only allows the greens through)
+# illum types
+#   0	Color on and Ambient off
+#   1	Color on and Ambient on
+#   2	Highlight on
+#   3	Reflection on and Ray trace on
+#   4	Transparency: Glass on
+#   Reflection: Ray trace on
+#   5	Reflection: Fresnel on and Ray trace on
+#   6	Transparency: Refraction on
+#   Reflection: Fresnel off and Ray trace on
+#   7	Transparency: Refraction on
+#   Reflection: Fresnel on and Ray trace on
+#   8	Reflection on and Ray trace off
+#   9	Transparency: Glass on, Reflection: Ray trace off
+#   10	Casts shadows onto invisible surfaces
+# d dissolve
+# sharpness sharpness of reflections

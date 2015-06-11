@@ -1,15 +1,18 @@
 #pragma once
 
 #include "vector3.h"
+#include "matrix4.h"
 
 class Ray {
 public:
 #pragma mark - Constructor
-    Ray(vector3f origin, vector3f dest) : origin(origin), dest(dest) {
+    Ray(Vector3f origin, Vector3f dest) : origin(origin), dest(dest) {
         direction = dest - origin;
 
         // make unit vector
-        direction /= direction.getLength();
+        direction.normalize();
+
+        direction_inv = Vector3f(1.f / direction[0], 1.f / direction[1], 1.f / direction[2]);
     }
 
     inline Ray() {}
@@ -25,26 +28,28 @@ public:
      * objects is same as inverse applying the transformations to the ray.
      * P_ws = M * Pos, P_os = M^-1 * P_ws
      */
-    Ray transform(vector3f translation, vector3f scale [[gnu::unused]], vector3f rotation [[gnu::unused]], float rotationAngle [[gnu::unused]]) const {
+    Ray transform(Matrix4f transformationMatrix) const {
         Ray r;
-
-        r.origin = origin - translation;
-        r.direction = direction;
 
         // origin_os = m^-1 origin_ws
         // dir_os = m^-1 direction_ws
 
-        // Step1: build 4x4 transformation matrix
+        // Step1: build 4x4 transformation matrix (param)
         // Step2: invert the matrix
-        // Step3: make two homogenous vectors, origin and direction
+        transformationMatrix.invert(); // TODO: cache
+
+        // Step3: make two homogenous vectors, origin and direction (auto)
         // Step4: multiply by the inv matrix
-        // Step5: Make vector3 and store
+        // Step5: Make Vector3 and store (auto)
+        r.origin = transformationMatrix * origin;
+        r.direction = direction;
+        r.dest = dest;
 
         return r;
     }
 
 #pragma mark - Properties
 
-    vector3f origin, dest;
-    vector3f direction; // should be unit vector
+    Vector3f origin, dest;
+    Vector3f direction, direction_inv;
 };

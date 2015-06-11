@@ -20,14 +20,14 @@ const unsigned int LINE_LEN = 256;
 
 void mesh::computeVertexNormals() {
     for (unsigned int i = 0; i < vertices.size (); ++i) {
-        vertices[i].n = vector3f (0.0, 0.0, 0.0);
+        vertices[i].n = Vector3f (0.0, 0.0, 0.0);
     }
 
     // Sum up neighboring normals
     for (unsigned int i = 0; i < triangles.size (); ++i) {
-        vector3f edge01 = vertices[triangles[i].v[1]].p -  vertices[triangles[i].v[0]].p;
-        vector3f edge02 = vertices[triangles[i].v[2]].p -  vertices[triangles[i].v[0]].p;
-        vector3f n = edge01.cross(edge02);
+        Vector3f edge01 = vertices[triangles[i].v[1]].p -  vertices[triangles[i].v[0]].p;
+        Vector3f edge02 = vertices[triangles[i].v[2]].p -  vertices[triangles[i].v[0]].p;
+        Vector3f n = edge01.cross(edge02);
         n.normalize ();
         for (unsigned int j = 0; j < 3; ++j) {
             vertices[triangles[i].v[j]].n += n;
@@ -42,6 +42,12 @@ void mesh::computeVertexNormals() {
 
 #pragma mark - Ray tracing
 
+void mesh::createBoundingBox() {
+    for(vertex vert : vertices) {
+        boundingBox.extend(vert.p);
+    }
+}
+
 enum intersection_result : int {
     DEGENERATE = -1, // triangle is a line or point
     DISJOINT = 0, // no intersection
@@ -50,15 +56,18 @@ enum intersection_result : int {
     OUTSIDE = 3
 };
 
-hit_result mesh::hit(Ray ray, shared_ptr<scene_node> skip [[gnu::unused]])
+hit_result mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
 {
     hit_result result;
     size_t triangleIndex = 0;
     triangle nearestTriangle;
 
+    // Transform the ray, effectively transforming this object
+    ray = ray.transform(ws_transformationMatrix);
+
     for(size_t it = 0; it < this->triangles.size(); ++it) {
         int intersectResult;
-        vector3f intPoint;
+        Vector3f intPoint;
         float hit;
         triangle t = this->triangles[it];
 
@@ -93,11 +102,11 @@ hit_result mesh::hit(Ray ray, shared_ptr<scene_node> skip [[gnu::unused]])
     return result;
 }
 
-int mesh::rayTriangleIntersect(Ray ray, triangle triangle, vector3f &point, float &hitDistance)
+int mesh::rayTriangleIntersect(Ray ray, triangle triangle, Vector3f &point, float &hitDistance)
 {
-    vector3f v0, v1, v2;
-    vector3f u, v, n;
-    vector3f w0, w; // a thing?
+    Vector3f v0, v1, v2;
+    Vector3f u, v, n;
+    Vector3f w0, w; // a thing?
     float a, b;
 
     // get the vertices
@@ -109,7 +118,7 @@ int mesh::rayTriangleIntersect(Ray ray, triangle triangle, vector3f &point, floa
     v = v2 - v0;
 
     n = u.cross(v);
-    if(n.getLength() == 0)
+    if(n.length() == 0)
         return DEGENERATE;
 
     w0 = ray.origin - v0;
@@ -157,7 +166,7 @@ int mesh::rayTriangleIntersect(Ray ray, triangle triangle, vector3f &point, floa
     return INTERSECT;
 }
 
-vector3f mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
+Vector3f mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
 {
     Material mat;
 
@@ -169,21 +178,31 @@ vector3f mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
     // Write a couple of static methods in the raytracer class for calculating the
     // actual shading with all the gathered information.
 
-    // Only grab diffuse color
-    vector3f diffuse = mat.getKd();
+	// Only grab diffuse color
+	Vector3f color = mat.getKd();
 
-    return diffuse;
+	// Check for shadows
+	auto& light = g_scene->lights[0];
+	Ray shadowRay(hit_info.hitPosition, light->position);
+	shadowRay = shadowRay.transform(ws_transformationMatrix);
+	hit_result shadowRes = g_scene->hit(shadowRay, shared_from_this());
+
+	// If hit, and positie (towards light).
+	if(shadowRes.is_hit() && shadowRes.depth >= 0.f)
+		color = light->ambient * mat.getKa();
+
+	return color;
 }
 
 #pragma mark - Drawing
 
 void mesh::drawSmooth() {
-    scene_node::draw();
+    SceneNode::draw();
 
     glBegin(GL_TRIANGLES);
 
     for (unsigned int i=0;i<triangles.size();++i) {
-        vector3f col = this->materials[triangleMaterials[i]].Kd;
+        Vector3f col = this->materials[triangleMaterials[i]].Kd;
 
         glColor3fv(col.pointer());
         for (int v = 0; v < 3; v++) {
@@ -200,28 +219,36 @@ void mesh::drawSmooth() {
 }
 
 void mesh::draw() {
-    scene_node::draw();
+    SceneNode::draw();
 
     glBegin(GL_TRIANGLES);
 
     for (unsigned int i = 0;i < triangles.size(); ++i) {
-        vector3f col, edge01, edge02, n;
+        Vector3f col, edge01, edge02, n;
         unsigned int triMat;
+        bool useTriNormals = false;
 
         triMat = triangleMaterials.at(i);
         col = this->materials.at(triMat).Kd;
 
         glColor3fv(col.pointer());
 
-        edge01 = vertices[triangles[i].v[1]].p - vertices[triangles[i].v[0]].p;
-        edge02 = vertices[triangles[i].v[2]].p - vertices[triangles[i].v[0]].p;
-        n = edge01.cross(edge02);
-        n.normalize ();
-        glNormal3f(n[0],
-                   n[1],
-                   n[2]);
+        if(triangles[i].has_normal()) {
+            useTriNormals = true;
+        } else {
+            edge01 = vertices[triangles[i].v[1]].p - vertices[triangles[i].v[0]].p;
+            edge02 = vertices[triangles[i].v[2]].p - vertices[triangles[i].v[0]].p;
+            n = edge01.cross(edge02);
+            n.normalize ();
+            glNormal3f(n[0],
+                       n[1],
+                       n[2]);
+        }
 
         for(int v = 0; v < 3; v++) {
+            if(useTriNormals)
+                glNormal3fv(normals[triangles[i].n[v]].pointer());
+
             glVertex3f(vertices[triangles[i].v[v]].p[0],
                        vertices[triangles[i].v[v]].p[1],
                        vertices[triangles[i].v[v]].p[2]);
@@ -239,9 +266,8 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
     map<string, unsigned int> materialIndex;
     char s[LINE_LEN];
     float x, y, z;
-    std::vector<vector3f> normals;
     std::string matname, path, realFilename, temp;
-    std::vector<int> vhandles, texhandles;
+    std::vector<int> vhandles, texhandles, nhandles;
     size_t pos;
     FILE *in;
 
@@ -339,12 +365,12 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
         // vertex
         else if (strncmp(s, "v ", 2) == 0) {
             sscanf(s, "v %f %f %f", &x, &y, &z);
-            vertices.push_back(vector3f(x, y, z));
+            vertices.push_back(Vector3f(x, y, z));
         }
         // texture coord
         else if (strncmp(s, "vt ", 3) == 0) {
             //we do nothing
-            vector3f texCoords(0, 0, 0);
+            Vector3f texCoords(0, 0, 0);
 
             //we only support 2d tex coords
             sscanf(s, "vt %f %f", &texCoords[0], &texCoords[1]);
@@ -352,7 +378,10 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
         }
         // normal
         else if (strncmp(s, "vn ", 3) == 0) {
-            //are recalculated
+            Vector3f normal(0, 0, 0);
+
+            sscanf(s, "vn %f %f %f", &normal[0], &normal[1], &normal[2]);
+            normals.push_back(normal);
         }
         // face
         else if (strncmp(s, "f ", 2) == 0) {
@@ -362,6 +391,7 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
 
             vhandles.clear();
             texhandles.clear();
+            nhandles.clear();
 
             while (*p1 == ' ') {
                 ++p1; // skip white-spaces
@@ -397,24 +427,23 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
                 // read next vertex component
                 if (*p0 != '\0') {
                     switch (component) {
-                        case 0: // vertex
-                        {
+                        case 0: { // vertex
                             int tmp = atoi(p0) - 1;
                             vhandles.push_back(tmp);
                         }
                             break;
-
-                        case 1: // texture coord
-                        {
+                        case 1: { // texture coord
                             int tmp = atoi(p0) - 1;
                             texhandles.push_back(tmp);
                         }
                             break;
-
-                        case 2: // normal
+                        case 2: { // normal
                             //assert(!vhandles.empty());
                             //assert((unsigned int)(atoi(p0)-1) < normals.size());
                             //_bi.set_normal(vhandles.back(), normals[atoi(p0)-1]);
+                            int tmp = atoi(p0) - 1;
+                            nhandles.push_back(tmp);
+                        }
                             break;
                     }
                 }
@@ -452,10 +481,19 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
                                                  vhandles[v2], texhandles[t2]));
                     triangleMaterials.push_back(m);
                 }
-            } else if (vhandles.size()==3) {
-                triangles.push_back(triangle(vhandles[0], texhandles[0],
-                                             vhandles[1], texhandles[1],
-                                             vhandles[2], texhandles[2]));
+            } else if (vhandles.size() == 3) {
+                triangle t(vhandles[0], texhandles[0],
+                           vhandles[1], texhandles[1],
+                           vhandles[2], texhandles[2]);
+
+                if(nhandles.size() == 3 && normals.size() > 0) {
+                    t.n[0] = nhandles[0];
+                    t.n[1] = nhandles[1];
+                    t.n[2] = nhandles[2];
+                }
+
+                triangles.push_back(t);
+
                 triangleMaterials.push_back((materialIndex.find(matname))->second);
             } else {
                 fprintf(stderr, "Trimesh::LOAD: Unexpected number of face vertices (<3). Ignoring face.\n");

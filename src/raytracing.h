@@ -7,7 +7,7 @@
 #include "scene.h"
 #include "ray.h"
 
-extern scene g_scene;
+extern shared_ptr<Scene> g_scene;
 
 extern unsigned int g_windowSizeX; // window resolution width
 extern unsigned int g_windowSizeY; // window resolution height
@@ -21,13 +21,13 @@ void init();
 // you can use this function to transform a click to an origin and destination
 // the last two values will be changed. There is no need to define this function.
 // it is defined elsewhere
-void produceRay(int x_I, int y_I, vector3f &origin, vector3f &dest);
+void produceRay(int x_I, int y_I, Vector3f &origin, Vector3f &dest);
 
 // your main function to rewrite
-vector3f performRayTracing(const vector3f &origin, const vector3f &dest);
+Vector3f performRayTracing(const Vector3f &origin, const Vector3f &dest);
 
 // a function to debug --- you can draw in OpenGL here
 void yourDebugDraw();
 
 // want keyboard interaction? Here it is...
-void yourKeyboardFunc(char t, int x, int y, const vector3f &rayOrigin, const vector3f &rayDestination);
+void yourKeyboardFunc(char t, int x, int y, const Vector3f &rayOrigin, const Vector3f &rayDestination);

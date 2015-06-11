@@ -17,21 +17,22 @@ class Light
 {
 public:
 
-    Light(vector3f position) : position(position) {
-        ambient = vector3f(0.5f,0.5f,0.5f);
-        diffuse = vector3f(0.5f,0.5f,0.5f);
+    Light(Vector3f position) : position(position) {
+        ambient = Vector3f(0.5f,0.5f,0.5f);
+        diffuse = Vector3f(0.5f,0.5f,0.5f);
     }
 
 #pragma mark - Properties
-    vector3f position;
+    Vector3f position;
 
-    vector3f ambient;
-    vector3f diffuse;
+    Vector3f ambient;
+    Vector3f diffuse;
 };
 
-class scene
+class Scene : public SceneNode
 {
 public:
+    Scene() : SceneNode("scene") {};
 #pragma mark - Drawing
 
     void draw(void);
@@ -39,21 +40,23 @@ public:
 #pragma mark - Raytracing
 
     void prepare();
-    hit_result hit(Ray ray, shared_ptr<scene_node> skip = nullptr);
+
+    // Unused
+    void createBoundingBox(void) {};
+    Vector3f apply(unsigned int level [[gnu::unused]], hit_result hit_info [[gnu::unused]]) {
+        return Vector3f(1,1,1);
+    };
 
 #pragma mark - Properties
 
     /// Camera location
-    vector3f camera;
+    Vector3f camera;
 
-    vector3f background_color;
+    Vector3f background_color;
 
     /// Lights within the scene
     // TODO: special light object in the graph
     vector<unique_ptr<Light>> lights;
-
-    /// Nodes within the scene
-    vector<shared_ptr<scene_node>> nodes;
 
     /// Whether to draw the bounding boxes of objects and scene.
     bool showBoundingBoxes = true;
