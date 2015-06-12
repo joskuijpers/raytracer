@@ -28,7 +28,7 @@ void Scene::draw(void) {
     drawLights();
 
     if(showBoundingBoxes)
-        boundingBox.draw();
+        ws_boundingBox.draw();
 
     // Draw all sub-objects
     for(auto &obj : children) {
@@ -68,4 +68,6 @@ void Scene::prepare() {
         // Extend our BB to cover this node
         boundingBox.extend(obj->ws_boundingBox);
     }
+
+    createWsBoundingBox();
 }

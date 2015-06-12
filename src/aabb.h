@@ -24,6 +24,11 @@ public:
     max(Vector3f(FLT_MIN,FLT_MIN,FLT_MIN)),
     color(Vector3f(.302f,.824f,.851f)){}
 
+    AABoundingBox(Vector3f min, Vector3f max)
+    : min(min), max(max), color(Vector3f(.302f,.824f,.851f)) {
+        assert(min < max);
+    }
+
 #pragma mark - Methods
 
     /// Extend the boundix boxes' minimum vector to contain given vector.

@@ -80,39 +80,34 @@ void AABoundingBox::draw() {
     glPopAttrib();
 }
 
-/// @note http://tavianator.com/cgit/dimension.git/tree/libdimension/bvh.c#n191
+/// @note http://www.cs.utah.edu/~awilliam/box/box.pdf
 bool AABoundingBox::intersection(Ray ray, float t [[gnu::unused]]) {
+    Vector3f params[2] = {min,max};
 
-    float txm = (min[0] - ray.origin[0]) * ray.direction_inv[0];
-    float txM = (max[0] - ray.origin[0]) * ray.direction_inv[0];
+    float tmin, tmax, tymin, tymax, tzmin, tzmax;
 
-    float tmin = MIN(txm, txM);
-    float tmax = MAX(txm, txM);
+    // param[0] = min, param[1] = max
 
-    float tym = (min[1] - ray.origin[1]) * ray.direction_inv[1];
-    float tyM = (max[1] - ray.origin[1]) * ray.direction_inv[1];
+    tmin = (params[ray.sign[0]][0] - ray.origin[0]) * ray.direction_inv[0];
+    tmax = (params[1-ray.sign[0]][0] - ray.origin[0]) * ray.direction_inv[0];
 
-    tmin = MAX(tmin, MIN(tym, tyM));
-    tmax = MIN(tmax, MAX(tym, tyM));
+    tymin = (params[ray.sign[1]][1] - ray.origin[1]) * ray.direction_inv[1];
+    tymax = (params[1-ray.sign[1]][1] - ray.origin[1]) * ray.direction_inv[1];
 
-    float tzm = (min[2] - ray.origin[2]) * ray.direction_inv[2];
-    float tzM = (max[2] - ray.origin[2]) * ray.direction_inv[2];
+    if((tmin > tymax) || (tymin > tmax))
+        return false;
 
-    tmin = MAX(tmin, MIN(tzm, tzM));
-    tmax = MIN(tmax, MAX(tzm, tzM));
+    tmin = MAX(tmin,tymin);
+    tmax = MIN(tmax,tymax);
 
-    // tmin: global entry point of box
-    // tmax: global exit point of box
+    tzmin = (params[ray.sign[2]][2] - ray.origin[2]) * ray.direction_inv[2];
+    tzmax = (params[1-ray.sign[2]][2] - ray.origin[2]) * ray.direction_inv[2];
 
-//    if(tmin <= tmax && tmax > 0.f) {
-//        Vector3f in, out;
-//        in = ray.origin + ray.direction * tmin;
-//        out = ray.origin + ray.direction * tmax;
-//        cout << "in " << in << " out " << out << endl;
-//    }
+    if((tmin > tzmax) || (tzmin > tmax))
+        return false;
 
-//    return tmin <= tmax && tmax > 0.f;
-    return tmax >= MAX(0.f, tmin);// && tmin < t;
+    tmin = MAX(tmin,tzmin);
+    tmax = MIN(tmax,tzmax);
 
-//    return true;
+    return tmin < FLT_MAX && tmax > 0;
 }
