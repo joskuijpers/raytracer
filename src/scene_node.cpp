@@ -60,6 +60,7 @@ void SceneNode::updateTransformationMatrix(void) {
 void SceneNode::createWsBoundingBox(void) {
     ws_boundingBox.min = ws_transformationMatrix * boundingBox.min;
     ws_boundingBox.max = ws_transformationMatrix * boundingBox.max;
+    ws_boundingBox.color = boundingBox.color;
 }
 
 #pragma mark - Raytracing
@@ -68,14 +69,9 @@ hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip) {
     hit_result result;
 
     // check against bounding box
-
-    /*if(skip == nullptr && !ws_boundingBox.intersection(ray, FLT_MAX)) {
+    if(skip == nullptr && !ws_boundingBox.intersection(ray, FLT_MAX)) {
         return result;
-    } else {
-        result.hit = true;
-        result.node = shared_from_this();
-        return result;
-    }*/
+    }
 
     // Either 0, and this method is called by child class
     // or >0 children and this is a collection.

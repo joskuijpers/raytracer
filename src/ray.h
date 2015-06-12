@@ -13,11 +13,13 @@ public:
         direction.normalize();
 
         direction_inv = Vector3f(1.f / direction[0], 1.f / direction[1], 1.f / direction[2]);
+
+        sign[0] = direction_inv[0] < 0;
+        sign[1] = direction_inv[1] < 0;
+        sign[2] = direction_inv[2] < 0;
     }
 
     inline Ray() {}
-
-public:
 
 #pragma mark - Methods
 
@@ -52,4 +54,5 @@ public:
 
     Vector3f origin, dest;
     Vector3f direction, direction_inv;
+    int sign[3];
 };
