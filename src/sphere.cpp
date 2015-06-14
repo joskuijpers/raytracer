@@ -8,7 +8,7 @@ void Sphere::draw()
     SceneNode::draw();
 
     Vector3f color = this->material.getKd();
-    glColor3f(color[0], color[1], color[2]);
+    glColor3fv(color.pointer());
 
     glutSolidSphere(this->radius, 15, 15);
 }
