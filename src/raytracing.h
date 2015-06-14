@@ -1,33 +1,63 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include "mesh.h"
 #include "color.h"
 #include "scene.h"
 #include "ray.h"
 
-extern shared_ptr<Scene> g_scene;
+/// Transform a mouse position to a source/destination pair
+extern void produceRay(int x_I, int y_I, Vector3f &origin, Vector3f &dest);
 
-extern unsigned int g_windowSizeX; // window resolution width
-extern unsigned int g_windowSizeY; // window resolution height
 
-extern unsigned int RayTracingResolutionX; // larger window
-extern unsigned int RayTracingResolutionY; // larger window
+class Raytracer;
+extern shared_ptr<Raytracer> g_raytracer;
 
-// use this function for any preprocessing of the mesh.
-void init();
+class Raytracer : public enable_shared_from_this<Raytracer>
+{
+public:
+    Raytracer() : windowSizeX(800), windowSizeY(600) {
+        scene = move(unique_ptr<Scene>(new Scene()));
+    };
 
-// you can use this function to transform a click to an origin and destination
-// the last two values will be changed. There is no need to define this function.
-// it is defined elsewhere
-void produceRay(int x_I, int y_I, Vector3f &origin, Vector3f &dest);
+#pragma mark - Events
 
-// your main function to rewrite
-Vector3f performRayTracing(const Vector3f &origin, const Vector3f &dest);
+public:
+    void init(void);
 
-// a function to debug --- you can draw in OpenGL here
-void yourDebugDraw();
+    /**
+     * OpenGL draw for debugging and quick visualizing the render.
+     */
+    void draw(void);
 
-// want keyboard interaction? Here it is...
-void yourKeyboardFunc(char t, int x, int y, const Vector3f &rayOrigin, const Vector3f &rayDestination);
+    /**
+     * Additional keyboard functionality.
+     */
+    void keyboard(char t, int x, int y, const Vector3f& rayOrigin, const Vector3f& rayDest);
+
+#pragma mark - Raytracing
+
+    /**
+     * Perform a raytrace for given ray.
+     *
+     * @return Color of the pixel by the ray.
+     */
+    Vector3f performRayTracing(const Vector3f &origin, const Vector3f &dest);
+
+#pragma mark - Properties
+
+    /// Raytracer render size and resolution
+    unsigned int windowSizeX, windowSizeY;
+    unsigned int horizontalResolution, verticalResolution;
+
+    /// The raytracer scene
+    shared_ptr<Scene> scene;
+
+    /// Test ray
+    Ray testRay;
+
+    /// Color of the test ray impact point
+    Vector3f testRayColor;
+};
