@@ -7,6 +7,13 @@ class Ray {
 public:
 #pragma mark - Constructor
     Ray(Vector3f origin, Vector3f dest) : origin(origin), dest(dest) {
+        update(origin, dest);
+    }
+
+    void update(Vector3f origin, Vector3f dest) {
+        this->origin = origin;
+        this->dest = dest;
+
         direction = dest - origin;
 
         // make unit vector

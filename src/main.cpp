@@ -16,18 +16,8 @@ void display(void);
 void reshape(int w, int h);
 void keyboard(unsigned char key, int x, int y);
 
-shared_ptr<Scene> g_scene(new Scene());
-
-// resolution
-unsigned int g_windowSizeX = 800;
-unsigned int g_windowSizeY = 800;
-
-/**
- * Main function, which is drawing an image (frame) on the screen
- */
-void drawFrame() {
-    yourDebugDraw();
-}
+/// Our raytracer
+shared_ptr<Raytracer> g_raytracer(new Raytracer());
 
 /**
  * Animation tick function.
@@ -35,7 +25,7 @@ void drawFrame() {
  * animation is called for every image on the screen once
  */
 void animate() {
-    g_scene->camera = getCameraPosition();
+    g_raytracer->scene->camera = getCameraPosition();
 
     glutPostRedisplay();
 }
@@ -52,7 +42,7 @@ int main(int argc, char *argv[])
 
     // positioning and size of window
     glutInitWindowPosition(200, 100);
-    glutInitWindowSize(g_windowSizeX, g_windowSizeY);
+    glutInitWindowSize(g_raytracer->windowSizeX, g_raytracer->windowSizeY);
     glutCreateWindow(argv[0]);
 
     // initialize viewpoint
@@ -64,7 +54,7 @@ int main(int argc, char *argv[])
     tbInitTransform();
     tbHelp();
 
-    g_scene->camera = getCameraPosition();
+    g_raytracer->scene->camera = getCameraPosition();
 
     // activate the light following the camera
     glEnable(GL_LIGHTING);
@@ -101,7 +91,7 @@ int main(int argc, char *argv[])
     glutMotionFunc(tbMotionFunc);  // uses mouse
     glutIdleFunc(animate);
 
-    init();
+    g_raytracer->init();
 
     glutMainLoop();
 
@@ -127,7 +117,7 @@ void display(void)
     // Apply trackball
     tbVisuTransform();
 
-    drawFrame();
+    g_raytracer->draw();
 
     glutSwapBuffers();
 
@@ -179,6 +169,60 @@ void produceRay(int pX, int pY, Vector3f *origin, Vector3f *dest)
     dest->set(x, y, z);
 }
 
+void createRender() {
+    unsigned int winSizeX, winSizeY;
+    winSizeX = g_raytracer->windowSizeX;
+    winSizeY = g_raytracer->windowSizeY;
+
+    // Pressing r will launch the raytracing.
+    cout << "Raytracing" << endl;
+
+    // Setup an image with the size of the current image.
+    Image result(winSizeX, winSizeY);
+
+    // produce the rays for each pixel, by first computing
+    // the rays for the corners of the frustum.
+    Vector3f origin00, dest00;
+    Vector3f origin01, dest01;
+    Vector3f origin10, dest10;
+    Vector3f origin11, dest11;
+    Vector3f origin, dest;
+
+    produceRay(0, 0, &origin00, &dest00);
+    produceRay(0, winSizeY - 1, &origin01, &dest01);
+    produceRay(winSizeX - 1, 0, &origin10, &dest10);
+    produceRay(winSizeX - 1, winSizeY - 1, &origin11, &dest11);
+
+    for (unsigned int y = 0; y < winSizeY;++y) {
+        for (unsigned int x = 0; x < winSizeX;++x) {
+            float xscale, yscale;
+            Vector3f rgb;
+
+            // produce the rays for each pixel, by interpolating
+            // the four rays of the frustum corners.
+            xscale = 1.0f - float(x) / (winSizeX - 1);
+            yscale = 1.0f - float(y) / (winSizeY - 1);
+
+            origin = yscale * (xscale * origin00 + (1 - xscale) * origin10) +
+            (1 - yscale) * (xscale * origin01 + (1 - xscale) * origin11);
+
+            dest = yscale * (xscale * dest00 + (1 - xscale) * dest10) +
+            (1 - yscale) * (xscale * dest01 + (1 - xscale) * dest11);
+
+            // launch raytracing for the given ray.
+            rgb = g_raytracer->performRayTracing(origin, dest);
+
+            // store the result in an image
+            result.setPixel(x,y, Color3(rgb));
+        }
+
+        cout << "Finished scanline " << y << endl;
+    }
+
+    cout << "Finished raytracing!" << endl;
+    result.write("result.ppm");
+}
+
 /**
  * GLUT keyboard key event handler.
  */
@@ -191,72 +235,22 @@ void keyboard(unsigned char key, int x, int y)
     {
             // add/update a light based on the camera position.
         case 'L':
-            g_scene->lights.push_back(unique_ptr<Light>(new Light(getCameraPosition())));
+            g_raytracer->scene->lights.push_back(unique_ptr<Light>(new Light(getCameraPosition())));
             break;
         case 'l':
-            g_scene->lights[g_scene->lights.size() - 1] = unique_ptr<Light>(new Light(getCameraPosition()));
+            g_raytracer->scene->lights[g_raytracer->scene->lights.size() - 1] = unique_ptr<Light>(new Light(getCameraPosition()));
             break;
         case 'r':
-        {
-            // Pressing r will launch the raytracing.
-            cout << "Raytracing" << endl;
-
-            // Setup an image with the size of the current image.
-            Image result(g_windowSizeX, g_windowSizeX);
-
-            // produce the rays for each pixel, by first computing
-            // the rays for the corners of the frustum.
-            Vector3f origin00, dest00;
-            Vector3f origin01, dest01;
-            Vector3f origin10, dest10;
-            Vector3f origin11, dest11;
-            Vector3f origin, dest;
-
-            produceRay(0, 0, &origin00, &dest00);
-            produceRay(0, g_windowSizeY - 1, &origin01, &dest01);
-            produceRay(g_windowSizeX - 1, 0, &origin10, &dest10);
-            produceRay(g_windowSizeX - 1, g_windowSizeY - 1, &origin11, &dest11);
-
-            for (unsigned int y = 0; y < g_windowSizeY;++y) {
-                for (unsigned int x = 0; x < g_windowSizeX;++x) {
-                    float xscale, yscale;
-                    Vector3f rgb;
-
-                    // produce the rays for each pixel, by interpolating
-                    // the four rays of the frustum corners.
-                    xscale = 1.0f - float(x) / (g_windowSizeX - 1);
-                    yscale = 1.0f - float(y) / (g_windowSizeY - 1);
-
-                    origin = yscale * (xscale * origin00 + (1 - xscale) * origin10) +
-                    (1 - yscale) * (xscale * origin01 + (1 - xscale) * origin11);
-
-                    dest = yscale * (xscale * dest00 + (1 - xscale) * dest10) +
-                    (1 - yscale) * (xscale * dest01 + (1 - xscale) * dest11);
-
-                    // launch raytracing for the given ray.
-                    rgb = performRayTracing(origin, dest);
-
-                    // store the result in an image
-                    result.setPixel(x,y, Color3(rgb));
-                }
-
-                cout << "Finished scanline " << y << endl;
-            }
-
-            cout << "Finished raytracing!" << endl;
-            result.write("result.ppm");
-
+            createRender();
             break;
-        }
         case 27:     // touche ESC
             exit(0);
     }
     
-    
     //produce the ray for the current mouse position
     Vector3f testRayOrigin, testRayDestination;
     produceRay(x, y, &testRayOrigin, &testRayDestination);
-    
-    yourKeyboardFunc(key, x, y, testRayOrigin, testRayDestination);
+
+    g_raytracer->keyboard(key, x, y, testRayOrigin, testRayDestination);
 }
 

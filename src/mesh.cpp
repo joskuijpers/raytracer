@@ -182,10 +182,10 @@ Vector3f mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
 	Vector3f color = mat.getKd();
 
 	// Check for shadows
-	auto& light = g_scene->lights[0];
+	auto& light = g_raytracer->scene->lights[0];
 	Ray shadowRay(hit_info.hitPosition, light->position);
 	shadowRay = shadowRay.transform(ws_transformationMatrix);
-	hit_result shadowRes = g_scene->hit(shadowRay, shared_from_this());
+	hit_result shadowRes = g_raytracer->scene->hit(shadowRay, shared_from_this());
 
 	// If hit, and positie (towards light).
 	if(shadowRes.is_hit() && shadowRes.depth >= 0.f)
