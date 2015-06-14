@@ -102,19 +102,10 @@ void Raytracer::draw(void) {
     glPopAttrib();
 }
 
-void Raytracer::keyboard(char t, int mouseX, int mouseY, const Vector3f& rayOrigin, const Vector3f& rayDest) {
-    //here, as an example, I use the ray to fill in the values for my upper global ray variable
-    //I use these variables in the debugDraw function to draw the corresponding ray.
-    //try it: Press a key, move the camera, see the ray that was launched as a line.
-    testRayOrigin = rayOrigin;
-    testRayDestination = rayDest;
+void Raytracer::keyboard(char t, int mouseX [[gnu::unused]], int mouseY [[gnu::unused]], const Vector3f& rayOrigin, const Vector3f& rayDest) {
+    testRay.update(rayOrigin, rayDest);
 
-    // do here, whatever you want with the keyboard input t.
-
-    //...
-
-
-    std::cout << t << " pressed! The mouse was in location " << mouseX << ", " << mouseY << "!" << std::endl;
+//    std::cout << t << " pressed! The mouse was in location " << mouseX << ", " << mouseY << "!" << std::endl;
 }
 
 #pragma mark - Raytracing
