@@ -4,7 +4,12 @@ compiler:
   - clang
   - gcc
 
-script: mkdir build && cd build && cmake ..
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - cd ..
+  - make
 
 branches:
   - develop
