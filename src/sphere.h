@@ -18,7 +18,6 @@ public:
 
     void createBoundingBox();
     hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
-    Vector3f apply(unsigned int level, hit_result hit_info);
 
 #pragma mark - Properties
     float radius;

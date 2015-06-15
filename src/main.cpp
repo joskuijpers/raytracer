@@ -216,7 +216,7 @@ void createRender() {
             result.setPixel(x,y, Color3(rgb));
         }
 
-        cout << "Finished scanline " << y << endl;
+//        cout << "Finished scanline " << y << endl;
     }
 
     cout << "Finished raytracing!" << endl;

@@ -18,7 +18,7 @@ const unsigned int LINE_LEN = 256;
 
 #pragma mark - Normal calculations
 
-void mesh::computeVertexNormals() {
+void Mesh::computeVertexNormals() {
     for (unsigned int i = 0; i < vertices.size (); ++i) {
         vertices[i].n = Vector3f (0.0, 0.0, 0.0);
     }
@@ -42,7 +42,7 @@ void mesh::computeVertexNormals() {
 
 #pragma mark - Ray tracing
 
-void mesh::createBoundingBox() {
+void Mesh::createBoundingBox() {
     for(vertex vert : vertices) {
         boundingBox.extend(vert.p);
     }
@@ -56,11 +56,24 @@ enum intersection_result : int {
     OUTSIDE = 3
 };
 
-hit_result mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
+Vector3f Mesh::normalOfFace(Triangle triangle, float s, float t) {
+    Vector3f n0 = vertices[triangle.v[0]].n;
+    Vector3f n1 = vertices[triangle.v[1]].n;
+    Vector3f n2 = vertices[triangle.v[2]].n;
+
+    Vector3f n;
+
+    n = (1.f - (s + t)) * n0 + n1 * s + n2 * t;
+
+    return n;
+}
+
+hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
 {
     hit_result result;
     size_t triangleIndex = 0;
-    triangle nearestTriangle;
+    Triangle nearestTriangle;
+    float nearestHitS, nearestHitT;
 
     // Transform the ray, effectively transforming this object
     ray = ray.transform(ws_transformationMatrix);
@@ -68,10 +81,10 @@ hit_result mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     for(size_t it = 0; it < this->triangles.size(); ++it) {
         int intersectResult;
         Vector3f intPoint;
-        float hit;
-        triangle t = this->triangles[it];
+        float hit, hitS, hitT;
+        Triangle t = this->triangles[it];
 
-        intersectResult = rayTriangleIntersect(ray, t, intPoint, hit);
+        intersectResult = rayTriangleIntersect(ray, t, intPoint, hit, hitS, hitT);
 
         if (likely(intersectResult != INTERSECT))
             continue;
@@ -83,6 +96,8 @@ hit_result mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
         result.depth = hit;
         nearestTriangle = t;
         triangleIndex = it;
+        nearestHitS = hitS;
+        nearestHitT = hitT;
     }
 
     // If no hit, return unhit result
@@ -91,18 +106,21 @@ hit_result mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
 
     // Otherwise, mark as hit and add apply info.
     result.hit = true;
-    result.sInfo = triangleIndex;
     result.node = shared_from_this();
 
+    // Position the ray hit
     result.hitPosition = ray.origin + result.depth * ray.direction;
 
     // Interpolate normal with the 3 vertex normals
-//    result.normal = nearestTriangle.;
+    result.normal = normalOfFace(nearestTriangle, nearestHitS, nearestHitT);
+
+    // Material of the triangle
+    result.material = materials[triangleMaterials[triangleIndex]];
 
     return result;
 }
 
-int mesh::rayTriangleIntersect(Ray ray, triangle triangle, Vector3f &point, float &hitDistance)
+int Mesh::rayTriangleIntersect(Ray ray, Triangle triangle, Vector3f &point, float &hitDistance, float &s, float &t)
 {
     Vector3f v0, v1, v2;
     Vector3f u, v, n;
@@ -153,8 +171,6 @@ int mesh::rayTriangleIntersect(Ray ray, triangle triangle, Vector3f &point, floa
     wv = w.dot(v);
     denominator = uv * uv - uu * vv;
 
-    float s, t;
-
     s = (uv * wv - vv * wu) / denominator;
     if (s < 0.0 || s > 1.0)
         return OUTSIDE;
@@ -166,43 +182,15 @@ int mesh::rayTriangleIntersect(Ray ray, triangle triangle, Vector3f &point, floa
     return INTERSECT;
 }
 
-Vector3f mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
-{
-    Material mat;
-
-    mat = materials[triangleMaterials[hit_info.sInfo]];
-
-    // TODO: use info of triangle and material to shoot rays for refrection and reflection
-    // Then apply the hit info for those rays, and
-    // use them and other stuff to calculate the color.
-    // Write a couple of static methods in the raytracer class for calculating the
-    // actual shading with all the gathered information.
-
-	// Only grab diffuse color
-	Vector3f color = mat.getKd();
-
-	// Check for shadows
-	auto& light = g_raytracer->scene->lights[0];
-	Ray shadowRay(hit_info.hitPosition, light->position);
-	shadowRay = shadowRay.transform(ws_transformationMatrix);
-	hit_result shadowRes = g_raytracer->scene->hit(shadowRay, shared_from_this());
-
-	// If hit, and positie (towards light).
-	if(shadowRes.is_hit() && shadowRes.depth >= 0.f)
-		color = light->ambient * mat.getKa();
-
-	return color;
-}
-
 #pragma mark - Drawing
 
-void mesh::drawSmooth() {
+void Mesh::draw() {
     SceneNode::draw();
 
     glBegin(GL_TRIANGLES);
 
     for (unsigned int i=0;i<triangles.size();++i) {
-        Vector3f col = this->materials[triangleMaterials[i]].Kd;
+        Vector3f col = this->materials[triangleMaterials[i]].getKd();
 
         glColor3fv(col.pointer());
         for (int v = 0; v < 3; v++) {
@@ -218,7 +206,7 @@ void mesh::drawSmooth() {
     glEnd();
 }
 
-void mesh::draw() {
+void Mesh::drawNotSmooth() {
     SceneNode::draw();
 
     glBegin(GL_TRIANGLES);
@@ -226,29 +214,21 @@ void mesh::draw() {
     for (unsigned int i = 0;i < triangles.size(); ++i) {
         Vector3f col, edge01, edge02, n;
         unsigned int triMat;
-        bool useTriNormals = false;
 
         triMat = triangleMaterials.at(i);
-        col = this->materials.at(triMat).Kd;
+        col = this->materials.at(triMat).getKd();
 
         glColor3fv(col.pointer());
 
-        if(triangles[i].has_normal()) {
-            useTriNormals = true;
-        } else {
-            edge01 = vertices[triangles[i].v[1]].p - vertices[triangles[i].v[0]].p;
-            edge02 = vertices[triangles[i].v[2]].p - vertices[triangles[i].v[0]].p;
-            n = edge01.cross(edge02);
-            n.normalize ();
-            glNormal3f(n[0],
-                       n[1],
-                       n[2]);
-        }
+        edge01 = vertices[triangles[i].v[1]].p - vertices[triangles[i].v[0]].p;
+        edge02 = vertices[triangles[i].v[2]].p - vertices[triangles[i].v[0]].p;
+        n = edge01.cross(edge02);
+        n.normalize ();
+        glNormal3f(n[0],
+                   n[1],
+                   n[2]);
 
         for(int v = 0; v < 3; v++) {
-            if(useTriNormals)
-                glNormal3fv(normals[triangles[i].n[v]].pointer());
-
             glVertex3f(vertices[triangles[i].v[v]].p[0],
                        vertices[triangles[i].v[v]].p[1],
                        vertices[triangles[i].v[v]].p[2]);
@@ -261,7 +241,7 @@ void mesh::draw() {
 
 #pragma mark - Loading
 
-bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
+bool Mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
     Material defaultMat;
     map<string, unsigned int> materialIndex;
     char s[LINE_LEN];
@@ -476,21 +456,21 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
 
                     const int m  = (materialIndex.find(matname))->second;
 
-                    triangles.push_back(triangle(vhandles[v0], texhandles[t0],
+                    triangles.push_back(Triangle(vhandles[v0], texhandles[t0],
                                                  vhandles[v1], texhandles[t1],
                                                  vhandles[v2], texhandles[t2]));
                     triangleMaterials.push_back(m);
                 }
             } else if (vhandles.size() == 3) {
-                triangle t(vhandles[0], texhandles[0],
+                Triangle t(vhandles[0], texhandles[0],
                            vhandles[1], texhandles[1],
                            vhandles[2], texhandles[2]);
 
-                if(nhandles.size() == 3 && normals.size() > 0) {
+                /*if(nhandles.size() == 3 && normals.size() > 0) {
                     t.n[0] = nhandles[0];
                     t.n[1] = nhandles[1];
                     t.n[2] = nhandles[2];
-                }
+                }*/
 
                 triangles.push_back(t);
 
@@ -506,7 +486,7 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
     return true;
 }
 
-bool mesh::loadMaterial(const char *filename, std::map<string, unsigned int> &materialIndex)
+bool Mesh::loadMaterial(const char *filename, std::map<string, unsigned int> &materialIndex)
 {
     FILE *in;
 

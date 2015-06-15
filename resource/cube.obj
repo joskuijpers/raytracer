@@ -27,7 +27,7 @@ usemtl buffy-gray
 f  1/4/2  7/1/2  5/2/2
 f  1/4/2  3/3/2  7/1/2 
 g left face
-usemtl buffy-blue
+usemtl buffy-gray
 f  1/2/6  4/3/6  3/1/6 
 f  1/2/6  2/4/6  4/3/6 
 g top face
@@ -43,6 +43,6 @@ usemtl buffy-red
 f  1/2/4  5/4/4  6/3/4 
 f  1/2/4  6/3/4  2/1/4 
 g front face
-usemtl buffy-gray
+usemtl buffy-blue
 f  2/2/1  6/4/1  8/3/1 
 f  2/2/1  8/3/1  4/1/1 

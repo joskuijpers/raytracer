@@ -51,26 +51,8 @@ hit_result Sphere::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     result.normal = result.hitPosition - translation;
     result.normal.normalize();
 
+    // Always the same material
+    result.material = material;
+
     return result;
-}
-
-Vector3f Sphere::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
-{
-    Vector3f color;
-    auto& light = g_raytracer->scene->lights[0];
-
-
-    Vector3f ls = light->position - hit_info.hitPosition;
-    Vector3f l = ls / ls.length();
-
-    color = light->ambient * material.getKa() + l.dot(hit_info.normal) * light->diffuse * material.getKd();
-
-    // Check for shadows
-    Ray shadowRay(hit_info.hitPosition, light->position);
-    hit_result shadowRes = g_raytracer->scene->hit(shadowRay, shared_from_this());
-
-    if(shadowRes.is_hit())
-        color = light->ambient * material.getKa();
-
-    return color;
 }

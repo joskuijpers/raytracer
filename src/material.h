@@ -149,12 +149,12 @@ private:
     int Il;
     bool Il_is_set;
     
-    // transperency
+    // transperency (alpha)
     float Tr;
     bool Tr_is_set;
     
     std::string name;
     std::string textureName;
     
-    friend class mesh;
+    friend class Mesh;
 };

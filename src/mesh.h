@@ -16,17 +16,16 @@ using namespace std;
  * A triangle contains 3 indices to refer to vertex positions
  * and 3 indices to refer to texture coordinates (optional)
  */
-class triangle {
+class Triangle {
 public:
 
 #pragma mark - Constructors
 
-    inline triangle() {
+    inline Triangle() {
         v[0] = v[1] = v[2] = 0;
-        n[0] = n[1] = n[2] = 0;
     }
 
-    inline triangle (const triangle & t2) {
+    inline Triangle(const Triangle& t2) {
         v[0] = t2.v[0];
         v[1] = t2.v[1];
         v[2] = t2.v[2];
@@ -34,13 +33,9 @@ public:
         t[0] = t2.t[0];
         t[1] = t2.t[1];
         t[2] = t2.t[2];
-
-        n[0] = t2.n[0];
-        n[1] = t2.n[1];
-        n[2] = t2.n[2];
     }
 
-    inline triangle (unsigned int v0, unsigned int t0, unsigned int v1, unsigned int t1, unsigned int v2, unsigned int t2) {
+    inline Triangle(unsigned int v0, unsigned int t0, unsigned int v1, unsigned int t1, unsigned int v2, unsigned int t2) {
         v[0] = v0;
         v[1] = v1;
         v[2] = v2;
@@ -48,21 +43,13 @@ public:
         t[0] = t0;
         t[1] = t1;
         t[2] = t2;
-
-        n[0] = 0;
-        n[1] = 0;
-        n[2] = 0;
     }
 
-    inline virtual ~triangle () {}
-
-    inline bool has_normal(void) {
-        return !(n[0] == 0 && n[1] == 0 && n[2] == 0);
-    }
+    inline virtual ~Triangle () {}
 
 #pragma mark - Operators
 
-    inline triangle& operator= (const triangle &other) {
+    inline Triangle& operator= (const Triangle& other) {
         v[0] = other.v[0];
         v[1] = other.v[1];
         v[2] = other.v[2];
@@ -71,23 +58,16 @@ public:
         t[1] = other.t[1];
         t[2] = other.t[2];
 
-        n[0] = other.n[0];
-        n[1] = other.n[1];
-        n[2] = other.n[2];
-
         return (*this);
     }
 
 #pragma mark - Instance variables
 
-    // vertex position
+    // vertex position and normals
     unsigned int v[3];
 
     // texture coordinate
     unsigned int t[3];
-
-    // normal
-    unsigned int n[3];
 };
 
 /**
@@ -97,12 +77,12 @@ public:
  *
  * @warning Can't be used on stack!
  */
-class mesh : public SceneNode
+class Mesh : public SceneNode
 {
 public:
-    mesh(const char *name) : SceneNode(name) {}
+    Mesh(const char *name) : SceneNode(name) {}
 
-    inline mesh(const std::vector<vertex> &v, const std::vector<triangle> &t)
+    inline Mesh(const std::vector<vertex> &v, const std::vector<Triangle> &t)
     : SceneNode("mesh"), vertices (v), triangles (t) {}
 
 #pragma mark - Loading
@@ -114,17 +94,16 @@ public:
 #pragma mark - Drawing
 
     void draw(void);
-    void drawSmooth(void);
+    void drawNotSmooth(void);
 
 #pragma mark - Raytracing
 
     void createBoundingBox();
     hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
-    Vector3f apply(unsigned int level, hit_result hit_info);
 
 private:
-    int rayTriangleIntersect(Ray ray, triangle triangle, Vector3f &point, float &hitDistance);
-
+    int rayTriangleIntersect(Ray ray, Triangle triangle, Vector3f &point, float &hitDistance, float &s, float &t);
+    Vector3f normalOfFace(Triangle triangle, float s, float t);
 public:
 
 #pragma mark - Properties
@@ -139,7 +118,7 @@ public:
 
     // triangles are the indices of the vertices involved in a triangle.
     // A triangle, thus, contains a triplet of values corresponding to the 3 vertices of a triangle.
-    std::vector<triangle> triangles;
+    std::vector<Triangle> triangles;
 
     std::vector<Vector3f> normals;
 

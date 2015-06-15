@@ -13,12 +13,14 @@
 
 using namespace std;
 
+#define TESTSET 2
+
 void Raytracer::init(void) {
     scene->background_color = Vector3f(.6f,.2f,.1f);
 
-
-    unique_ptr<mesh> cube(new mesh("cube"));
-    unique_ptr<mesh> cube2(new mesh("cube2"));
+#if TESTSET == 1
+    unique_ptr<Mesh> cube(new Mesh("cube"));
+    unique_ptr<Mesh> cube2(new Mesh("cube2"));
     unique_ptr<Sphere> sphere(new Sphere("sphere"));
     unique_ptr<Sphere> sphere2(new Sphere("sphere2"));
 
@@ -31,6 +33,7 @@ void Raytracer::init(void) {
     cube2->translation = Vector3f(-2,0,0);
     cube2->scale = Vector3f(.8f,.8f,.8f);
     cube2->parent = scene;
+    cube2->rotation = Vector3f(0,1,0);
 
     sphere->translation = Vector3f(0, .5f, -1.f);
     sphere->radius = .5f;
@@ -42,7 +45,7 @@ void Raytracer::init(void) {
 
     Material mat;
     mat.setKd(.9f, .9f, .9f);
-    mat.setKa(.1f, .1f, .1f);
+    mat.setKa(.2f, .2f, .2f);
 
     sphere->material = mat;
     sphere2->material = mat;
@@ -51,20 +54,27 @@ void Raytracer::init(void) {
     scene->children.push_back(move(cube2));
     scene->children.push_back(move(sphere));
     scene->children.push_back(move(sphere2));
-
-
-    //    unique_ptr<mesh> car(new mesh("car"));
-    //    car->loadMesh("resource/dodgeColorTest.obj", true);
-    //    car->computeVertexNormals();
-    //    car->parent = g_scene;
-    //    g_scene->children.push_back(move(car));
-
-    //    unique_ptr<mesh> strawberry(new mesh("strawberry"));
-    //    strawberry->loadMesh("resource/strawberry.obj", true);
-    //    g_scene->nodes.push_back(move(strawberry));
+#elif TESTSET == 2
+    unique_ptr<Mesh> car(new Mesh("car"));
+    car->loadMesh("resource/dodgeColorTest.obj", true);
+    car->computeVertexNormals();
+    car->parent = scene;
+    scene->children.push_back(move(car));
+#elif TESTSET == 3
+    unique_ptr<Mesh> strawberry(new Mesh("strawberry"));
+    strawberry->loadMesh("resource/strawberry.obj", true);
+    strawberry->parent = scene;
+    scene->nodes.push_back(move(strawberry));
+#elif TESTSET == 4
+    unique_ptr<Mesh> teapot(new Mesh("teapot"));
+    teapot->loadMesh("resource/teapot.obj", true);
+    teapot->computeVertexNormals();
+    teapot->parent = scene;
+    scene->children.push_back(move(teapot));
+#endif
 
     // Create a single lighblendert
-    scene->lights.push_back(unique_ptr<Light>(new Light(scene->camera)));
+    scene->lights.push_back(unique_ptr<Light>(new Light(scene->camera + Vector3f(0,1,0))));
 
     // Prepare the scene for raytracing: create bounding boxes,
     // and possibly transformation matrices
@@ -102,7 +112,7 @@ void Raytracer::draw(void) {
     glPopAttrib();
 }
 
-void Raytracer::keyboard(char t, int mouseX [[gnu::unused]], int mouseY [[gnu::unused]], const Vector3f& rayOrigin, const Vector3f& rayDest) {
+void Raytracer::keyboard(char t [[gnu::unused]], int mouseX [[gnu::unused]], int mouseY [[gnu::unused]], const Vector3f& rayOrigin, const Vector3f& rayDest) {
     testRay.update(rayOrigin, rayDest);
 
 //    std::cout << t << " pressed! The mouse was in location " << mouseX << ", " << mouseY << "!" << std::endl;
@@ -132,14 +142,7 @@ Vector3f Raytracer::performRayTracing(const Vector3f &origin, const Vector3f &de
             return g_raytracer->scene->background_color;
     }
 
-    // If hit, apply the ray:
-    // shading
-    // reflection
-    // reflection
-
     // Apply the hit, this is recursive.
-    assert(result.node != nullptr && "A positive hit result must have node info");
-
     col = result.node->apply(1, result);
     
     return col;

@@ -1,6 +1,7 @@
 #include "scene_node.h"
 #include "platform.h"
 #include "matrix4.h"
+#include "raytracing.h"
 
 /**
  * Basic code used for the drawing of every object:
@@ -94,4 +95,32 @@ hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip) {
     }
     
     return result;
+}
+
+Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
+{
+    Vector3f color;
+    auto& light = g_raytracer->scene->lights[0];
+    Material mat = hit_info.material;
+
+    // Get the direction to the light source
+    // TODO; support multiple light sources
+    Vector3f ls = light->position - hit_info.hitPosition;
+    ls.normalize();
+
+    // Calculate the color
+    color = light->ambient * mat.getKa() + ls.dot(hit_info.normal) * light->diffuse * mat.getKd();
+
+    // Check for shadows
+    Ray shadowRay(hit_info.node->ws_transformationMatrix * hit_info.hitPosition, light->position);
+
+    // Offset shadow ray to prevent hit the same hitpoint again
+    shadowRay.origin += 0.00001f * shadowRay.direction;
+
+    // If hitpoint cant be reached by the light source, only use the ambient parameter
+    hit_result shadowRes = g_raytracer->scene->hit(shadowRay);
+	if(shadowRes.is_hit() && shadowRes.depth >= 0.f)
+        color = light->ambient * mat.getKa();
+    
+    return color;
 }
