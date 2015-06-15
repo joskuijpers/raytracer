@@ -4,6 +4,10 @@
 #include <cmath>
 #include <cassert>
 
+#ifdef USEOMP
+# include <libiomp/omp.h>
+#endif
+
 #include "raytracing.h"
 #include "mesh.h"
 #include "trackball.h"
@@ -193,6 +197,7 @@ void createRender() {
     produceRay(winSizeX - 1, 0, &origin10, &dest10);
     produceRay(winSizeX - 1, winSizeY - 1, &origin11, &dest11);
 
+#pragma omp parallel for
     for (unsigned int y = 0; y < winSizeY;++y) {
         for (unsigned int x = 0; x < winSizeX;++x) {
             float xscale, yscale;
@@ -215,8 +220,6 @@ void createRender() {
             // store the result in an image
             result.setPixel(x,y, Color3(rgb));
         }
-
-//        cout << "Finished scanline " << y << endl;
     }
 
     cout << "Finished raytracing!" << endl;

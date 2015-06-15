@@ -18,10 +18,31 @@
 		800460AD1B2762D1001CFCF0 /* scene_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460AC1B2762D1001CFCF0 /* scene_node.cpp */; };
 		800460B31B279F2B001CFCF0 /* group.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460B11B279F2B001CFCF0 /* group.cpp */; };
 		800460B61B28553E001CFCF0 /* aabb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460B41B28553E001CFCF0 /* aabb.cpp */; };
+		A66B134E1B2F0A600014222F /* scene_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460AC1B2762D1001CFCF0 /* scene_node.cpp */; };
+		A66B134F1B2F0A600014222F /* sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460A51B25E84F001CFCF0 /* sphere.cpp */; };
+		A66B13501B2F0A600014222F /* aabb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460B41B28553E001CFCF0 /* aabb.cpp */; };
+		A66B13511B2F0A600014222F /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8004609C1B25DA0C001CFCF0 /* scene.cpp */; };
+		A66B13521B2F0A600014222F /* image_writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460991B25CF3F001CFCF0 /* image_writer.cpp */; };
+		A66B13531B2F0A600014222F /* raytracing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460891B24934A001CFCF0 /* raytracing.cpp */; };
+		A66B13541B2F0A600014222F /* mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460871B24934A001CFCF0 /* mesh.cpp */; };
+		A66B13551B2F0A600014222F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460851B24934A001CFCF0 /* main.cpp */; };
+		A66B13561B2F0A600014222F /* group.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460B11B279F2B001CFCF0 /* group.cpp */; };
+		A66B13581B2F0A600014222F /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800460951B2495A6001CFCF0 /* GLUT.framework */; };
+		A66B13591B2F0A600014222F /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800460931B2495A2001CFCF0 /* OpenGL.framework */; };
+		A66B13601B2F11AB0014222F /* libiomp5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A66B135F1B2F11AB0014222F /* libiomp5.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		8004606F1B2490FF001CFCF0 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		A66B135A1B2F0A600014222F /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -68,6 +89,8 @@
 		800460B51B28553E001CFCF0 /* aabb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aabb.h; sourceTree = "<group>"; };
 		800460B71B286716001CFCF0 /* matrix4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = matrix4.h; sourceTree = "<group>"; };
 		800460B81B28671F001CFCF0 /* vector4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vector4.h; sourceTree = "<group>"; };
+		A66B135E1B2F0A600014222F /* RayTracer OpenMP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "RayTracer OpenMP"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A66B135F1B2F11AB0014222F /* libiomp5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiomp5.dylib; path = ../../../../../../../usr/local/Cellar/libiomp/20150401/lib/libiomp5.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +100,16 @@
 			files = (
 				800460961B2495A6001CFCF0 /* GLUT.framework in Frameworks */,
 				800460941B2495A2001CFCF0 /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A66B13571B2F0A600014222F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A66B13601B2F11AB0014222F /* libiomp5.dylib in Frameworks */,
+				A66B13581B2F0A600014222F /* GLUT.framework in Frameworks */,
+				A66B13591B2F0A600014222F /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				800460711B2490FF001CFCF0 /* RayTracer */,
+				A66B135E1B2F0A600014222F /* RayTracer OpenMP */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -139,6 +173,7 @@
 		800460971B2495AD001CFCF0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A66B135F1B2F11AB0014222F /* libiomp5.dylib */,
 				800460951B2495A6001CFCF0 /* GLUT.framework */,
 				800460931B2495A2001CFCF0 /* OpenGL.framework */,
 			);
@@ -232,6 +267,23 @@
 			productReference = 800460711B2490FF001CFCF0 /* RayTracer */;
 			productType = "com.apple.product-type.tool";
 		};
+		A66B134C1B2F0A600014222F /* RayTracer OpenMP */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A66B135B1B2F0A600014222F /* Build configuration list for PBXNativeTarget "RayTracer OpenMP" */;
+			buildPhases = (
+				A66B134D1B2F0A600014222F /* Sources */,
+				A66B13571B2F0A600014222F /* Frameworks */,
+				A66B135A1B2F0A600014222F /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "RayTracer OpenMP";
+			productName = RayTracer;
+			productReference = A66B135E1B2F0A600014222F /* RayTracer OpenMP */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -259,6 +311,7 @@
 			projectRoot = "";
 			targets = (
 				800460701B2490FF001CFCF0 /* RayTracer */,
+				A66B134C1B2F0A600014222F /* RayTracer OpenMP */,
 			);
 		};
 /* End PBXProject section */
@@ -277,6 +330,22 @@
 				8004608F1B24934A001CFCF0 /* mesh.cpp in Sources */,
 				8004608E1B24934A001CFCF0 /* main.cpp in Sources */,
 				800460B31B279F2B001CFCF0 /* group.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A66B134D1B2F0A600014222F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A66B134E1B2F0A600014222F /* scene_node.cpp in Sources */,
+				A66B134F1B2F0A600014222F /* sphere.cpp in Sources */,
+				A66B13501B2F0A600014222F /* aabb.cpp in Sources */,
+				A66B13511B2F0A600014222F /* scene.cpp in Sources */,
+				A66B13521B2F0A600014222F /* image_writer.cpp in Sources */,
+				A66B13531B2F0A600014222F /* raytracing.cpp in Sources */,
+				A66B13541B2F0A600014222F /* mesh.cpp in Sources */,
+				A66B13551B2F0A600014222F /* main.cpp in Sources */,
+				A66B13561B2F0A600014222F /* group.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -379,6 +448,51 @@
 			};
 			name = Release;
 		};
+		A66B135C1B2F0A600014222F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CC = "/usr/local/bin/clang-omp";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_MODULES = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_VERSION = "";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/libiomp/20150401/lib,
+				);
+				OTHER_CFLAGS = "-fopenmp";
+				PRODUCT_NAME = "RayTracer OpenMP";
+				USEOMP = "";
+			};
+			name = Debug;
+		};
+		A66B135D1B2F0A600014222F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CC = "/usr/local/bin/clang-omp";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_MODULES = NO;
+				GCC_VERSION = "";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/libiomp/20150401/lib,
+				);
+				OTHER_CFLAGS = "-fopenmp";
+				PRODUCT_NAME = "RayTracer OpenMP";
+				USEOMP = "";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -396,6 +510,15 @@
 			buildConfigurations = (
 				800460791B2490FF001CFCF0 /* Debug */,
 				8004607A1B2490FF001CFCF0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A66B135B1B2F0A600014222F /* Build configuration list for PBXNativeTarget "RayTracer OpenMP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A66B135C1B2F0A600014222F /* Debug */,
+				A66B135D1B2F0A600014222F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
