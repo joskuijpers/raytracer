@@ -110,9 +110,12 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
     color = light->ambient * mat.getKa() + l.dot(hit_info.normal) * light->diffuse * mat.getKd();
 
     // Check for shadows
-    // TODO: for every light
     Ray shadowRay(hit_info.node->ws_transformationMatrix * hit_info.hitPosition, light->position);
-    hit_result shadowRes = g_raytracer->scene->hit(shadowRay, shared_from_this());
+
+    // Offset shadow ray to prevent hit the same hitpoint again
+    shadowRay.origin += 0.00001f * shadowRay.direction;
+
+    hit_result shadowRes = g_raytracer->scene->hit(shadowRay);
 
 	if(shadowRes.is_hit() && shadowRes.depth >= 0.f)
         color = light->ambient * mat.getKa();
