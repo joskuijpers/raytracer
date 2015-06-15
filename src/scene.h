@@ -5,24 +5,9 @@
 
 #include "vector3.h"
 #include "scene_node.h"
+#include "light.h"
 
-class Light
-{
-public:
-
-    Light(Vector3f position) : position(position) {
-        ambient = Vector3f(.1f,.1f,.1f);
-        diffuse = Vector3f(.8f,.8f,.8f);
-        specular = Vector3f(0.8f,0.8f,0.8f);
-    }
-
-#pragma mark - Properties
-    Vector3f position;
-
-    Vector3f ambient;
-    Vector3f diffuse;
-    Vector3f specular;
-};
+using namespace std;
 
 class Scene : public SceneNode
 {
@@ -52,11 +37,17 @@ public:
     /// Lights within the scene
     // TODO: special light object in the graph
     vector<shared_ptr<Light>> lights;
+    int selectedLightIndex = 0;
 
     /// Whether to draw the bounding boxes of objects and scene.
     bool showBoundingBoxes = true;
     bool showNormals = false;
 
+#pragma mark - Methods
+    void selectNextLight();
+    Light* getSelectedLight();
+
 private:
     void drawLights(void);
+
 };

@@ -12,8 +12,6 @@
 #include "aabb.h"
 #include "material.h"
 
-using namespace std;
-
 class SceneNode;
 
 /**

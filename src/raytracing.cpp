@@ -116,6 +116,7 @@ void Raytracer::init(void) {
     // Create a single lighblendert
     scene->lights.push_back(unique_ptr<Light>(new Light(scene->camera + Vector3f(0,5,0))));
     scene->lights.push_back(unique_ptr<Light>(new Light(Vector3f(4,5,0))));
+    scene->lights[0]->selected = true;
 
     // Prepare the scene for raytracing: create bounding boxes,
     // and possibly transformation matrices
