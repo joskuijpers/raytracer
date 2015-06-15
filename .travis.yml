@@ -5,11 +5,7 @@ compiler:
   - gcc
 
 script:
-  - mkdir build
-  - cd build
-  - cmake ..
-  - cd ..
-  - make
+  - xocdebuild
 
 branches:
   only:
@@ -18,4 +14,3 @@ branches:
 
 os:
   - osx
-  - linux
