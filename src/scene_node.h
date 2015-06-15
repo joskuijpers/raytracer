@@ -53,6 +53,9 @@ public:
 
     /// Material at hit location.
     Material material;
+
+    /// Viewer position (ray origin, ws)
+    Vector3f viewer;
 };
 
 /**

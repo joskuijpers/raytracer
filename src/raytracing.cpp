@@ -13,7 +13,7 @@
 
 using namespace std;
 
-#define TESTSET 2
+#define TESTSET 4
 
 void Raytracer::init(void) {
     scene->background_color = Vector3f(.6f,.2f,.1f);
@@ -63,8 +63,9 @@ void Raytracer::init(void) {
 #elif TESTSET == 3
     unique_ptr<Mesh> strawberry(new Mesh("strawberry"));
     strawberry->loadMesh("resource/strawberry.obj", true);
+    strawberry->computeVertexNormals();
     strawberry->parent = scene;
-    scene->nodes.push_back(move(strawberry));
+    scene->children.push_back(move(strawberry));
 #elif TESTSET == 4
     unique_ptr<Mesh> teapot(new Mesh("teapot"));
     teapot->loadMesh("resource/teapot.obj", true);
@@ -74,7 +75,8 @@ void Raytracer::init(void) {
 #endif
 
     // Create a single lighblendert
-    scene->lights.push_back(unique_ptr<Light>(new Light(scene->camera + Vector3f(0,1,0))));
+    scene->lights.push_back(unique_ptr<Light>(new Light(scene->camera + Vector3f(0,5,0))));
+    scene->lights.push_back(unique_ptr<Light>(new Light(Vector3f(4,5,0))));
 
     // Prepare the scene for raytracing: create bounding boxes,
     // and possibly transformation matrices

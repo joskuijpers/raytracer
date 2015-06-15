@@ -73,7 +73,10 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     hit_result result;
     size_t triangleIndex = 0;
     Triangle nearestTriangle;
-    float nearestHitS, nearestHitT;
+    float nearestHitS = 0.f, nearestHitT = 0.f;
+
+    // Store the viewer position for specular shading
+    result.viewer = ray.origin;
 
     // Transform the ray, effectively transforming this object
     ray = ray.transform(ws_transformationMatrix);

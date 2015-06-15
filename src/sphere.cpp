@@ -34,6 +34,7 @@ hit_result Sphere::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     // We have a hit
     result.hit = true;
     result.node = shared_from_this();
+    result.viewer = ray.origin;
 
     // Calculate closest distance
     result.depth = (-b + sqrtf(discriminant)) / 2 * a;

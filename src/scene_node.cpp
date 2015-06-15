@@ -99,28 +99,55 @@ hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip) {
 
 Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
 {
-    Vector3f color;
-    auto& light = g_raytracer->scene->lights[0];
+    Vector3f color, ws_hitPosition;
     Material mat = hit_info.material;
 
-    // Get the direction to the light source
-    // TODO; support multiple light sources
-    Vector3f ls = light->position - hit_info.hitPosition;
-    ls.normalize();
+    ws_hitPosition = hit_info.node->ws_transformationMatrix * hit_info.hitPosition;
 
-    // Calculate the color
-    color = light->ambient * mat.getKa() + ls.dot(hit_info.normal) * light->diffuse * mat.getKd();
+    // Make this average of all light sources the ambient light
+    Vector3f Ia = Vector3f(0,0,0);
+    for(auto& light : g_raytracer->scene->lights) {
+        Ia += light->ambient;
+    }
+    Ia /= g_raytracer->scene->lights.size();
 
-    // Check for shadows
-    Ray shadowRay(hit_info.node->ws_transformationMatrix * hit_info.hitPosition, light->position);
+    // Calculate the color using Phong shading
+    color = Ia * mat.getKa();
 
-    // Offset shadow ray to prevent hit the same hitpoint again
-    shadowRay.origin += 0.00001f * shadowRay.direction;
+    // Calculate contribution of every light
+    /// @note https://en.wikipedia.org/wiki/Phong_reflection_model#Description
+    for(auto& light : g_raytracer->scene->lights) {
+        hit_result shadowRes;
+        Vector3f Lm, Rm, V;
 
-    // If hitpoint cant be reached by the light source, only use the ambient parameter
-    hit_result shadowRes = g_raytracer->scene->hit(shadowRay);
-	if(shadowRes.is_hit() && shadowRes.depth >= 0.f)
-        color = light->ambient * mat.getKa();
-    
+        // Get the direction to the light source
+        Lm = light->position - ws_hitPosition;
+        Lm.normalize();
+
+        // Direction of a perfectly reflected ray
+        Rm = 2.f * (Lm.dot(hit_info.normal) * hit_info.normal) - Lm;
+
+        // Direction towards the viewer
+        V = hit_info.viewer - ws_hitPosition;
+        V.normalize();
+
+        // See if this point is in shadow. If it is, do not apply diffuse and specular.
+        Ray shadowRay(ws_hitPosition, light->position);
+
+        // Offset shadow ray to prevent hit the same hitpoint again
+        shadowRay.origin += 0.00001f * shadowRay.direction;
+        shadowRes = g_raytracer->scene->hit(shadowRay);
+
+        if(!shadowRes.is_hit() || shadowRes.depth < 0.f) {
+            // Diffuse
+            color += mat.getKd() * hit_info.normal.dot(Lm) * light->diffuse;
+
+            // Specular
+            Vector3f spec = mat.getKs() * powf(Rm.dot(V), mat.getNs()) * light->specular;
+            if(spec.length() > 0.f) // It can only contribute
+                color += spec;
+        }
+    }
+
     return color;
 }

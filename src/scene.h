@@ -18,8 +18,9 @@ class Light
 public:
 
     Light(Vector3f position) : position(position) {
-        ambient = Vector3f(0.5f,0.5f,0.5f);
-        diffuse = Vector3f(0.5f,0.5f,0.5f);
+        ambient = Vector3f(1,1,1);
+        diffuse = Vector3f(.5f,.5f,.5f);
+        specular = Vector3f(1,1,1);
     }
 
 #pragma mark - Properties
@@ -27,6 +28,7 @@ public:
 
     Vector3f ambient;
     Vector3f diffuse;
+    Vector3f specular;
 };
 
 class Scene : public SceneNode
