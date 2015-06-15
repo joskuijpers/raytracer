@@ -10,6 +10,7 @@
 #include "ray.h"
 #include "color.h"
 #include "aabb.h"
+#include "material.h"
 
 using namespace std;
 
@@ -44,14 +45,14 @@ public:
     /// The hit node
     shared_ptr<SceneNode> node;
 
-    /// size_t sized information for apply method.
-    size_t sInfo;
-
     /// Position of the hit. OBJECT SPACE? WORLD SPACE?
     Vector3f hitPosition;
 
     /// Normal at that location.
     Vector3f normal;
+
+    /// Material at hit location.
+    Material material;
 };
 
 /**
@@ -88,7 +89,7 @@ public:
     virtual hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
 
     // Apply method: applies the hit.
-    virtual Vector3f apply(unsigned int level, hit_result hit_info) = 0;
+    virtual Vector3f apply(unsigned int level, hit_result hit_info);
 
 #pragma mark - Properties
     const char *name;

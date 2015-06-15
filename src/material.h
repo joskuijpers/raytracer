@@ -149,7 +149,7 @@ private:
     int Il;
     bool Il_is_set;
     
-    // transperency
+    // transperency (alpha)
     float Tr;
     bool Tr_is_set;
     

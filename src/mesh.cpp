@@ -56,11 +56,25 @@ enum intersection_result : int {
     OUTSIDE = 3
 };
 
+Vector3f mesh::normalOfFace(Triangle triangle) {
+//    Vector3f p0 = vertices[triangle.v[1]].p - vertices[triangle.v[0]].p;
+//    Vector3f p1 = vertices[triangle.v[2]].p - vertices[triangle.v[0]].p;
+//    Vector3f faceNormal = p0.cross(p1);
+
+    Vector3f vertexNormal = (vertices[triangle.v[0]].n + vertices[triangle.v[1]].n + vertices[triangle.v[2]].n) / 3.f;
+//    float dot = faceNormal.dot(vertexNormal);
+
+//    return dot < 0.f ? -faceNormal : faceNormal;
+
+    vertexNormal.normalize();
+    return vertexNormal;
+}
+
 hit_result mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
 {
     hit_result result;
     size_t triangleIndex = 0;
-    triangle nearestTriangle;
+    Triangle nearestTriangle;
 
     // Transform the ray, effectively transforming this object
     ray = ray.transform(ws_transformationMatrix);
@@ -69,7 +83,7 @@ hit_result mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
         int intersectResult;
         Vector3f intPoint;
         float hit;
-        triangle t = this->triangles[it];
+        Triangle t = this->triangles[it];
 
         intersectResult = rayTriangleIntersect(ray, t, intPoint, hit);
 
@@ -91,18 +105,21 @@ hit_result mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
 
     // Otherwise, mark as hit and add apply info.
     result.hit = true;
-    result.sInfo = triangleIndex;
     result.node = shared_from_this();
 
+    // Position the ray hit
     result.hitPosition = ray.origin + result.depth * ray.direction;
 
     // Interpolate normal with the 3 vertex normals
-//    result.normal = nearestTriangle.;
+    result.normal = normalOfFace(nearestTriangle);
+
+    // Material of the triangle
+    result.material = materials[triangleMaterials[triangleIndex]];
 
     return result;
 }
 
-int mesh::rayTriangleIntersect(Ray ray, triangle triangle, Vector3f &point, float &hitDistance)
+int mesh::rayTriangleIntersect(Ray ray, Triangle triangle, Vector3f &point, float &hitDistance)
 {
     Vector3f v0, v1, v2;
     Vector3f u, v, n;
@@ -166,34 +183,6 @@ int mesh::rayTriangleIntersect(Ray ray, triangle triangle, Vector3f &point, floa
     return INTERSECT;
 }
 
-Vector3f mesh::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
-{
-    Material mat;
-
-    mat = materials[triangleMaterials[hit_info.sInfo]];
-
-    // TODO: use info of triangle and material to shoot rays for refrection and reflection
-    // Then apply the hit info for those rays, and
-    // use them and other stuff to calculate the color.
-    // Write a couple of static methods in the raytracer class for calculating the
-    // actual shading with all the gathered information.
-
-	// Only grab diffuse color
-	Vector3f color = mat.getKd();
-
-	// Check for shadows
-	auto& light = g_raytracer->scene->lights[0];
-	Ray shadowRay(hit_info.hitPosition, light->position);
-	shadowRay = shadowRay.transform(ws_transformationMatrix);
-	hit_result shadowRes = g_raytracer->scene->hit(shadowRay, shared_from_this());
-
-	// If hit, and positie (towards light).
-	if(shadowRes.is_hit() && shadowRes.depth >= 0.f)
-		color = light->ambient * mat.getKa();
-
-	return color;
-}
-
 #pragma mark - Drawing
 
 void mesh::drawSmooth() {
@@ -226,16 +215,16 @@ void mesh::draw() {
     for (unsigned int i = 0;i < triangles.size(); ++i) {
         Vector3f col, edge01, edge02, n;
         unsigned int triMat;
-        bool useTriNormals = false;
+//        bool useTriNormals = false;
 
         triMat = triangleMaterials.at(i);
         col = this->materials.at(triMat).Kd;
 
         glColor3fv(col.pointer());
 
-        if(triangles[i].has_normal()) {
-            useTriNormals = true;
-        } else {
+//        if(triangles[i].has_normal()) {
+//            useTriNormals = true;
+//        } else {
             edge01 = vertices[triangles[i].v[1]].p - vertices[triangles[i].v[0]].p;
             edge02 = vertices[triangles[i].v[2]].p - vertices[triangles[i].v[0]].p;
             n = edge01.cross(edge02);
@@ -243,11 +232,11 @@ void mesh::draw() {
             glNormal3f(n[0],
                        n[1],
                        n[2]);
-        }
+//        }
 
         for(int v = 0; v < 3; v++) {
-            if(useTriNormals)
-                glNormal3fv(normals[triangles[i].n[v]].pointer());
+//            if(useTriNormals)
+//                glNormal3fv(normals[triangles[i].n[v]].pointer());
 
             glVertex3f(vertices[triangles[i].v[v]].p[0],
                        vertices[triangles[i].v[v]].p[1],
@@ -476,21 +465,21 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
 
                     const int m  = (materialIndex.find(matname))->second;
 
-                    triangles.push_back(triangle(vhandles[v0], texhandles[t0],
+                    triangles.push_back(Triangle(vhandles[v0], texhandles[t0],
                                                  vhandles[v1], texhandles[t1],
                                                  vhandles[v2], texhandles[t2]));
                     triangleMaterials.push_back(m);
                 }
             } else if (vhandles.size() == 3) {
-                triangle t(vhandles[0], texhandles[0],
+                Triangle t(vhandles[0], texhandles[0],
                            vhandles[1], texhandles[1],
                            vhandles[2], texhandles[2]);
 
-                if(nhandles.size() == 3 && normals.size() > 0) {
+                /*if(nhandles.size() == 3 && normals.size() > 0) {
                     t.n[0] = nhandles[0];
                     t.n[1] = nhandles[1];
                     t.n[2] = nhandles[2];
-                }
+                }*/
 
                 triangles.push_back(t);
 
