@@ -12,8 +12,9 @@ script:
   - make
 
 branches:
-  - develop
-  - feature/*
+  only:
+    - develop
+    - feature/*
 
 os:
   - osx
