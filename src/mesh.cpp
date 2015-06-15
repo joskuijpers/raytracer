@@ -18,7 +18,7 @@ const unsigned int LINE_LEN = 256;
 
 #pragma mark - Normal calculations
 
-void mesh::computeVertexNormals() {
+void Mesh::computeVertexNormals() {
     for (unsigned int i = 0; i < vertices.size (); ++i) {
         vertices[i].n = Vector3f (0.0, 0.0, 0.0);
     }
@@ -42,7 +42,7 @@ void mesh::computeVertexNormals() {
 
 #pragma mark - Ray tracing
 
-void mesh::createBoundingBox() {
+void Mesh::createBoundingBox() {
     for(vertex vert : vertices) {
         boundingBox.extend(vert.p);
     }
@@ -56,7 +56,7 @@ enum intersection_result : int {
     OUTSIDE = 3
 };
 
-Vector3f mesh::normalOfFace(Triangle triangle) {
+Vector3f Mesh::normalOfFace(Triangle triangle) {
 //    Vector3f p0 = vertices[triangle.v[1]].p - vertices[triangle.v[0]].p;
 //    Vector3f p1 = vertices[triangle.v[2]].p - vertices[triangle.v[0]].p;
 //    Vector3f faceNormal = p0.cross(p1);
@@ -70,7 +70,7 @@ Vector3f mesh::normalOfFace(Triangle triangle) {
     return vertexNormal;
 }
 
-hit_result mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
+hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
 {
     hit_result result;
     size_t triangleIndex = 0;
@@ -119,7 +119,7 @@ hit_result mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     return result;
 }
 
-int mesh::rayTriangleIntersect(Ray ray, Triangle triangle, Vector3f &point, float &hitDistance)
+int Mesh::rayTriangleIntersect(Ray ray, Triangle triangle, Vector3f &point, float &hitDistance)
 {
     Vector3f v0, v1, v2;
     Vector3f u, v, n;
@@ -185,13 +185,13 @@ int mesh::rayTriangleIntersect(Ray ray, Triangle triangle, Vector3f &point, floa
 
 #pragma mark - Drawing
 
-void mesh::drawSmooth() {
+void Mesh::drawSmooth() {
     SceneNode::draw();
 
     glBegin(GL_TRIANGLES);
 
     for (unsigned int i=0;i<triangles.size();++i) {
-        Vector3f col = this->materials[triangleMaterials[i]].Kd;
+        Vector3f col = this->materials[triangleMaterials[i]].getKd();
 
         glColor3fv(col.pointer());
         for (int v = 0; v < 3; v++) {
@@ -207,7 +207,7 @@ void mesh::drawSmooth() {
     glEnd();
 }
 
-void mesh::draw() {
+void Mesh::draw() {
     SceneNode::draw();
 
     glBegin(GL_TRIANGLES);
@@ -218,7 +218,7 @@ void mesh::draw() {
 //        bool useTriNormals = false;
 
         triMat = triangleMaterials.at(i);
-        col = this->materials.at(triMat).Kd;
+        col = this->materials.at(triMat).getKd();
 
         glColor3fv(col.pointer());
 
@@ -250,7 +250,7 @@ void mesh::draw() {
 
 #pragma mark - Loading
 
-bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
+bool Mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
     Material defaultMat;
     map<string, unsigned int> materialIndex;
     char s[LINE_LEN];
@@ -495,7 +495,7 @@ bool mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
     return true;
 }
 
-bool mesh::loadMaterial(const char *filename, std::map<string, unsigned int> &materialIndex)
+bool Mesh::loadMaterial(const char *filename, std::map<string, unsigned int> &materialIndex)
 {
     FILE *in;
 

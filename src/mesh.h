@@ -77,12 +77,12 @@ public:
  *
  * @warning Can't be used on stack!
  */
-class mesh : public SceneNode
+class Mesh : public SceneNode
 {
 public:
-    mesh(const char *name) : SceneNode(name) {}
+    Mesh(const char *name) : SceneNode(name) {}
 
-    inline mesh(const std::vector<vertex> &v, const std::vector<Triangle> &t)
+    inline Mesh(const std::vector<vertex> &v, const std::vector<Triangle> &t)
     : SceneNode("mesh"), vertices (v), triangles (t) {}
 
 #pragma mark - Loading

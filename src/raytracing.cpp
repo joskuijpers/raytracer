@@ -66,7 +66,7 @@ void Raytracer::init(void) {
 
 
 
-    unique_ptr<mesh> teapot(new mesh("teapot"));
+    unique_ptr<Mesh> teapot(new Mesh("teapot"));
     teapot->loadMesh("resource/teapot.obj", true);
     teapot->computeVertexNormals();
     teapot->parent = scene;

@@ -156,5 +156,5 @@ private:
     std::string name;
     std::string textureName;
     
-    friend class mesh;
+    friend class Mesh;
 };
