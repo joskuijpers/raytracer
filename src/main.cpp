@@ -190,7 +190,6 @@ void createRender() {
     Vector3f origin01, dest01;
     Vector3f origin10, dest10;
     Vector3f origin11, dest11;
-    Vector3f origin, dest;
 
     produceRay(0, 0, &origin00, &dest00);
     produceRay(0, winSizeY - 1, &origin01, &dest01);
@@ -202,6 +201,7 @@ void createRender() {
         for (unsigned int x = 0; x < winSizeX;++x) {
             float xscale, yscale;
             Vector3f rgb;
+            Vector3f origin, dest;
 
             // produce the rays for each pixel, by interpolating
             // the four rays of the frustum corners.
