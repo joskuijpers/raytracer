@@ -103,11 +103,13 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
     auto& light = g_raytracer->scene->lights[0];
     Material mat = hit_info.material;
 
-
+    // Get the direction to the light source
+    // TODO; support multiple light sources
     Vector3f ls = light->position - hit_info.hitPosition;
-    Vector3f l = ls / ls.length();
+    ls.normalize();
 
-    color = light->ambient * mat.getKa() + l.dot(hit_info.normal) * light->diffuse * mat.getKd();
+    // Calculate the color
+    color = light->ambient * mat.getKa() + ls.dot(hit_info.normal) * light->diffuse * mat.getKd();
 
     // Check for shadows
     Ray shadowRay(hit_info.node->ws_transformationMatrix * hit_info.hitPosition, light->position);
@@ -115,8 +117,8 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
     // Offset shadow ray to prevent hit the same hitpoint again
     shadowRay.origin += 0.00001f * shadowRay.direction;
 
+    // If hitpoint cant be reached by the light source, only use the ambient parameter
     hit_result shadowRes = g_raytracer->scene->hit(shadowRay);
-
 	if(shadowRes.is_hit() && shadowRes.depth >= 0.f)
         color = light->ambient * mat.getKa();
     

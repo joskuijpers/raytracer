@@ -13,10 +13,12 @@
 
 using namespace std;
 
+#define TESTSET 2
+
 void Raytracer::init(void) {
     scene->background_color = Vector3f(.6f,.2f,.1f);
 
-#if 0
+#if TESTSET == 1
     unique_ptr<Mesh> cube(new Mesh("cube"));
     unique_ptr<Mesh> cube2(new Mesh("cube2"));
     unique_ptr<Sphere> sphere(new Sphere("sphere"));
@@ -52,18 +54,18 @@ void Raytracer::init(void) {
     scene->children.push_back(move(cube2));
     scene->children.push_back(move(sphere));
     scene->children.push_back(move(sphere2));
-#elif 1
+#elif TESTSET == 2
     unique_ptr<Mesh> car(new Mesh("car"));
     car->loadMesh("resource/dodgeColorTest.obj", true);
     car->computeVertexNormals();
     car->parent = scene;
     scene->children.push_back(move(car));
-#elif 0
+#elif TESTSET == 3
     unique_ptr<Mesh> strawberry(new Mesh("strawberry"));
     strawberry->loadMesh("resource/strawberry.obj", true);
     strawberry->parent = scene;
     scene->nodes.push_back(move(strawberry));
-#elif 0
+#elif TESTSET == 4
     unique_ptr<Mesh> teapot(new Mesh("teapot"));
     teapot->loadMesh("resource/teapot.obj", true);
     teapot->computeVertexNormals();
@@ -72,7 +74,7 @@ void Raytracer::init(void) {
 #endif
 
     // Create a single lighblendert
-    scene->lights.push_back(unique_ptr<Light>(new Light(scene->camera + Vector3f(0,5,0))));
+    scene->lights.push_back(unique_ptr<Light>(new Light(scene->camera + Vector3f(0,1,0))));
 
     // Prepare the scene for raytracing: create bounding boxes,
     // and possibly transformation matrices
