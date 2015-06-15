@@ -56,18 +56,16 @@ enum intersection_result : int {
     OUTSIDE = 3
 };
 
-Vector3f Mesh::normalOfFace(Triangle triangle) {
-//    Vector3f p0 = vertices[triangle.v[1]].p - vertices[triangle.v[0]].p;
-//    Vector3f p1 = vertices[triangle.v[2]].p - vertices[triangle.v[0]].p;
-//    Vector3f faceNormal = p0.cross(p1);
+Vector3f Mesh::normalOfFace(Triangle triangle, float s, float t) {
+    Vector3f n0 = vertices[triangle.v[0]].n;
+    Vector3f n1 = vertices[triangle.v[1]].n;
+    Vector3f n2 = vertices[triangle.v[2]].n;
 
-    Vector3f vertexNormal = (vertices[triangle.v[0]].n + vertices[triangle.v[1]].n + vertices[triangle.v[2]].n) / 3.f;
-//    float dot = faceNormal.dot(vertexNormal);
+    Vector3f n;
 
-//    return dot < 0.f ? -faceNormal : faceNormal;
+    n = (1.f - (s + t)) * n0 + n1 * s + n2 * t;
 
-    vertexNormal.normalize();
-    return vertexNormal;
+    return n;
 }
 
 hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
@@ -75,6 +73,7 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     hit_result result;
     size_t triangleIndex = 0;
     Triangle nearestTriangle;
+    float nearestHitS, nearestHitT;
 
     // Transform the ray, effectively transforming this object
     ray = ray.transform(ws_transformationMatrix);
@@ -82,10 +81,10 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     for(size_t it = 0; it < this->triangles.size(); ++it) {
         int intersectResult;
         Vector3f intPoint;
-        float hit;
+        float hit, hitS, hitT;
         Triangle t = this->triangles[it];
 
-        intersectResult = rayTriangleIntersect(ray, t, intPoint, hit);
+        intersectResult = rayTriangleIntersect(ray, t, intPoint, hit, hitS, hitT);
 
         if (likely(intersectResult != INTERSECT))
             continue;
@@ -97,6 +96,8 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
         result.depth = hit;
         nearestTriangle = t;
         triangleIndex = it;
+        nearestHitS = hitS;
+        nearestHitT = hitT;
     }
 
     // If no hit, return unhit result
@@ -111,7 +112,7 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     result.hitPosition = ray.origin + result.depth * ray.direction;
 
     // Interpolate normal with the 3 vertex normals
-    result.normal = normalOfFace(nearestTriangle);
+    result.normal = normalOfFace(nearestTriangle, nearestHitS, nearestHitT);
 
     // Material of the triangle
     result.material = materials[triangleMaterials[triangleIndex]];
@@ -119,7 +120,7 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     return result;
 }
 
-int Mesh::rayTriangleIntersect(Ray ray, Triangle triangle, Vector3f &point, float &hitDistance)
+int Mesh::rayTriangleIntersect(Ray ray, Triangle triangle, Vector3f &point, float &hitDistance, float &s, float &t)
 {
     Vector3f v0, v1, v2;
     Vector3f u, v, n;
@@ -169,8 +170,6 @@ int Mesh::rayTriangleIntersect(Ray ray, Triangle triangle, Vector3f &point, floa
     wu = w.dot(u);
     wv = w.dot(v);
     denominator = uv * uv - uu * vv;
-
-    float s, t;
 
     s = (uv * wv - vv * wu) / denominator;
     if (s < 0.0 || s > 1.0)

@@ -102,8 +102,8 @@ public:
     hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
 
 private:
-    int rayTriangleIntersect(Ray ray, Triangle triangle, Vector3f &point, float &hitDistance);
-    Vector3f normalOfFace(Triangle triangle);
+    int rayTriangleIntersect(Ray ray, Triangle triangle, Vector3f &point, float &hitDistance, float &s, float &t);
+    Vector3f normalOfFace(Triangle triangle, float s, float t);
 public:
 
 #pragma mark - Properties
