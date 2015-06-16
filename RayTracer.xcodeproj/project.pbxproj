@@ -16,7 +16,6 @@
 		8004609E1B25DA0C001CFCF0 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8004609C1B25DA0C001CFCF0 /* scene.cpp */; };
 		800460A71B25E84F001CFCF0 /* sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460A51B25E84F001CFCF0 /* sphere.cpp */; };
 		800460AD1B2762D1001CFCF0 /* scene_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460AC1B2762D1001CFCF0 /* scene_node.cpp */; };
-		800460B31B279F2B001CFCF0 /* group.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460B11B279F2B001CFCF0 /* group.cpp */; };
 		800460B61B28553E001CFCF0 /* aabb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460B41B28553E001CFCF0 /* aabb.cpp */; };
 		A66B134E1B2F0A600014222F /* scene_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460AC1B2762D1001CFCF0 /* scene_node.cpp */; };
 		A66B134F1B2F0A600014222F /* sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460A51B25E84F001CFCF0 /* sphere.cpp */; };
@@ -26,7 +25,6 @@
 		A66B13531B2F0A600014222F /* raytracing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460891B24934A001CFCF0 /* raytracing.cpp */; };
 		A66B13541B2F0A600014222F /* mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460871B24934A001CFCF0 /* mesh.cpp */; };
 		A66B13551B2F0A600014222F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460851B24934A001CFCF0 /* main.cpp */; };
-		A66B13561B2F0A600014222F /* group.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460B11B279F2B001CFCF0 /* group.cpp */; };
 		A66B13581B2F0A600014222F /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800460951B2495A6001CFCF0 /* GLUT.framework */; };
 		A66B13591B2F0A600014222F /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800460931B2495A2001CFCF0 /* OpenGL.framework */; };
 		A66B13601B2F11AB0014222F /* libiomp5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A66B135F1B2F11AB0014222F /* libiomp5.dylib */; };
@@ -83,8 +81,6 @@
 		800460AC1B2762D1001CFCF0 /* scene_node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scene_node.cpp; sourceTree = "<group>"; };
 		800460AF1B277E2D001CFCF0 /* ray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ray.h; sourceTree = "<group>"; };
 		800460B01B279A0B001CFCF0 /* color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = color.h; sourceTree = "<group>"; };
-		800460B11B279F2B001CFCF0 /* group.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = group.cpp; sourceTree = "<group>"; };
-		800460B21B279F2B001CFCF0 /* group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = group.h; sourceTree = "<group>"; };
 		800460B41B28553E001CFCF0 /* aabb.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = aabb.cpp; sourceTree = "<group>"; };
 		800460B51B28553E001CFCF0 /* aabb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aabb.h; sourceTree = "<group>"; };
 		800460B71B286716001CFCF0 /* matrix4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = matrix4.h; sourceTree = "<group>"; };
@@ -224,8 +220,6 @@
 				800460A61B25E84F001CFCF0 /* sphere.h */,
 				800460AC1B2762D1001CFCF0 /* scene_node.cpp */,
 				800460A41B25E7D2001CFCF0 /* scene_node.h */,
-				800460B11B279F2B001CFCF0 /* group.cpp */,
-				800460B21B279F2B001CFCF0 /* group.h */,
 			);
 			name = objects;
 			sourceTree = "<group>";
@@ -331,7 +325,6 @@
 				800460901B24934A001CFCF0 /* raytracing.cpp in Sources */,
 				8004608F1B24934A001CFCF0 /* mesh.cpp in Sources */,
 				8004608E1B24934A001CFCF0 /* main.cpp in Sources */,
-				800460B31B279F2B001CFCF0 /* group.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -347,7 +340,6 @@
 				A66B13531B2F0A600014222F /* raytracing.cpp in Sources */,
 				A66B13541B2F0A600014222F /* mesh.cpp in Sources */,
 				A66B13551B2F0A600014222F /* main.cpp in Sources */,
-				A66B13561B2F0A600014222F /* group.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
