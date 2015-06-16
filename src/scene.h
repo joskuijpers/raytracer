@@ -6,13 +6,6 @@
 #include "vector3.h"
 #include "scene_node.h"
 
-using namespace std;
-
-class aabb
-{
-    // boolean hit(ray, out float distance, out triangle t, )
-};
-
 class Light
 {
 public:
