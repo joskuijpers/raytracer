@@ -119,7 +119,7 @@ void Raytracer::keyboard(char t [[gnu::unused]], int mouseX [[gnu::unused]], int
 
     switch (t) {
         case 'n':
-            cout << "Toggle normals." << endl;
+            scene->showNormals = !scene->showNormals;
             break;
         case 'b':
             scene->showBoundingBoxes = !scene->showBoundingBoxes;

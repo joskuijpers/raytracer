@@ -13,6 +13,12 @@ void SceneNode::draw() {
     glMultMatrixf(ws_transformationMatrix.get());
 }
 
+void SceneNode::drawNormals() {
+    for (auto& obj : children) {
+        obj->drawNormals();
+    }
+}
+
 void SceneNode::drawBoundingBox() {
     for(auto &obj : children) {
         obj->drawBoundingBox();

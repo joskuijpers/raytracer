@@ -44,6 +44,16 @@ void Scene::draw(void) {
             obj->drawBoundingBox();
         }
     }
+
+    if (showNormals) {
+        glPushAttrib(GL_ALL_ATTRIB_BITS);
+        glDisable(GL_LIGHTING);
+
+        for (auto& obj : children)
+            obj->drawNormals();
+
+        glPopAttrib();
+    }
 }
 
 /// Prepare the scene, recursively

@@ -94,6 +94,7 @@ public:
 #pragma mark - Drawing
 
     void draw(void);
+    void drawNormals(void);
     void drawNotSmooth(void);
 
 #pragma mark - Raytracing
