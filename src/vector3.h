@@ -61,6 +61,12 @@ template <class T> bool operator== (const Vector3<T> &p1, const Vector3<T> &p2) 
             p1[2] == p2[2]);
 }
 
+template <class T> const Vector3<T> operator/ (const float divisor, const Vector3<T> &p) {
+    return Vector3<T> (divisor / p[0],
+                       divisor / p[1],
+                       divisor / p[2]);
+}
+
 template <class T> bool operator< (const Vector3<T> &a, const Vector3<T> &b) {
     return (a[0] < b[0] &&
             a[1] < b[1] &&

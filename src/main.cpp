@@ -143,7 +143,7 @@ void reshape(int w, int h)
     glLoadIdentity();
 
     //glOrtho (-1.1, 1.1, -1.1,1.1, -1000.0, 1000.0);
-    gluPerspective(50, (float)w/h, 0.01, 10);
+    gluPerspective(50, (float)w/h, 0.01, 50);
 
     // Siwtch back to model mode
     glMatrixMode(GL_MODELVIEW);

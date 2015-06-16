@@ -99,10 +99,8 @@ hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip) {
 
 Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
 {
-    Vector3f color, ws_hitPosition;
+    Vector3f color;
     Material mat = hit_info.material;
-
-    ws_hitPosition = hit_info.node->ws_transformationMatrix * hit_info.hitPosition;
 
     // Make this average of all light sources the ambient light
     Vector3f Ia = Vector3f(0,0,0);
@@ -121,18 +119,19 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
         Vector3f Lm, Rm, V;
 
         // Get the direction to the light source
-        Lm = light->position - ws_hitPosition;
+        Lm = light->position - hit_info.hitPosition;
         Lm.normalize();
 
         // Direction of a perfectly reflected ray
         Rm = 2.f * (Lm.dot(hit_info.normal) * hit_info.normal) - Lm;
+        Rm.normalize();
 
         // Direction towards the viewer
-        V = hit_info.viewer - ws_hitPosition;
+        V = hit_info.viewer - hit_info.hitPosition;
         V.normalize();
 
         // See if this point is in shadow. If it is, do not apply diffuse and specular.
-        Ray shadowRay(ws_hitPosition, light->position);
+        Ray shadowRay(hit_info.hitPosition, light->position);
 
         // Offset shadow ray to prevent hit the same hitpoint again
         shadowRay.origin += 0.00001f * shadowRay.direction;
@@ -144,7 +143,7 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
 
             // Specular
             Vector3f spec = mat.getKs() * powf(Rm.dot(V), mat.getNs()) * light->specular;
-            if(spec.length() > 0.f) // It can only contribute
+            if(spec.length() >= 0.f) // It can only contribute
                 color += spec;
         }
     }

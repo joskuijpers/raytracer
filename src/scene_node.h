@@ -45,7 +45,7 @@ public:
     /// The hit node
     shared_ptr<SceneNode> node;
 
-    /// Position of the hit. OBJECT SPACE? WORLD SPACE?
+    /// Position of the hit. In World Space
     Vector3f hitPosition;
 
     /// Normal at that location.

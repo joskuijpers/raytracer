@@ -47,7 +47,7 @@ hit_result Sphere::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
             result.depth = t;
     }
 
-    result.hitPosition = ray.origin + result.depth * ray.direction;
+    result.hitPosition = ws_transformationMatrix * (ray.origin + result.depth * ray.direction);
 
     result.normal = result.hitPosition - translation;
     result.normal.normalize();

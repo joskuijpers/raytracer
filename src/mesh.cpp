@@ -74,23 +74,23 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     size_t triangleIndex = 0;
     Triangle nearestTriangle;
     float nearestHitS = 0.f, nearestHitT = 0.f;
+    Ray os_ray;
 
     // Store the viewer position for specular shading
     result.viewer = ray.origin;
 
     // Transform the ray, effectively transforming this object
-    ray = ray.transform(ws_transformationMatrix);
+    os_ray = ray.transform(ws_transformationMatrix);
 
-#pragma omp parallel for
     for(size_t it = 0; it < this->triangles.size(); ++it) {
         int intersectResult;
         Vector3f intPoint;
         float hit, hitS, hitT;
         Triangle t = this->triangles[it];
 
-        intersectResult = rayTriangleIntersect(ray, t, intPoint, hit, hitS, hitT);
+        intersectResult = rayTriangleIntersect(os_ray, t, intPoint, hit, hitS, hitT);
 
-        if (likely(intersectResult != INTERSECT))
+        if (intersectResult != INTERSECT)
             continue;
 
         // Skip if not nearer than prev hit.
@@ -108,12 +108,17 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     if(result.depth == FLT_MAX)
         return result;
 
+    Vector3f os_hitpoint = os_ray.origin + result.depth * os_ray.direction;
+    Vector3f ws_hitpoint = ws_transformationMatrix * os_hitpoint;
+
+    result.depth = (ws_hitpoint - ray.origin).length();
+
     // Otherwise, mark as hit and add apply info.
     result.hit = true;
     result.node = shared_from_this();
 
-    // Position the ray hit
-    result.hitPosition = ray.origin + result.depth * ray.direction;
+    // Position the ray hit (object space)
+    result.hitPosition = ws_hitpoint;
 
     // Interpolate normal with the 3 vertex normals
     result.normal = normalOfFace(nearestTriangle, nearestHitS, nearestHitT);
