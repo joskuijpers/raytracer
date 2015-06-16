@@ -74,12 +74,10 @@ void Raytracer::init(void) {
     cube->loadMesh("resource/cube.obj", true);
     cube->computeVertexNormals();
     cube->translation = Vector3f(-0.5f,-1.f,-0.5f);
-    cube->scale = Vector3f(3.f,3.f,3.f);
+//    cube->scale = Vector3f(3.f,3.f,3.f);
     cube->parent = scene;
     cube->rotation = Vector3f(0,1,0);
-
     scene->children.push_back(move(cube));
-
 
     unique_ptr<Mesh> teapot(new Mesh("teapot"));
     teapot->loadMesh("resource/teapot.obj", true);
