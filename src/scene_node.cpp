@@ -106,17 +106,11 @@ hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip) {
 
 Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
 {
-<<<<<<< HEAD
     Vector3f directColor, reflectedColor, refractedColor;
     Material mat = hit_info.material;
 
 #pragma mark Direct light
 
-=======
-    Vector3f color;
-    Material mat = hit_info.material;
-
->>>>>>> Fix multiple-mesh with transformation depth.
     // Make this average of all light sources the ambient light
     Vector3f Ia = Vector3f(0,0,0);
     for(auto& light : g_raytracer->scene->lights) {
@@ -130,8 +124,6 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
     // Calculate contribution of every light
     for(auto& light : g_raytracer->scene->lights) {
         hit_result shadowRes;
-<<<<<<< HEAD
-=======
         Vector3f Lm, Rm, V;
 
         // Get the direction to the light source
@@ -145,7 +137,6 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
         // Direction towards the viewer
         V = hit_info.viewer - hit_info.hitPosition;
         V.normalize();
->>>>>>> Fix multiple-mesh with transformation depth.
 
         // See if this point is in shadow. If it is, do not apply diffuse and specular.
         Ray shadowRay(hit_info.hitPosition, light->position);
@@ -172,7 +163,6 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
                 Vector3f phongDir, viewerDir;
                 float phongTerm;
 
-<<<<<<< HEAD
                 // Direction of a perfectly reflected ray
                 phongDir = lightDir - 2.f * (lightDir.dot(hit_info.normal) * hit_info.normal);
 
@@ -186,12 +176,6 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
 
                 directColor += mat.getKs() * powf(phongTerm, mat.getNs()) * light->specular;
             }
-=======
-            // Specular
-            Vector3f spec = mat.getKs() * powf(Rm.dot(V), mat.getNs()) * light->specular;
-            if(spec.length() >= 0.f) // It can only contribute
-                color += spec;
->>>>>>> Fix multiple-mesh with transformation depth.
         }
     }
 
