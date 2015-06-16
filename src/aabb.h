@@ -26,7 +26,7 @@ public:
 
     AABoundingBox(Vector3f min, Vector3f max)
     : min(min), max(max), color(Vector3f(.302f,.824f,.851f)) {
-        assert(min < max);
+        assert(min <= max);
     }
 
 #pragma mark - Methods
