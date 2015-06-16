@@ -13,6 +13,7 @@
 #include "trackball.h"
 #include "image_writer.h"
 #include "scene.h"
+#include "config.h"
 
 using namespace std;
 
@@ -200,22 +201,40 @@ void createRender() {
     for (unsigned int y = 0; y < winSizeY;++y) {
         for (unsigned int x = 0; x < winSizeX;++x) {
             float xscale, yscale;
-            Vector3f rgb;
-            Vector3f origin, dest;
+            Vector3f rgb(0,0,0);
+            float fragmentX = x, fragmentY = y;
 
-            // produce the rays for each pixel, by interpolating
-            // the four rays of the frustum corners.
-            xscale = 1.0f - float(x) / (winSizeX - 1);
-            yscale = 1.0f - float(y) / (winSizeY - 1);
+#if USE_ANTIALIASING
+# if ANTIALIASING_LEVEL == 16
+            fragmentX = x - 1.0f;
+# endif
+            for(; fragmentX < x + 1.0f; fragmentX += 0.5f) {
+# if ANTIALIASING_LEVEL == 16
+                fragmentY = y - 1.0f;
+# else
+                fragmentY = y;
+# endif
+                for(; fragmentY < y + 1.0f; fragmentY += 0.5f) {
+#endif
+                    Vector3f origin, dest;
 
-            origin = yscale * (xscale * origin00 + (1 - xscale) * origin10) +
-            (1 - yscale) * (xscale * origin01 + (1 - xscale) * origin11);
+                    // produce the rays for each pixel, by interpolating
+                    // the four rays of the frustum corners.
+                    xscale = 1.0f - fragmentX / (winSizeX - 1);
+                    yscale = 1.0f - fragmentY / (winSizeY - 1);
 
-            dest = yscale * (xscale * dest00 + (1 - xscale) * dest10) +
-            (1 - yscale) * (xscale * dest01 + (1 - xscale) * dest11);
+                    origin = yscale * (xscale * origin00 + (1 - xscale) * origin10) +
+                    (1 - yscale) * (xscale * origin01 + (1 - xscale) * origin11);
 
-            // launch raytracing for the given ray.
-            rgb = g_raytracer->performRayTracing(origin, dest);
+                    dest = yscale * (xscale * dest00 + (1 - xscale) * dest10) +
+                    (1 - yscale) * (xscale * dest01 + (1 - xscale) * dest11);
+
+                    // launch raytracing for the given ray.
+                    rgb += g_raytracer->performRayTracing(origin, dest) * ANTIALIASING_COEF;
+#if USE_ANTIALIASING
+                }
+            }
+#endif
 
             // store the result in an image
             result.setPixel(x,y, Color3(rgb));

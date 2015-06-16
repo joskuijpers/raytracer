@@ -89,6 +89,7 @@
 		800460B51B28553E001CFCF0 /* aabb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aabb.h; sourceTree = "<group>"; };
 		800460B71B286716001CFCF0 /* matrix4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = matrix4.h; sourceTree = "<group>"; };
 		800460B81B28671F001CFCF0 /* vector4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vector4.h; sourceTree = "<group>"; };
+		8043A4351B30D11C00A0C93A /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		A66B135E1B2F0A600014222F /* RayTracer OpenMP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "RayTracer OpenMP"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A66B135F1B2F11AB0014222F /* libiomp5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiomp5.dylib; path = ../../../../../../../usr/local/Cellar/libiomp/20150401/lib/libiomp5.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -159,6 +160,7 @@
 				800460A01B25DEC0001CFCF0 /* scene */,
 				800460AE1B277DF3001CFCF0 /* raytracing */,
 				800460A21B25DED4001CFCF0 /* misc */,
+				8043A4351B30D11C00A0C93A /* config.h */,
 			);
 			path = src;
 			sourceTree = "<group>";

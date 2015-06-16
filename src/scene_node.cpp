@@ -2,8 +2,7 @@
 #include "platform.h"
 #include "matrix4.h"
 #include "raytracing.h"
-
-#define MAX_TRACE_LEVELS 2
+#include "config.h"
 
 /**
  * Basic code used for the drawing of every object:
@@ -117,7 +116,6 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
     directColor = Ia * mat.getKa();
 
     // Calculate contribution of every light
-    /// @note https://en.wikipedia.org/wiki/Phong_reflection_model#Description
     for(auto& light : g_raytracer->scene->lights) {
         hit_result shadowRes;
 
@@ -188,7 +186,7 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
 
 #pragma mark Refraction
 
-    // Add relection only if in the illumination model
+    // Add refraction only if in the illumination model
     if(mat.getIl() >= 6 && level < MAX_TRACE_LEVELS) {
         Vector3f It;
         refractedColor = (1.f - mat.getKs()) * mat.getTf() * It;
