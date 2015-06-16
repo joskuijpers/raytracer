@@ -216,6 +216,25 @@ void Mesh::draw() {
     glEnd();
 }
 
+void Mesh::drawNormals() {
+    SceneNode::draw();
+
+    glBegin(GL_LINES);
+
+    for (Triangle t : triangles) {
+        for (int i = 0; i < 3; ++i) {
+            Vector3f n = vertices[t.v[i]].n;
+            Vector3f v = vertices[t.v[i]].p;
+
+            glColor3fv(n.pointer());
+            glVertex3fv(v.pointer());
+            glVertex3fv((v + n * 0.08f).pointer());
+        }
+    }
+
+    glEnd();
+}
+
 void Mesh::drawNotSmooth() {
     SceneNode::draw();
 
