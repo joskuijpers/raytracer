@@ -135,7 +135,17 @@ void Raytracer::draw(void) {
 void Raytracer::keyboard(char t [[gnu::unused]], int mouseX [[gnu::unused]], int mouseY [[gnu::unused]], const Vector3f& rayOrigin, const Vector3f& rayDest) {
     testRay.update(rayOrigin, rayDest);
 
-//    std::cout << t << " pressed! The mouse was in location " << mouseX << ", " << mouseY << "!" << std::endl;
+    switch (t) {
+        case 'n':
+            cout << "Toggle normals." << endl;
+            break;
+        case 'b':
+            scene->showBoundingBoxes = !scene->showBoundingBoxes;
+            break;
+        default:
+            std::cout << t << " pressed! The mouse was in location " << mouseX << ", " << mouseY << "!" << std::endl;
+            break;
+    }
 }
 
 #pragma mark - Raytracing
