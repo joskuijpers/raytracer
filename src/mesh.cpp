@@ -78,6 +78,7 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
 
     // Store the viewer position for specular shading
     result.viewer = ray.origin;
+    result.lightDirection = ray.direction;
 
     // Transform the ray, effectively transforming this object
     os_ray = ray.transform(ws_transformationMatrix);
@@ -563,6 +564,11 @@ bool Mesh::loadMaterial(const char *filename, std::map<string, unsigned int> &ma
         {
             sscanf(line, "Ks %f %f %f", &f1, &f2, &f3);
             mat.setKs(f1, f2, f3);
+        }
+        else if (strncmp(line, "Tf ", 3) == 0) // transmission filter
+        {
+            sscanf(line, "Tf %f %f %f", &f1, &f2, &f3);
+            mat.setTf(f1, f2, f3);
         }
         else if (strncmp(line, "Ns ", 3) == 0) // Shininess [0..200]
         {

@@ -56,6 +56,9 @@ public:
 
     /// Viewer position (ray origin, ws)
     Vector3f viewer;
+
+    /// Direction the light came from
+    Vector3f lightDirection;
 };
 
 /**

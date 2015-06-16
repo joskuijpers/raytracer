@@ -43,6 +43,12 @@ template <class T> const Vector3<T> operator- (const Vector3<T> &p1, const Vecto
                        p1[2] - p2[2]);
 }
 
+template <class T> const Vector3<T> operator- (const float f, const Vector3<T> &p) {
+    return Vector3<T> (f - p[0],
+                       f - p[1],
+                       f - p[2]);
+}
+
 template <class T> const Vector3<T> operator- (const Vector3<T> &p) {
     return Vector3<T> (-p[0],
                        -p[1],
