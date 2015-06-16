@@ -517,8 +517,7 @@ bool Mesh::loadMaterial(const char *filename, std::map<string, unsigned int> &ma
     while(in && !feof(in)) {
         fgets(line, LINE_LEN, in);
 
-        if (line[0] == '#') // skip comments
-        {
+        if (line[0] == '#') { // skip comments
             memset(line, 0, LINE_LEN);
             continue;
         } else if( isspace(line[0])||line[0]=='\0') {

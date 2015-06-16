@@ -3,7 +3,7 @@
 #include "matrix4.h"
 #include "raytracing.h"
 
-#define MAX_TRACE_LEVELS 3
+#define MAX_TRACE_LEVELS 2
 
 /**
  * Basic code used for the drawing of every object:
@@ -127,6 +127,7 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
         // Offset shadow ray to prevent hit the same hitpoint again
         shadowRes = g_raytracer->scene->hit(shadowRay, hit_info.node);
 
+        // If hit by shadow, do not draw anything other than ambient
         if(!shadowRes.is_hit() || shadowRes.depth < 0.f) {
             Vector3f lightDir;
 
