@@ -69,7 +69,7 @@ void Raytracer::init(void) {
 #elif TESTSET == 4
     unique_ptr<Mesh> teapot(new Mesh("teapot"));
     teapot->loadMesh("resource/teapot.obj", true);
-    teapot->computeVertexNormals();
+//    teapot->computeVertexNormals();
     teapot->parent = scene;
     scene->children.push_back(move(teapot));
 #endif
