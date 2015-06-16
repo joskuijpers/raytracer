@@ -55,41 +55,46 @@ void tbHelp()
 /** Gere les boutons de la souris */
 void tbMouseFunc( int button, int state, int x, int y )
 {
-    /* enfoncer gauche */
-    if( button==GLUT_LEFT_BUTTON && state==GLUT_DOWN )
-    {
-        tb_tournerXY = 1;
-        tb_ancienX = x;
-        tb_ancienY = y;
-    }
-    /* relacher gauche */
-    else if( button==GLUT_LEFT_BUTTON && state==GLUT_UP )
-    {
-        tb_tournerXY = 0;
-    }
-    /* enfoncer milieu */
-    if( button==GLUT_MIDDLE_BUTTON && state==GLUT_DOWN )
-    {
-        tb_bougerZ = 1;
-        tb_ancienX = x;
-        tb_ancienY = y;
-    }
-    /* relacher milieu */
-    else if( button==GLUT_MIDDLE_BUTTON && state==GLUT_UP )
-    {
-        tb_bougerZ = 0;
-    }
-    /* enfoncer droit */
-    else if( button==GLUT_RIGHT_BUTTON && state==GLUT_DOWN )
-    {
-        tb_translaterXY = 1;
-        tb_ancienX = x;
-        tb_ancienY = y;
-    }
-    /* relacher droit */
-    else if( button==GLUT_RIGHT_BUTTON && state==GLUT_UP )
-    {
-        tb_translaterXY = 0;
+    int modifiers = glutGetModifiers();
+
+    switch (button) {
+        case GLUT_LEFT_BUTTON:
+            if (modifiers & GLUT_ACTIVE_SHIFT) { // Shift pressed -> zoom
+                if (state == GLUT_DOWN) {
+                    tb_bougerZ = 1;
+                    tb_ancienX = x;
+                    tb_ancienY = y;
+                } else if (state == GLUT_UP) {
+                    tb_bougerZ = 0;
+                }
+            } else { // No shift -> rotate
+                if (state == GLUT_DOWN) {
+                    tb_tournerXY = 1;
+                    tb_ancienX = x;
+                    tb_ancienY = y;
+                } else if (state == GLUT_UP) {
+                    tb_tournerXY = 0;
+                }
+            }
+            break;
+        case GLUT_MIDDLE_BUTTON:
+            if (state == GLUT_DOWN) {
+                tb_bougerZ = 1;
+                tb_ancienX = x;
+                tb_ancienY = y;
+            } else if (state == GLUT_UP) {
+                tb_bougerZ = 0;
+            }
+            break;
+        case GLUT_RIGHT_BUTTON:
+            if (state == GLUT_DOWN) {
+                tb_translaterXY = 1;
+                tb_ancienX = x;
+                tb_ancienY = y;
+            } else if (state == GLUT_UP) {
+                tb_translaterXY = 0;
+            }
+            break;
     }
 }
 

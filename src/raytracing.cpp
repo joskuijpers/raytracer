@@ -69,7 +69,7 @@ void Raytracer::init(void) {
 #elif TESTSET == 4
     unique_ptr<Mesh> teapot(new Mesh("teapot"));
     teapot->loadMesh("resource/teapot.obj", true);
-    teapot->computeVertexNormals();
+//    teapot->computeVertexNormals();
     teapot->parent = scene;
     scene->children.push_back(move(teapot));
 #endif
@@ -117,7 +117,17 @@ void Raytracer::draw(void) {
 void Raytracer::keyboard(char t [[gnu::unused]], int mouseX [[gnu::unused]], int mouseY [[gnu::unused]], const Vector3f& rayOrigin, const Vector3f& rayDest) {
     testRay.update(rayOrigin, rayDest);
 
-//    std::cout << t << " pressed! The mouse was in location " << mouseX << ", " << mouseY << "!" << std::endl;
+    switch (t) {
+        case 'n':
+            scene->showNormals = !scene->showNormals;
+            break;
+        case 'b':
+            scene->showBoundingBoxes = !scene->showBoundingBoxes;
+            break;
+        default:
+            std::cout << t << " pressed! The mouse was in location " << mouseX << ", " << mouseY << "!" << std::endl;
+            break;
+    }
 }
 
 #pragma mark - Raytracing

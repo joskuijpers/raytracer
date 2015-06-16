@@ -231,9 +231,6 @@ void createRender() {
  */
 void keyboard(unsigned char key, int x, int y)
 {
-    printf("key %d pressed at %d,%d\n",key,x,y);
-    fflush(stdout);
-
     switch (key)
     {
             // add/update a light based on the camera position.
@@ -248,12 +245,13 @@ void keyboard(unsigned char key, int x, int y)
             break;
         case 27:     // touche ESC
             exit(0);
-    }
-    
-    //produce the ray for the current mouse position
-    Vector3f testRayOrigin, testRayDestination;
-    produceRay(x, y, &testRayOrigin, &testRayDestination);
+        default:
+            //produce the ray for the current mouse position
+            Vector3f testRayOrigin, testRayDestination;
+            produceRay(x, y, &testRayOrigin, &testRayDestination);
 
-    g_raytracer->keyboard(key, x, y, testRayOrigin, testRayDestination);
+            g_raytracer->keyboard(key, x, y, testRayOrigin, testRayDestination);
+            break;
+    }
 }
 

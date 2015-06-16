@@ -57,11 +57,21 @@ enum intersection_result : int {
 };
 
 Vector3f Mesh::normalOfFace(Triangle triangle, float s, float t) {
-    Vector3f n0 = vertices[triangle.v[0]].n;
-    Vector3f n1 = vertices[triangle.v[1]].n;
-    Vector3f n2 = vertices[triangle.v[2]].n;
+    Vector3f n0;
+    Vector3f n1;
+    Vector3f n2;
 
     Vector3f n;
+
+    if (triangle.has_normal()) {
+        n0 = normals[triangle.n[0]];
+        n1 = normals[triangle.n[1]];
+        n2 = normals[triangle.n[2]];
+    } else {
+        n0 = vertices[triangle.v[0]].n;
+        n1 = vertices[triangle.v[1]].n;
+        n2 = vertices[triangle.v[2]].n;
+    }
 
     n = (1.f - (s + t)) * n0 + n1 * s + n2 * t;
 
@@ -198,15 +208,39 @@ void Mesh::draw() {
 
         glColor3fv(col.pointer());
         for (int v = 0; v < 3; v++) {
-            glNormal3f(vertices[triangles[i].v[v]].n[0],
-                       vertices[triangles[i].v[v]].n[1],
-                       vertices[triangles[i].v[v]].n[2]);
+            if (triangles[i].has_normal())
+                glNormal3fv(normals[triangles[i].n[v]].pointer());
+            else
+                glNormal3fv(vertices[triangles[i].v[v]].n.pointer());
 
-            glVertex3f(vertices[triangles[i].v[v]].p[0],
-                       vertices[triangles[i].v[v]].p[1],
-                       vertices[triangles[i].v[v]].p[2]);
+            glVertex3fv(vertices[triangles[i].v[v]].p.pointer());
+
         }
     }
+    glEnd();
+}
+
+void Mesh::drawNormals() {
+    SceneNode::draw();
+
+    glBegin(GL_LINES);
+
+    for (Triangle t : triangles) {
+        for (int i = 0; i < 3; ++i) {
+            Vector3f n;
+            Vector3f v = vertices[t.v[i]].p;
+
+            if(t.has_normal())
+                n = normals[t.n[i]];
+            else
+                n = vertices[t.v[i]].n;
+
+            glColor3fv(n.pointer());
+            glVertex3fv(v.pointer());
+            glVertex3fv((v + n * 0.08f).pointer());
+        }
+    }
+
     glEnd();
 }
 
@@ -218,6 +252,7 @@ void Mesh::drawNotSmooth() {
     for (unsigned int i = 0;i < triangles.size(); ++i) {
         Vector3f col, edge01, edge02, n;
         unsigned int triMat;
+        bool useTriNormals = false;
 
         triMat = triangleMaterials.at(i);
         col = this->materials.at(triMat).getKd();
@@ -258,6 +293,7 @@ bool Mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
     vertices.clear();
     triangles.clear();
     texcoords.clear();
+    normals.clear();
 
     if (randomizeTriangulation) {
         srand(0);
@@ -470,11 +506,11 @@ bool Mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
                            vhandles[1], texhandles[1],
                            vhandles[2], texhandles[2]);
 
-                /*if(nhandles.size() == 3 && normals.size() > 0) {
+                if(nhandles.size() == 3 && normals.size() > 0) {
                     t.n[0] = nhandles[0];
                     t.n[1] = nhandles[1];
                     t.n[2] = nhandles[2];
-                }*/
+                }
 
                 triangles.push_back(t);
 

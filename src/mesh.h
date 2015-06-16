@@ -23,12 +23,17 @@ public:
 
     inline Triangle() {
         v[0] = v[1] = v[2] = 0;
+        n[0] = n[1] = n[2] = 0;
     }
 
     inline Triangle(const Triangle& t2) {
         v[0] = t2.v[0];
         v[1] = t2.v[1];
         v[2] = t2.v[2];
+
+        n[0] = t2.n[0];
+        n[1] = t2.n[1];
+        n[2] = t2.n[2];
 
         t[0] = t2.t[0];
         t[1] = t2.t[1];
@@ -39,6 +44,8 @@ public:
         v[0] = v0;
         v[1] = v1;
         v[2] = v2;
+
+        n[0] = n[1] = n[2] = 0;
 
         t[0] = t0;
         t[1] = t1;
@@ -54,6 +61,10 @@ public:
         v[1] = other.v[1];
         v[2] = other.v[2];
 
+        n[0] = other.n[0];
+        n[1] = other.n[1];
+        n[2] = other.n[2];
+
         t[0] = other.t[0];
         t[1] = other.t[1];
         t[2] = other.t[2];
@@ -61,10 +72,19 @@ public:
         return (*this);
     }
 
+    inline bool has_normal() {
+        return  n[0] != 0 &&
+                n[1] != 0 &&
+                n[2] != 0;
+    }
+
 #pragma mark - Instance variables
 
-    // vertex position and normals
+    // vertex position
     unsigned int v[3];
+
+    // vertex normals
+    unsigned int n[3];
 
     // texture coordinate
     unsigned int t[3];
@@ -94,6 +114,7 @@ public:
 #pragma mark - Drawing
 
     void draw(void);
+    void drawNormals(void);
     void drawNotSmooth(void);
 
 #pragma mark - Raytracing
