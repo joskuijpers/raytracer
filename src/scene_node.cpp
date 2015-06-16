@@ -134,8 +134,7 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
         Ray shadowRay(hit_info.hitPosition, light->position);
 
         // Offset shadow ray to prevent hit the same hitpoint again
-        shadowRay.origin += 0.00001f * shadowRay.direction;
-        shadowRes = g_raytracer->scene->hit(shadowRay);
+        shadowRes = g_raytracer->scene->hit(shadowRay, hit_info.node);
 
         if(!shadowRes.is_hit() || shadowRes.depth < 0.f) {
             // Diffuse
