@@ -10,7 +10,7 @@ Utilitaires pour appliquer une traqueboule a une fenetre OpenGL.
 #include <cstdio>
 
 #include "matrix.h"
-#include "Vector3.h"
+#include "vector3.h"
 
 static const float speedfact = 0.2;
 
