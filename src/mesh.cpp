@@ -250,40 +250,6 @@ void Mesh::drawNormals() {
     glEnd();
 }
 
-void Mesh::drawNotSmooth() {
-    SceneNode::draw();
-
-    glBegin(GL_TRIANGLES);
-
-    for (unsigned int i = 0;i < triangles.size(); ++i) {
-        Vector3f col, edge01, edge02, n;
-        unsigned int triMat;
-        bool useTriNormals = false;
-
-        triMat = triangleMaterials.at(i);
-        col = this->materials.at(triMat).getKd();
-
-        glColor3fv(col.pointer());
-
-        edge01 = vertices[triangles[i].v[1]].p - vertices[triangles[i].v[0]].p;
-        edge02 = vertices[triangles[i].v[2]].p - vertices[triangles[i].v[0]].p;
-        n = edge01.cross(edge02);
-        n.normalize ();
-        glNormal3f(n[0],
-                   n[1],
-                   n[2]);
-
-        for(int v = 0; v < 3; v++) {
-            glVertex3f(vertices[triangles[i].v[v]].p[0],
-                       vertices[triangles[i].v[v]].p[1],
-                       vertices[triangles[i].v[v]].p[2]);
-        }
-
-    }
-
-    glEnd();
-}
-
 #pragma mark - Loading
 
 bool Mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
