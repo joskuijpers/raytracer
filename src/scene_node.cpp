@@ -4,12 +4,6 @@
 #include "raytracing.h"
 #include "config.h"
 
-/**
- * Basic code used for the drawing of every object:
- * applying the translation, rotation and scaling.
- *
- * TODO: use a matrix instead.
- */
 void SceneNode::draw() {
     glMultMatrixf(ws_transformationMatrix.get());
 }
@@ -104,112 +98,114 @@ hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip) {
     return result;
 }
 
-Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
-{
-    Vector3f directColor, reflectedColor, refractedColor;
-    Material mat = hit_info.material;
+inline Vector3f applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned int level, shared_ptr<Light> light);
+inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigned int level);
+inline Vector3f applyRefraction(shared_ptr<Scene> scene, hit_result hit, unsigned int level);
 
-#pragma mark Direct light
+Vector3f SceneNode::apply(shared_ptr<Scene> scene, unsigned int level, hit_result hit) {
+    Vector3f directColor, reflectedColor, refractedColor;
 
     // Make this average of all light sources the ambient light
     Vector3f Ia = Vector3f(0,0,0);
-    for(auto& light : g_raytracer->scene->lights) {
+    for(auto& light : scene->lights) {
         Ia += light->ambient;
     }
-    Ia /= g_raytracer->scene->lights.size();
+    Ia /= scene->lights.size();
 
-    // Calculate the color using Phong shading
-    directColor = Ia * mat.getKa();
+    directColor = Ia * hit.material.getKa();
 
     // Calculate contribution of every light
-    for(auto& light : g_raytracer->scene->lights) {
-        hit_result shadowRes;
-        Vector3f Lm, Rm, V;
-
-        // Get the direction to the light source
-        Lm = light->position - hit_info.hitPosition;
-        Lm.normalize();
-
-        // Direction of a perfectly reflected ray
-        Rm = 2.f * (Lm.dot(hit_info.normal) * hit_info.normal) - Lm;
-        Rm.normalize();
-
-        // Direction towards the viewer
-        V = hit_info.viewer - hit_info.hitPosition;
-        V.normalize();
-
-        // See if this point is in shadow. If it is, do not apply diffuse and specular.
-        Ray shadowRay(hit_info.hitPosition, light->position);
-
-        // Offset shadow ray to prevent hit the same hitpoint again
-        shadowRes = g_raytracer->scene->hit(shadowRay, hit_info.node);
-
-        // If hit by shadow, do not draw anything other than ambient
-        if(!shadowRes.is_hit() || shadowRes.depth < 0.f) {
-            Vector3f lightDir;
-
-            // Get the direction to the light source
-            lightDir = light->position - hit_info.hitPosition;
-            lightDir.normalize();
-
-            // Diffuse shading
-            if(mat.getIl() == 0) // no shading
-                directColor += mat.getKd();
-            else
-                directColor += mat.getKd() * hit_info.normal.dot(lightDir) * light->diffuse;
-
-            // Specular only if specular component and if illum model required specular
-            if(mat.hasKs() && mat.getIl() >= 2) {
-                Vector3f phongDir, viewerDir;
-                float phongTerm;
-
-                // Direction of a perfectly reflected ray
-                phongDir = lightDir - 2.f * (lightDir.dot(hit_info.normal) * hit_info.normal);
-
-                // Direction towards the viewer
-                viewerDir = hit_info.viewer - hit_info.hitPosition;
-                viewerDir.normalize();
-
-                phongTerm = phongDir.dot(viewerDir);
-                if(phongTerm < 0.f)
-                    phongTerm = 0.f;
-
-                directColor += mat.getKs() * powf(phongTerm, mat.getNs()) * light->specular;
-            }
-        }
+    for(auto& light : scene->lights) {
+        directColor += applyDirect(scene, hit, level, light);
     }
-
-#pragma mark Reflection
 
     // Add relection only if in the illumination model
-    if(mat.getIl() >= 3 && level < MAX_TRACE_LEVELS) {
-        Ray reflectionRay;
-        hit_result reflResult;
-
-        reflectionRay.origin = hit_info.hitPosition;
-
-        float reflet = 2.f * (hit_info.lightDirection.dot(hit_info.normal));
-        reflectionRay.updateDirection(hit_info.lightDirection - reflet * hit_info.normal);
-
-        // Hit the scene with our ray
-        reflResult = g_raytracer->scene->hit(reflectionRay, hit_info.node);
-
-        // If we hit something, add color
-        if(reflResult.is_hit() && reflResult.depth >= 0.f) {
-            // Get the hit color
-            reflectedColor = reflResult.node->apply(level + 1, reflResult);
-
-            reflectedColor *= mat.getKs();
-        }
+    if(hit.material.getIl() >= 3 && level < MAX_TRACE_LEVELS) {
+        reflectedColor = applyReflection(scene, hit, level);
     }
 
-#pragma mark Refraction
-
     // Add refraction only if in the illumination model
-    if(mat.getIl() >= 6 && level < MAX_TRACE_LEVELS) {
-        Vector3f It;
-        refractedColor = (1.f - mat.getKs()) * mat.getTf() * It;
+    if(hit.material.getIl() >= 6 && level < MAX_TRACE_LEVELS) {
+        refractedColor = applyRefraction(scene, hit, level);
     }
 
     return directColor + reflectedColor + refractedColor;
+}
+
+/**
+ * Calculate the contribution of direct light using Phong shading
+ */
+inline Vector3f applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned int level [[gnu::unused]], shared_ptr<Light> light) {
+    hit_result shadowRes;
+    Vector3f lightDir;
+    Vector3f color;
+
+    // See if this point is in shadow. If it is, do not apply diffuse and specular.
+    Ray shadowRay(hit.hitPosition, light->position);
+
+    // Offset shadow ray to prevent hit the same hitpoint again
+    // TODO: if convex, always skip self-shadowing. If not convex, find another way.
+    shadowRes = scene->hit(shadowRay, hit.node);
+
+    // If hit by shadow, do not draw anything other than ambient
+    if(shadowRes.is_hit() && shadowRes.depth >= 0.f)
+        return Vector3f(0,0,0);
+
+    // No shading
+    if(hit.material.getIl() == 0)
+        return hit.material.getKd();
+
+    // Get the direction to the light source
+    lightDir = light->position - hit.hitPosition;
+    lightDir.normalize();
+
+    // Diffuse shading
+    color += hit.material.getKd() * hit.normal.dot(lightDir) * light->diffuse;
+
+    // Specular only if specular component and if illum model required specular
+    if(hit.material.hasKs() && hit.material.getIl() >= 2) {
+        Vector3f phongDir, viewerDir;
+        float phongTerm;
+
+        // Direction of a perfectly reflected ray
+        phongDir = lightDir - 2.f * (lightDir.dot(hit.normal) * hit.normal);
+
+        // Direction towards the viewer
+        viewerDir = hit.viewer - hit.hitPosition;
+        viewerDir.normalize();
+
+        phongTerm = phongDir.dot(viewerDir);
+        if(phongTerm < 0.f)
+            phongTerm = 0.f;
+
+        color += hit.material.getKs() * powf(phongTerm, hit.material.getNs()) * light->specular;
+    }
+
+    return color;
+}
+
+inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigned int level) {
+    Ray reflectionRay;
+    hit_result reflResult;
+
+    reflectionRay.origin = hit.hitPosition;
+
+    float reflet = 2.f * (hit.lightDirection.dot(hit.normal));
+    reflectionRay.updateDirection(hit.lightDirection - reflet * hit.normal);
+
+    // Hit the scene with our ray
+    reflResult = scene->hit(reflectionRay, hit.node);
+
+    // If we hit something, add color
+    if(reflResult.is_hit() && reflResult.depth >= 0.f)
+        return reflResult.node->apply(scene, level + 1, reflResult) * hit.material.getKs();
+
+    return Vector3f(0,0,0);
+}
+
+inline Vector3f applyRefraction(shared_ptr<Scene> scene [[gnu::unused]], hit_result hit, unsigned int level [[gnu::unused]]) {
+    Vector3f It;
+
+
+    return (1.f - hit.material.getKs()) * hit.material.getTf() * It;
 }

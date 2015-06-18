@@ -96,7 +96,7 @@ public:
     virtual hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
 
     // Apply method: applies the hit.
-    virtual Vector3f apply(unsigned int level, hit_result hit_info);
+    virtual Vector3f apply(shared_ptr<Scene> scene, unsigned int level, hit_result hit);
 
 #pragma mark - Properties
     const char *name;
