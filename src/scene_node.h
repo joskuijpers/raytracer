@@ -45,7 +45,7 @@ public:
     /// The hit node
     shared_ptr<SceneNode> node;
 
-    /// Position of the hit. OBJECT SPACE? WORLD SPACE?
+    /// Position of the hit. In World Space
     Vector3f hitPosition;
 
     /// Normal at that location.
@@ -56,6 +56,9 @@ public:
 
     /// Viewer position (ray origin, ws)
     Vector3f viewer;
+
+    /// Direction the light came from
+    Vector3f lightDirection;
 };
 
 /**

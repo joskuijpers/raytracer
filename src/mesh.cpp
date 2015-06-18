@@ -84,23 +84,24 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     size_t triangleIndex = 0;
     Triangle nearestTriangle;
     float nearestHitS = 0.f, nearestHitT = 0.f;
+    Ray os_ray;
 
     // Store the viewer position for specular shading
     result.viewer = ray.origin;
+    result.lightDirection = ray.direction;
 
     // Transform the ray, effectively transforming this object
-    ray = ray.transform(ws_transformationMatrix);
+    os_ray = ray.transform(ws_transformationMatrix);
 
-#pragma omp parallel for
     for(size_t it = 0; it < this->triangles.size(); ++it) {
         int intersectResult;
         Vector3f intPoint;
         float hit, hitS, hitT;
         Triangle t = this->triangles[it];
 
-        intersectResult = rayTriangleIntersect(ray, t, intPoint, hit, hitS, hitT);
+        intersectResult = rayTriangleIntersect(os_ray, t, intPoint, hit, hitS, hitT);
 
-        if (likely(intersectResult != INTERSECT))
+        if (intersectResult != INTERSECT)
             continue;
 
         // Skip if not nearer than prev hit.
@@ -118,12 +119,17 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     if(result.depth == FLT_MAX)
         return result;
 
+    Vector3f os_hitpoint = os_ray.origin + result.depth * os_ray.direction;
+    Vector3f ws_hitpoint = ws_transformationMatrix * os_hitpoint;
+
+    result.depth = (ws_hitpoint - ray.origin).length();
+
     // Otherwise, mark as hit and add apply info.
     result.hit = true;
     result.node = shared_from_this();
 
-    // Position the ray hit
-    result.hitPosition = ray.origin + result.depth * ray.direction;
+    // Position the ray hit (object space)
+    result.hitPosition = ws_hitpoint;
 
     // Interpolate normal with the 3 vertex normals
     result.normal = normalOfFace(nearestTriangle, nearestHitS, nearestHitT);
@@ -221,6 +227,7 @@ void Mesh::draw() {
 }
 
 void Mesh::drawNormals() {
+<<<<<<< HEAD
     SceneNode::draw();
 
     glBegin(GL_LINES);
@@ -239,40 +246,6 @@ void Mesh::drawNormals() {
             glVertex3fv(v.pointer());
             glVertex3fv((v + n * 0.08f).pointer());
         }
-    }
-
-    glEnd();
-}
-
-void Mesh::drawNotSmooth() {
-    SceneNode::draw();
-
-    glBegin(GL_TRIANGLES);
-
-    for (unsigned int i = 0;i < triangles.size(); ++i) {
-        Vector3f col, edge01, edge02, n;
-        unsigned int triMat;
-        bool useTriNormals = false;
-
-        triMat = triangleMaterials.at(i);
-        col = this->materials.at(triMat).getKd();
-
-        glColor3fv(col.pointer());
-
-        edge01 = vertices[triangles[i].v[1]].p - vertices[triangles[i].v[0]].p;
-        edge02 = vertices[triangles[i].v[2]].p - vertices[triangles[i].v[0]].p;
-        n = edge01.cross(edge02);
-        n.normalize ();
-        glNormal3f(n[0],
-                   n[1],
-                   n[2]);
-
-        for(int v = 0; v < 3; v++) {
-            glVertex3f(vertices[triangles[i].v[v]].p[0],
-                       vertices[triangles[i].v[v]].p[1],
-                       vertices[triangles[i].v[v]].p[2]);
-        }
-
     }
 
     glEnd();
@@ -547,8 +520,7 @@ bool Mesh::loadMaterial(const char *filename, std::map<string, unsigned int> &ma
     while(in && !feof(in)) {
         fgets(line, LINE_LEN, in);
 
-        if (line[0] == '#') // skip comments
-        {
+        if (line[0] == '#') { // skip comments
             memset(line, 0, LINE_LEN);
             continue;
         } else if( isspace(line[0])||line[0]=='\0') {
@@ -594,6 +566,11 @@ bool Mesh::loadMaterial(const char *filename, std::map<string, unsigned int> &ma
         {
             sscanf(line, "Ks %f %f %f", &f1, &f2, &f3);
             mat.setKs(f1, f2, f3);
+        }
+        else if (strncmp(line, "Tf ", 3) == 0) // transmission filter
+        {
+            sscanf(line, "Tf %f %f %f", &f1, &f2, &f3);
+            mat.setTf(f1, f2, f3);
         }
         else if (strncmp(line, "Ns ", 3) == 0) // Shininess [0..200]
         {

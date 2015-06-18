@@ -35,6 +35,7 @@ hit_result Sphere::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     result.hit = true;
     result.node = shared_from_this();
     result.viewer = ray.origin;
+    result.lightDirection = ray.direction;
 
     // Calculate closest distance
     result.depth = (-b + sqrtf(discriminant)) / 2 * a;
@@ -47,7 +48,7 @@ hit_result Sphere::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
             result.depth = t;
     }
 
-    result.hitPosition = ray.origin + result.depth * ray.direction;
+    result.hitPosition = ws_transformationMatrix * (ray.origin + result.depth * ray.direction);
 
     result.normal = result.hitPosition - translation;
     result.normal.normalize();

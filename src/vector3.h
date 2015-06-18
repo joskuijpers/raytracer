@@ -43,6 +43,12 @@ template <class T> const Vector3<T> operator- (const Vector3<T> &p1, const Vecto
                        p1[2] - p2[2]);
 }
 
+template <class T> const Vector3<T> operator- (const float f, const Vector3<T> &p) {
+    return Vector3<T> (f - p[0],
+                       f - p[1],
+                       f - p[2]);
+}
+
 template <class T> const Vector3<T> operator- (const Vector3<T> &p) {
     return Vector3<T> (-p[0],
                        -p[1],
@@ -59,6 +65,12 @@ template <class T> bool operator== (const Vector3<T> &p1, const Vector3<T> &p2) 
     return (p1[0] == p2[0] &&
             p1[1] == p2[1] &&
             p1[2] == p2[2]);
+}
+
+template <class T> const Vector3<T> operator/ (const float divisor, const Vector3<T> &p) {
+    return Vector3<T> (divisor / p[0],
+                       divisor / p[1],
+                       divisor / p[2]);
 }
 
 template <class T> bool operator< (const Vector3<T> &a, const Vector3<T> &b) {

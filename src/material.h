@@ -32,6 +32,9 @@ public:
         Tr = m.Tr;
         Tr_is_set = m.Tr_is_set; // transparency (use this value to trade off reflection/refraction
 
+        Tf = m.Tf;
+        Tf_is_set = m.Tf_is_set;
+
         Il = m.Il;
         name = m.name;
 
@@ -47,6 +50,9 @@ public:
         Ni_is_set = false;
         Tr_is_set = false;
         Il_is_set = false;
+        Tf_is_set = true;
+
+        Tf = Vector3f(1,1,1);
 
         textureName = "empty";
     }
@@ -62,6 +68,7 @@ public:
     bool hasNi(void) { return Ni_is_set; }
     bool hasIl(void) { return Il_is_set; }
     bool hasTr(void) { return Tr_is_set; }
+    bool hasTf(void) { return Tf_is_set; }
 
     void setKd(float r, float g, float b) {
         Kd = Vector3f(r,g,b);
@@ -98,6 +105,11 @@ public:
         Tr_is_set = true;
     }
 
+    void setTf(float r, float g, float b) {
+        Tf = Vector3f(r,g,b);
+        Tf_is_set = true;
+    }
+
     void setTextureName(const std::string &s) {
         textureName = s;
     }
@@ -109,6 +121,7 @@ public:
     const Vector3f& getKd(void) const { return Kd; }
     const Vector3f& getKa(void) const { return Ka; }
     const Vector3f& getKs(void) const { return Ks; }
+    const Vector3f& getTf(void) const { return Tf; }
 
     float getNi(void) const { return Ni; }
     float getNs(void) const { return Ns; } // shininess
@@ -142,16 +155,24 @@ private:
     float Ns;
     bool Ns_is_set;
 
+    // optical density
     float Ni;
     bool Ni_is_set;
 
     // illumination model
     int Il;
     bool Il_is_set;
-    
+
     // transperency (alpha)
     float Tr;
     bool Tr_is_set;
+
+    // transmission filter
+    Vector3f Tf;
+    bool Tf_is_set;
+
+    // Ir   intensity from reflected direction
+    // It   intensity from transmitted direction
     
     std::string name;
     std::string textureName;

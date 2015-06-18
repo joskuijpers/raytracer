@@ -16,7 +16,7 @@ using namespace std;
 #define TESTSET 4
 
 void Raytracer::init(void) {
-    scene->background_color = Vector3f(.6f,.2f,.1f);
+    scene->background_color = Vector3f(.4f,.1f,.05f);
 
 #if TESTSET == 1
     unique_ptr<Mesh> cube(new Mesh("cube"));
@@ -44,8 +44,11 @@ void Raytracer::init(void) {
     sphere2->parent = scene;
 
     Material mat;
-    mat.setKd(.9f, .9f, .9f);
-    mat.setKa(.2f, .2f, .2f);
+    mat.setKd(.9f, .3f, .9f);
+    mat.setKa(.2f, .02f, .2f);
+    mat.setKs(1.f, 1.f, 1.f);
+    mat.setNs(27);
+    mat.setIl(4);
 
     sphere->material = mat;
     sphere2->material = mat;
@@ -63,7 +66,6 @@ void Raytracer::init(void) {
 #elif TESTSET == 3
     unique_ptr<Mesh> strawberry(new Mesh("strawberry"));
     strawberry->loadMesh("resource/strawberry.obj", true);
-    strawberry->computeVertexNormals();
     strawberry->parent = scene;
     scene->children.push_back(move(strawberry));
 #elif TESTSET == 4
@@ -72,6 +74,35 @@ void Raytracer::init(void) {
 //    teapot->computeVertexNormals();
     teapot->parent = scene;
     scene->children.push_back(move(teapot));
+
+    unique_ptr<Mesh> teapot2(new Mesh("teapot"));
+    teapot2->loadMesh("resource/teapot.obj", true);
+    teapot2->computeVertexNormals();
+    teapot2->parent = scene;
+    teapot2->translation = Vector3f(-2,0,0);
+    scene->children.push_back(move(teapot2));
+
+    unique_ptr<Sphere> sphere(new Sphere("sphere"));
+    sphere->parent = scene;
+    sphere->translation = Vector3f(0,0.2f,1.f);
+    sphere->radius = 0.2f;
+
+    Material mat;
+    mat.setKd(.9f, .3f, .9f);
+    mat.setKa(.2f, .02f, .2f);
+    mat.setKs(1.f, 1.f, 1.f);
+    mat.setNs(27);
+    mat.setIl(6);
+
+    sphere->material = mat;
+
+    scene->children.push_back(move(sphere));
+#elif TESTSET == 5
+    unique_ptr<Mesh> cube(new Mesh("cube"));
+    cube->loadMesh("resource/cube.obj", true);
+    cube->computeVertexNormals();
+    cube->parent = scene;
+    scene->children.push_back(move(cube));
 #endif
 
     // Create a single lighblendert
@@ -97,13 +128,15 @@ void Raytracer::draw(void) {
 
     glDisable(GL_LIGHTING);
 
-    glBegin(GL_LINES);
-    glColor3f(0,1,1);
-    glVertex3f(testRay.origin[0], testRay.origin[1], testRay.origin[2]);
+    /*glBegin(GL_LINES);
+     {
+     glColor3f(0,1,1);
+     glVertex3f(testRay.origin[0], testRay.origin[1], testRay.origin[2]);
 
-    glColor3f(0,0,1);
-    glVertex3f(testRay.dest[0], testRay.dest[1], testRay.dest[2]);
-    glEnd();
+     glColor3f(0,0,1);
+     glVertex3f(testRay.dest[0], testRay.dest[1], testRay.dest[2]);
+     }
+    glEnd();*/
 
     glPointSize(10);
 
