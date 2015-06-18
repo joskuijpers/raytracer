@@ -227,7 +227,6 @@ void Mesh::draw() {
 }
 
 void Mesh::drawNormals() {
-<<<<<<< HEAD
     SceneNode::draw();
 
     glBegin(GL_LINES);
