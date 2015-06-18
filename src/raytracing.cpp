@@ -71,15 +71,32 @@ void Raytracer::init(void) {
 #elif TESTSET == 4
     unique_ptr<Mesh> teapot(new Mesh("teapot"));
     teapot->loadMesh("resource/teapot.obj", true);
+    teapot->computeVertexNormals();
     teapot->parent = scene;
     scene->children.push_back(move(teapot));
 
-/*    unique_ptr<Mesh> teapot2(new Mesh("teapot"));
+    unique_ptr<Mesh> teapot2(new Mesh("teapot"));
     teapot2->loadMesh("resource/teapot.obj", true);
     teapot2->computeVertexNormals();
     teapot2->parent = scene;
     teapot2->translation = Vector3f(-2,0,0);
-    scene->children.push_back(move(teapot2));*/
+    scene->children.push_back(move(teapot2));
+
+    unique_ptr<Sphere> sphere(new Sphere("sphere"));
+    sphere->parent = scene;
+    sphere->translation = Vector3f(0,0.2f,1.f);
+    sphere->radius = 0.2f;
+
+    Material mat;
+    mat.setKd(.9f, .3f, .9f);
+    mat.setKa(.2f, .02f, .2f);
+    mat.setKs(1.f, 1.f, 1.f);
+    mat.setNs(27);
+    mat.setIl(6);
+
+    sphere->material = mat;
+
+    scene->children.push_back(move(sphere));
 #elif TESTSET == 5
     unique_ptr<Mesh> cube(new Mesh("cube"));
     cube->loadMesh("resource/cube.obj", true);
