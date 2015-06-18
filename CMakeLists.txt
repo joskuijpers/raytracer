@@ -1,13 +1,14 @@
 cmake_minimum_required(VERSION 2.8)
 project(raytracer)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fopenmp")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}")
 
 set(SOURCE_FILES
     src/color.h
     src/compiler_opt.h
-    src/group.cpp
-    src/group.h
+    src/aabb.cpp
+    src/aabb.h
     src/image_writer.cpp
     src/image_writer.h
     src/main.cpp
@@ -23,6 +24,7 @@ set(SOURCE_FILES
     src/scene.h
     src/scene_node.cpp
     src/scene_node.h
+    src/vector4.h
     src/sphere.cpp
     src/sphere.h
     src/trackball.h
