@@ -17,7 +17,7 @@ using namespace std;
 #define TESTSET 4
 
 void Raytracer::init(void) {
-    scene->background_color = Vector3f(.4f,.1f,.05f);
+    scene->background_color = Vector3f(.4f,.4f,.8f);
 
 #if TESTSET == 1
     unique_ptr<Mesh> cube(new Mesh("cube"));
@@ -126,6 +126,11 @@ void Raytracer::drawDebugRay() {
         ray->draw();
     }
 
+    if(!testrays.empty()) {
+        TestRay lastray = testrays.back();
+        lastray.drawInfo();
+
+    }
 
 
 }
@@ -141,6 +146,7 @@ void Raytracer::draw(void) {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
 
     glDisable(GL_LIGHTING);
+
 
     drawDebugRay();
 
