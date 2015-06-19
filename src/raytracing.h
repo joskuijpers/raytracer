@@ -32,6 +32,7 @@ public:
      */
     void draw(void);
 
+    void drawDebugRay();
     /**
      * Additional keyboard functionality.
      */
@@ -44,7 +45,7 @@ public:
      *
      * @return Color of the pixel by the ray.
      */
-    Vector3f performRayTracing(const Vector3f &origin, const Vector3f &dest);
+    Vector3f performRayTracing(const Vector3f &origin, const Vector3f &dest, bool testray = false);
 
 #pragma mark - Properties
 
@@ -60,4 +61,5 @@ public:
 
     /// Color of the test ray impact point
     Vector3f testRayColor;
+    ApplyResult testRayResult;
 };
