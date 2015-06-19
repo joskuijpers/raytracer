@@ -113,14 +113,12 @@ ApplyResult SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_
     Vector3f ambiantColor, diffuseColor, specularColor, reflectedColor, refractedColor;
 #pragma mark Direct light
 
-    // Make this average of all light sources the ambient light
+    // Sum the ambiant
     Vector3f Ia = Vector3f(0,0,0);
     for(auto& light : g_raytracer->scene->lights) {
         Ia += light->ambient;
     }
-    Ia /= g_raytracer->scene->lights.size();
 
-    // Calculate the color using Phong shading
     ambiantColor = Ia * mat.getKa();
 
     // Calculate contribution of every light
@@ -133,46 +131,37 @@ ApplyResult SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_
         Lm.normalize();
 
         // Direction of a perfectly reflected ray
-        Rm = 2.f * (Lm.dot(hit_info.normal) * hit_info.normal) - Lm;
-        Rm.normalize();
+        //Rm = 2.f * (Lm.dot(hit_info.normal) * hit_info.normal) - Lm;
+        //Rm.normalize();
 
         // Direction towards the viewer
         V = hit_info.viewer - hit_info.hitPosition;
         V.normalize();
 
         // See if this point is in shadow. If it is, do not apply diffuse and specular.
-        Ray shadowRay(hit_info.hitPosition, light->position);
-
         // Offset shadow ray to prevent hit the same hitpoint again
+        Ray shadowRay(hit_info.hitPosition + Lm * 0.001, light->position);
+
         shadowRes = g_raytracer->scene->hit(shadowRay, hit_info.node);
 
         // If hit by shadow, do not draw anything other than ambient
         if(!shadowRes.is_hit() || shadowRes.depth < 0.f) {
-            Vector3f lightDir;
-
-            // Get the direction to the light source
-            lightDir = light->position - hit_info.hitPosition;
-            lightDir.normalize();
 
             // Diffuse shading
             if(mat.getIl() == 0) // no shading
                 diffuseColor += mat.getKd();
             else
-                diffuseColor += mat.getKd() * hit_info.normal.dot(lightDir) * light->diffuse;
+                diffuseColor += mat.getKd() * hit_info.normal.dot(Lm) * light->diffuse;
 
             // Specular only if specular component and if illum model required specular
             if(mat.hasKs() && mat.getIl() >= 2) {
                 Vector3f phongDir, viewerDir;
                 float phongTerm;
 
-                // Direction of a perfectly reflected ray
-                phongDir = lightDir - 2.f * (lightDir.dot(hit_info.normal) * hit_info.normal);
+                Vector3f half = (Lm + V);
+                half.normalize();
+                phongTerm = half.dot(hit_info.normal);
 
-                // Direction towards the viewer
-                viewerDir = hit_info.viewer - hit_info.hitPosition;
-                viewerDir.normalize();
-
-                phongTerm = phongDir.dot(viewerDir);
                 if(phongTerm < 0.f)
                     phongTerm = 0.f;
 

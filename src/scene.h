@@ -11,9 +11,9 @@ class Light
 public:
 
     Light(Vector3f position) : position(position) {
-        ambient = Vector3f(1,1,1);
+        ambient = Vector3f(.1f,.1f,.1f);
         diffuse = Vector3f(.5f,.5f,.5f);
-        specular = Vector3f(1,1,1);
+        specular = Vector3f(0.5f,0.5f,0.5f);
     }
 
 #pragma mark - Properties
