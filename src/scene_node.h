@@ -61,6 +61,35 @@ public:
     Vector3f lightDirection;
 };
 
+struct ApplyResult{
+    Vector3f ambiantColor, diffuseColor, specularColor, reflectedColor, refractedColor;
+
+
+    ApplyResult() { }
+
+
+    ApplyResult(Vector3f &ambiantColor, Vector3f &diffuseColor, Vector3f &specularColor, Vector3f &reflectedColor,
+                Vector3f &refractedColor) : ambiantColor(ambiantColor), diffuseColor(diffuseColor),
+                                            specularColor(specularColor), reflectedColor(reflectedColor),
+                                            refractedColor(refractedColor) { }
+
+    void update(Vector3f &ambiantColor, Vector3f &diffuseColor, Vector3f &specularColor, Vector3f &reflectedColor,
+                Vector3f &refractedColor){
+        this->ambiantColor = ambiantColor;
+        this->diffuseColor = diffuseColor;
+        this->specularColor = specularColor;
+        this->reflectedColor = reflectedColor;
+        this->refractedColor = refractedColor;
+
+    }
+
+    Vector3f sum(){
+        return ambiantColor+diffuseColor+specularColor+reflectedColor+refractedColor;
+    }
+
+};
+
+
 /**
  * A node in the scene.
  *
@@ -73,7 +102,6 @@ public:
     SceneNode(const char *name) : name(name), translation(Vector3f(0,0,0)), scale(Vector3f(1,1,1)), rotation(Vector3f(1,1,1)), rotationAngle(0.f) {}
 
     // abstract calculateBoundingBox()
-
 #pragma mark - Drawing
 
     /// The draw method for OpenGL display. Override it.
@@ -83,6 +111,8 @@ public:
 
 #pragma mark - Raytracing
 
+
+    ApplyResult extended_result;
     /// Create the bounding box
     virtual void createBoundingBox(void);
 
@@ -96,7 +126,7 @@ public:
     virtual hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
 
     // Apply method: applies the hit.
-    virtual Vector3f apply(unsigned int level, hit_result hit_info);
+    virtual ApplyResult apply(unsigned int level, hit_result hit_info);
 
 #pragma mark - Properties
     const char *name;

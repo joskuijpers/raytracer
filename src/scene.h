@@ -38,8 +38,8 @@ public:
 
     // Unused
     void createBoundingBox(void) {};
-    Vector3f apply(unsigned int level [[gnu::unused]], hit_result hit_info [[gnu::unused]]) {
-        return Vector3f(1,1,1);
+    ApplyResult apply(unsigned int level [[gnu::unused]], hit_result hit_info [[gnu::unused]]) {
+        return ApplyResult();
     };
 
 #pragma mark - Properties

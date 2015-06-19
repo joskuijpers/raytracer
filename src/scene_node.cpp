@@ -104,10 +104,13 @@ hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip) {
     return result;
 }
 
-Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
+
+
+
+ApplyResult SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
 {
-    Vector3f directColor, reflectedColor, refractedColor;
     Material mat = hit_info.material;
+    Vector3f ambiantColor, diffuseColor, specularColor, reflectedColor, refractedColor;
 
 #pragma mark Direct light
 
@@ -119,7 +122,7 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
     Ia /= g_raytracer->scene->lights.size();
 
     // Calculate the color using Phong shading
-    directColor = Ia * mat.getKa();
+    ambiantColor = Ia * mat.getKa();
 
     // Calculate contribution of every light
     for(auto& light : g_raytracer->scene->lights) {
@@ -154,9 +157,9 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
 
             // Diffuse shading
             if(mat.getIl() == 0) // no shading
-                directColor += mat.getKd();
+                diffuseColor += mat.getKd();
             else
-                directColor += mat.getKd() * hit_info.normal.dot(lightDir) * light->diffuse;
+                diffuseColor += mat.getKd() * hit_info.normal.dot(lightDir) * light->diffuse;
 
             // Specular only if specular component and if illum model required specular
             if(mat.hasKs() && mat.getIl() >= 2) {
@@ -174,7 +177,7 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
                 if(phongTerm < 0.f)
                     phongTerm = 0.f;
 
-                directColor += mat.getKs() * powf(phongTerm, mat.getNs()) * light->specular;
+                specularColor += mat.getKs() * powf(phongTerm, mat.getNs()) * light->specular;
             }
         }
     }
@@ -197,7 +200,7 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
         // If we hit something, add color
         if(reflResult.is_hit() && reflResult.depth >= 0.f) {
             // Get the hit color
-            reflectedColor = reflResult.node->apply(level + 1, reflResult);
+            reflectedColor = reflResult.node->apply(level + 1, reflResult).sum();
 
             reflectedColor *= mat.getKs();
         }
@@ -210,6 +213,6 @@ Vector3f SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_inf
         Vector3f It;
         refractedColor = (1.f - mat.getKs()) * mat.getTf() * It;
     }
+    return ApplyResult(ambiantColor, diffuseColor, specularColor, reflectedColor, refractedColor);
 
-    return directColor + reflectedColor + refractedColor;
 }
