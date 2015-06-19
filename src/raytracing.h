@@ -7,6 +7,7 @@
 #include "color.h"
 #include "scene.h"
 #include "ray.h"
+#include "testray.h"
 
 /// Transform a mouse position to a source/destination pair
 extern void produceRay(int x_I, int y_I, Vector3f &origin, Vector3f &dest);
@@ -57,9 +58,5 @@ public:
     shared_ptr<Scene> scene;
 
     /// Test ray
-    Ray testRay;
-
-    /// Color of the test ray impact point
-    Vector3f testRayColor;
-    ApplyResult testRayResult;
+    vector<TestRay> testrays;
 };

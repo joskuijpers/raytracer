@@ -117,112 +117,16 @@ void Raytracer::init(void) {
 
 #pragma mark - Events
 
-void writeText(char *text) {
-    char *p = nullptr;
-    for (p = text; *p != '\0'; p++)
-        glutStrokeCharacter(GLUT_STROKE_ROMAN, *p);
-}
 
-GLdouble debugscreen[16];
 
 void Raytracer::drawDebugRay() {
     //draw the line
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-    glBegin(GL_LINES);
-    {
-        Vector3f dest = testRay.origin + testRay.direction * 100;
-        glColor3fv(testRayColor.pointer());
-        glVertex3fv(testRay.origin.pointer());
-        glVertex3fv(dest.pointer());
 
-
+    for(auto ray = testrays.begin(); ray != testrays.end(); ++ray){
+        ray->draw();
     }
-    glEnd();
-    glPopAttrib();
-
-    //draw the text box
-    const double corners[4][3] = {{0.0,   0.0,   0.0},
-                                  {100.0, 0.0,   0.0},
-                                  {100.0, 100.0, 0.0},
-                                  {0.0,   100.0, 0.0}};
-
-    Vector3f textpos = testRay.origin + testRay.direction * 2;
-    glPushMatrix();
-    glColor3f(0.0f, 1.0f, 0.0f);
-    //glRotatef(g_raytracer->scene->rotationAngle, g_raytracer->scene->rotation[0], g_raytracer->scene->rotation[1], g_raytracer->scene->rotation[2]);
 
 
-    glTranslatef(textpos[0], textpos[1], textpos[2]);
-    glScalef(0.8, 0.8, 0.8);
-    glPushMatrix();
-    glScalef(0.005, 0.005, 0.005);
-    glTranslatef(0.0, -85.0, -5.0);
-    glColor4f(1.0, 1.0, 1.0, 0.1);
-    glBegin(GL_QUADS);
-    {
-        for (int i = 0; i < 4; i++) {
-            glVertex3dv(corners[i]);
-        }
-
-    }
-    glEnd();
-    glPopMatrix();
-    glColor3f(0.2, 0.2, 0.2);
-
-    glScalef(0.0008f, 0.0008f, 0.0008f);
-    glPushMatrix();
-    {
-        Vector3f tmp = testRayResult.ambiantColor * 2; //cheat a bit by making it brighter
-        glColor3fv(tmp.pointer());
-        writeText("ambiant:");
-        glBegin(GL_QUADS);
-        for (int i = 0; i < 5; i++) {
-            glVertex3dv(corners[i]);
-        }
-        glEnd();
-    }
-    glPopMatrix();
-    glTranslatef(0.0f, -120.0f, 0.0f);
-    glPushMatrix();
-    {
-        Vector3f tmp = testRayResult.diffuseColor * 2; //cheat a bit by making it brighter
-        glColor3fv(tmp.pointer());
-        writeText("diffuse:");
-        glBegin(GL_QUADS);
-        for (int i = 0; i < 5; i++) {
-            glVertex3dv(corners[i]);
-        }
-        glEnd();
-    }
-    glPopMatrix();
-    glTranslatef(0.0f, -120.0f, 0.0f);
-    glPushMatrix();
-    {
-        Vector3f tmp = testRayResult.specularColor * 2; //cheat a bit by making it brighter
-        glColor3fv(tmp.pointer());
-        writeText("specular:");
-        glBegin(GL_QUADS);
-        for (int i = 0; i < 5; i++) {
-            glVertex3dv(corners[i]);
-        }
-        glEnd();
-    }
-    glPopMatrix();
-    glTranslatef(0.0f, -120.0f, 0.0f);
-    glPushMatrix();
-    {
-        Vector3f tmp = testRayResult.reflectedColor * 2;
-        glColor3fv(tmp.pointer());
-        writeText("reflection:");
-        glBegin(GL_QUADS);
-        for (int i = 0; i < 5; i++) {
-            glVertex3dv(corners[i]);
-        }
-        glEnd();
-    }
-    glPopMatrix();
-
-    glPopMatrix();
 
 }
 
@@ -250,8 +154,7 @@ void Raytracer::draw(void) {
 }
 
 void Raytracer::keyboard(char t [[gnu::unused]], int mouseX [[gnu::unused]], int mouseY [[gnu::unused]], const Vector3f& rayOrigin, const Vector3f& rayDest) {
-    testRay.update(rayOrigin, rayDest);
-    testRayColor = performRayTracing(rayOrigin, rayDest, true);
+    performRayTracing(rayOrigin, rayDest, true);
 
     switch (t) {
         case 'n':
@@ -260,11 +163,15 @@ void Raytracer::keyboard(char t [[gnu::unused]], int mouseX [[gnu::unused]], int
         case 'b':
             scene->showBoundingBoxes = !scene->showBoundingBoxes;
             break;
+        case 'c':
+            testrays.clear();
+            break;
         default:
             std::cout << t << " pressed! The mouse was in location " << mouseX << ", " << mouseY << "!" << std::endl;
             break;
     }
 }
+
 
 #pragma mark - Raytracing
 
@@ -290,10 +197,7 @@ Vector3f Raytracer::performRayTracing(const Vector3f &origin, const Vector3f &de
     }
 
     // Apply the hit, this is recursive.
-    ApplyResult col = result.node->apply(1, result);
-    if (testray) {
-        testRayResult = col;
-    }
+    ApplyResult col = result.node->apply(1, result, testray);
 
     return col.sum();
 }

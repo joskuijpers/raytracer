@@ -107,11 +107,10 @@ hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip) {
 
 
 
-ApplyResult SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_info)
+ApplyResult SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_info, bool testray)
 {
     Material mat = hit_info.material;
     Vector3f ambiantColor, diffuseColor, specularColor, reflectedColor, refractedColor;
-
 #pragma mark Direct light
 
     // Make this average of all light sources the ambient light
@@ -200,10 +199,14 @@ ApplyResult SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_
         // If we hit something, add color
         if(reflResult.is_hit() && reflResult.depth >= 0.f) {
             // Get the hit color
-            reflectedColor = reflResult.node->apply(level + 1, reflResult).sum();
+            reflectedColor = reflResult.node->apply(level + 1, reflResult, testray).sum();
+
+
 
             reflectedColor *= mat.getKs();
         }
+
+
     }
 
 #pragma mark Refraction
@@ -213,6 +216,13 @@ ApplyResult SceneNode::apply(unsigned int level [[gnu::unused]], hit_result hit_
         Vector3f It;
         refractedColor = (1.f - mat.getKs()) * mat.getTf() * It;
     }
-    return ApplyResult(ambiantColor, diffuseColor, specularColor, reflectedColor, refractedColor);
+
+    auto aplres = ApplyResult(ambiantColor, diffuseColor, specularColor, reflectedColor, refractedColor);
+
+    if (testray) {
+        g_raytracer->testrays.push_back(TestRay(Ray(hit_info.viewer, hit_info.hitPosition), hit_info.depth, aplres));
+    }
+
+    return aplres;
 
 }

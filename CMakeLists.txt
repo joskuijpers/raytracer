@@ -30,7 +30,9 @@ set(SOURCE_FILES
     src/trackball.h
     src/trackball.cpp
     src/vector3.h
-    src/vertex.h)
+    src/vertex.h
+     src/testray.h
+     src/testray.cpp)
 
 add_executable(raytracer ${SOURCE_FILES})
 
