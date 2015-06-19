@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cassert>
 #include <chrono>
+#include <string.h>
 
 #ifdef USEOMP
 # include <libiomp/omp.h>
@@ -36,73 +37,6 @@ void animate() {
     glutPostRedisplay();
 }
 
-/**
- * Application entry point.
- */
-int main(int argc, char *argv[])
-{
-    glutInit(&argc, argv);
-
-    // framebuffer setup
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-
-    // positioning and size of window
-    glutInitWindowPosition(200, 100);
-    glutInitWindowSize(g_raytracer->windowSizeX, g_raytracer->windowSizeY);
-    glutCreateWindow(argv[0]);
-
-    // initialize viewpoint
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0,0,-4);
-
-    // Setup trackball
-    tbInitTransform();
-    tbHelp();
-
-    g_raytracer->scene->camera = getCameraPosition();
-
-    // activate the light following the camera
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_COLOR_MATERIAL);
-
-    // Set light position
-    int lightPosition[4] = {0,0,2,0};
-    int lightMaterial[4] __attribute__((unused)) = {1,1,1,1};
-    glLightiv(GL_LIGHT0, GL_POSITION, lightPosition);
-
-    // (Missing) normals will be normalized in the graphics pipeline
-    glEnable(GL_NORMALIZE);
-
-    // Clear color of the background is black.
-    glClearColor (0.0, 0.0, 0.0, 0.0);
-
-    // Activate rendering modes
-    // - Depth test
-    glEnable( GL_DEPTH_TEST );
-
-    // draw front-facing triangles filled and back-facing triangles as wires
-    glPolygonMode(GL_FRONT, GL_FILL);
-    glPolygonMode(GL_BACK, GL_LINE);
-
-    // Interpolate vertex colors over the triangles
-    glShadeModel(GL_SMOOTH);
-
-    // GLUT setup
-    glutReshapeFunc(reshape);
-    glutKeyboardFunc(keyboard);
-    glutDisplayFunc(display);
-    glutMouseFunc(tbMouseFunc);    // trackball
-    glutMotionFunc(tbMotionFunc);  // uses mouse
-    glutIdleFunc(animate);
-
-    g_raytracer->init();
-
-    glutMainLoop();
-
-    return 0;
-}
 
 /**
  * GLUT display function.
@@ -283,3 +217,87 @@ void keyboard(unsigned char key, int x, int y)
     }
 }
 
+/**
+ * Application entry point.
+ */
+int main(int argc, char *argv[])
+{
+    bool noui = false;
+    for(int i = 0; i< argc; i++){
+        if(strcmp(argv[i],"-noui") == 0){
+            noui = true;
+        }
+    }
+
+
+        glutInit(&argc, argv);
+
+        // framebuffer setup
+        glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+    if(!noui) {
+        // positioning and size of window
+        glutInitWindowPosition(200, 100);
+        glutInitWindowSize(g_raytracer->windowSizeX, g_raytracer->windowSizeY);
+        glutCreateWindow(argv[0]);
+    }
+        // initialize viewpoint
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        glTranslatef(0, 0, -4);
+
+        // Setup trackball
+        tbInitTransform();
+        tbHelp();
+
+        g_raytracer->scene->camera = getCameraPosition();
+    if(!noui) {
+        // activate the light following the camera
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
+        glEnable(GL_COLOR_MATERIAL);
+
+        // Set light position
+        int lightPosition[4] = {0, 0, 2, 0};
+        int lightMaterial[4] __attribute__((unused)) = {1, 1, 1, 1};
+        glLightiv(GL_LIGHT0, GL_POSITION, lightPosition);
+
+        // (Missing) normals will be normalized in the graphics pipeline
+        glEnable(GL_NORMALIZE);
+
+        // Clear color of the background is black.
+        glClearColor(0.0, 0.0, 0.0, 0.0);
+
+        // Activate rendering modes
+        // - Depth test
+        glEnable(GL_DEPTH_TEST);
+
+        // draw front-facing triangles filled and back-facing triangles as wires
+        glPolygonMode(GL_FRONT, GL_FILL);
+        glPolygonMode(GL_BACK, GL_LINE);
+
+        // Interpolate vertex colors over the triangles
+        glShadeModel(GL_SMOOTH);
+
+        // GLUT setup
+        glutReshapeFunc(reshape);
+        glutKeyboardFunc(keyboard);
+        glutDisplayFunc(display);
+        glutMouseFunc(tbMouseFunc);    // trackball
+        glutMotionFunc(tbMotionFunc);  // uses mouse
+        glutIdleFunc(animate);
+    }
+
+    g_raytracer->init();
+
+    if(!noui) {
+        glutMainLoop();
+    }else{
+        g_raytracer->windowSizeX = 500;
+        g_raytracer->windowSizeY = 500;
+        createRender();
+    }
+
+
+
+    return 0;
+}
