@@ -18,34 +18,28 @@ static const float speedfact = 0.2;
 void display();
 
 /** Placement de la scene par rapport a la camera */
-GLdouble tb_matrix[16] =   { 1,0,0,0,
-                             0,1,0,0,
-                             0,0,1,0,
-                             0,0,0,1  };
-GLdouble tb_inverse[16] =  { 1,0,0,0,
-                             0,1,0,0,
-                             0,0,1,0,
-                             0,0,0,1  };
+extern GLdouble tb_matrix[16];
+extern GLdouble tb_inverse[16];
 
 /** Gestion de la souris */
-int tb_ancienX, tb_ancienY, tb_tournerXY=0, tb_translaterXY=0, tb_bougerZ=0;
+extern int tb_ancienX, tb_ancienY, tb_tournerXY, tb_translaterXY, tb_bougerZ;
 
 
 /** Lit dans la matrice courante la position initiale du point de vue */
-void tbInitTransform()
+inline void tbInitTransform()
 {
     glGetDoublev( GL_MODELVIEW_MATRIX, tb_matrix );
     inverse( tb_matrix, tb_inverse );
 }
 
 /** Applique la transformation de point de vue */
-void tbVisuTransform()
+inline void tbVisuTransform()
 {
     glMultMatrixd( tb_matrix );
 };
 
 /** Affiche l'aide */
-void tbHelp()
+inline void tbHelp()
 {
     printf("Left button: turn in XY,\n");
     printf("Right button: translate in XY,\n");
@@ -53,7 +47,7 @@ void tbHelp()
 }
 
 /** Gere les boutons de la souris */
-void tbMouseFunc( int button, int state, int x, int y )
+inline void tbMouseFunc( int button, int state, int x, int y )
 {
     int modifiers = glutGetModifiers();
 
@@ -100,7 +94,7 @@ void tbMouseFunc( int button, int state, int x, int y )
 
 
 /** Traite le changement de position de la souris */
-void tbMotionFunc( int x, int y )
+inline void tbMotionFunc( int x, int y )
 {
     double dx,dy,nrm, tx,ty,tz;
 
@@ -164,7 +158,7 @@ void tbMotionFunc( int x, int y )
 }
 
 /** Traite le changement de position de la souris */
-void tbRotate( double angle, double x, double y, double z )
+inline void tbRotate( double angle, double x, double y, double z )
 {
     double tx,ty,tz;
 
@@ -189,7 +183,7 @@ void tbRotate( double angle, double x, double y, double z )
 }
 
 /// Projection dans le repere du monde
-void tbProject( const GLdouble *m, const GLdouble* p, GLdouble* q )
+inline void tbProject( const GLdouble *m, const GLdouble* p, GLdouble* q )
 {
     double pp[4];
     //cout<<"tb, matrix: "; printMatrix(tb_matrix); cout<<endl;
@@ -200,13 +194,13 @@ void tbProject( const GLdouble *m, const GLdouble* p, GLdouble* q )
     //cout<<"projRep: "<<q[0]<<", "<<q[1]<<", "<<q[2]<<", "<<q[3]<<endl;
 }
 
-void tbProject( const GLdouble* p, GLdouble* q )
+inline void tbProject( const GLdouble* p, GLdouble* q )
 {
     //cout<<"proj: "<<pp[0]<<", "<<pp[1]<<", "<<pp[2]<<", "<<pp[3]<<endl;
     project( tb_inverse, p, q );
     //cout<<"projRep: "<<q[0]<<", "<<q[1]<<", "<<q[2]<<", "<<q[3]<<endl;
 }
-Vector3f getCameraPosition()
+inline Vector3f getCameraPosition()
 {
 	const GLdouble p[]={0,0,0,1};
 	GLdouble LightP[4];
@@ -218,7 +212,7 @@ Vector3f getCameraPosition()
 	return LightPos;
 }
 
-Vector3f getWorldPositionOfPixel(unsigned int px, unsigned int py)
+inline Vector3f getWorldPositionOfPixel(unsigned int px, unsigned int py)
 {
 
 	double mv[16];
