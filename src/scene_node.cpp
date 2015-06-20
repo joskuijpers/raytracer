@@ -98,12 +98,13 @@ hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip) {
     return result;
 }
 
-inline Vector3f applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned int level, shared_ptr<Light> light);
-inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigned int level);
+
+inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned int level, shared_ptr<Light> light);
+inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigned int level, bool testray);
 inline Vector3f applyRefraction(shared_ptr<Scene> scene, hit_result hit, unsigned int level);
 
-Vector3f SceneNode::apply(shared_ptr<Scene> scene, unsigned int level, hit_result hit) {
-    Vector3f directColor, reflectedColor, refractedColor;
+ApplyResult SceneNode::apply(shared_ptr<Scene> scene, unsigned int level, hit_result hit, bool testray) {
+    ApplyResult result;
 
     // Make this average of all light sources the ambient light
     Vector3f Ia = Vector3f(0,0,0);
@@ -112,31 +113,36 @@ Vector3f SceneNode::apply(shared_ptr<Scene> scene, unsigned int level, hit_resul
     }
     Ia /= scene->lights.size();
 
-    directColor = Ia * hit.material.getKa();
+    result.ambiantColor = Ia * hit.material.getKa();
 
     // Calculate contribution of every light
     for(auto& light : scene->lights) {
-        directColor += applyDirect(scene, hit, level, light);
+        auto direct_result = applyDirect(scene, hit, level, light);
+        result.diffuseColor = direct_result.diffuseColor;
     }
 
     // Add relection only if in the illumination model
     if(hit.material.getIl() >= 3 && level < MAX_TRACE_LEVELS) {
-        reflectedColor = applyReflection(scene, hit, level);
+        result.reflectedColor = applyReflection(scene, hit, level, testray);
     }
 
     // Add refraction only if in the illumination model
     if(hit.material.getIl() >= 6 && level < MAX_TRACE_LEVELS) {
-        refractedColor = applyRefraction(scene, hit, level);
+        result.refractedColor = applyRefraction(scene, hit, level);
     }
 
-    return directColor + reflectedColor + refractedColor;
+    if (testray) {
+        g_raytracer->testrays.push_back(TestRay(Ray(hit.viewer, hit.hitPosition), hit.depth, result));
+    }
+    return result;
 }
 
 /**
  * Calculate the contribution of direct light using Phong shading
  */
-inline Vector3f applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned int level [[gnu::unused]], shared_ptr<Light> light) {
+inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned int level [[gnu::unused]], shared_ptr<Light> light) {
     hit_result shadowRes;
+    ApplyResult result;
     Vector3f lightDir;
     Vector3f color;
 
@@ -149,18 +155,20 @@ inline Vector3f applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned in
 
     // If hit by shadow, do not draw anything other than ambient
     if(shadowRes.is_hit() && shadowRes.depth >= 0.f)
-        return Vector3f(0,0,0);
+        return result;
 
     // No shading
-    if(hit.material.getIl() == 0)
-        return hit.material.getKd();
+    if(hit.material.getIl() == 0) {
+        result.diffuseColor = hit.material.getKd();
+        return result;
+    }
 
     // Get the direction to the light source
     lightDir = light->position - hit.hitPosition;
     lightDir.normalize();
 
     // Diffuse shading
-    color += hit.material.getKd() * hit.normal.dot(lightDir) * light->diffuse;
+    result.diffuseColor += hit.material.getKd() * hit.normal.dot(lightDir) * light->diffuse;
 
     // Specular only if specular component and if illum model required specular
     if(hit.material.hasKs() && hit.material.getIl() >= 2) {
@@ -174,17 +182,19 @@ inline Vector3f applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned in
         viewerDir = hit.viewer - hit.hitPosition;
         viewerDir.normalize();
 
+
         phongTerm = phongDir.dot(viewerDir);
         if(phongTerm < 0.f)
             phongTerm = 0.f;
 
-        color += hit.material.getKs() * powf(phongTerm, hit.material.getNs()) * light->specular;
+        result.specularColor += hit.material.getKs() * powf(phongTerm, hit.material.getNs()) * light->specular;
+
     }
 
-    return color;
+    return result;
 }
 
-inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigned int level) {
+inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigned int level, bool testray) {
     Ray reflectionRay;
     hit_result reflResult;
 
@@ -198,14 +208,12 @@ inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigne
 
     // If we hit something, add color
     if(reflResult.is_hit() && reflResult.depth >= 0.f)
-        return reflResult.node->apply(scene, level + 1, reflResult) * hit.material.getKs();
+        return reflResult.node->apply(scene, level + 1, reflResult, testray).sum() * hit.material.getKs();
 
     return Vector3f(0,0,0);
 }
 
 inline Vector3f applyRefraction(shared_ptr<Scene> scene [[gnu::unused]], hit_result hit, unsigned int level [[gnu::unused]]) {
     Vector3f It;
-
-
     return (1.f - hit.material.getKs()) * hit.material.getTf() * It;
 }

@@ -7,6 +7,7 @@
 #include "color.h"
 #include "scene.h"
 #include "ray.h"
+#include "testray.h"
 
 /// Transform a mouse position to a source/destination pair
 extern void produceRay(int x_I, int y_I, Vector3f &origin, Vector3f &dest);
@@ -32,6 +33,7 @@ public:
      */
     void draw(void);
 
+    void drawDebugRay();
     /**
      * Additional keyboard functionality.
      */
@@ -44,7 +46,7 @@ public:
      *
      * @return Color of the pixel by the ray.
      */
-    Vector3f performRayTracing(const Vector3f &origin, const Vector3f &dest);
+    Vector3f performRayTracing(const Vector3f &origin, const Vector3f &dest, bool testray = false);
 
 #pragma mark - Properties
 
@@ -56,8 +58,5 @@ public:
     shared_ptr<Scene> scene;
 
     /// Test ray
-    Ray testRay;
-
-    /// Color of the test ray impact point
-    Vector3f testRayColor;
+    vector<TestRay> testrays;
 };

@@ -1,7 +1,7 @@
 #pragma once
 
 /// Max recursion level for raytracing
-#define MAX_TRACE_LEVELS 2
+#define MAX_TRACE_LEVELS 10
 
 /// Whether to use anti aliasing
 #define USE_ANTIALIASING 0

@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <cassert>
+#include <chrono>
 
 #ifdef USEOMP
 # include <libiomp/omp.h>
@@ -197,7 +198,10 @@ void createRender() {
     produceRay(winSizeX - 1, 0, &origin10, &dest10);
     produceRay(winSizeX - 1, winSizeY - 1, &origin11, &dest11);
 
-#pragma omp parallel for
+
+    int done = 0;
+    auto starttime = std::chrono::system_clock::now();
+#pragma omp parallel for schedule(static, 2)
     for (unsigned int y = 0; y < winSizeY;++y) {
         for (unsigned int x = 0; x < winSizeX;++x) {
             float xscale, yscale;
@@ -239,9 +243,14 @@ void createRender() {
             // store the result in an image
             result.setPixel(x,y, Color3(rgb));
         }
+        done++;
+        cout << (float) done / (float) winSizeY << "percent \n";
     }
+    std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now() - starttime;
+
 
     cout << "Finished raytracing!" << endl;
+    cout << "Took " << elapsed_seconds.count() << " seconds " << endl;
     result.write("result.ppm");
 }
 

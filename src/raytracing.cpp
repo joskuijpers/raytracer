@@ -7,16 +7,17 @@
 
 #include "platform.h"
 #include "compiler_opt.h"
-
+#include <cstring>
 #include "mesh.h"
 #include "sphere.h"
+#include "trackball.h"
 
 using namespace std;
 
 #define TESTSET 4
 
 void Raytracer::init(void) {
-    scene->background_color = Vector3f(.4f,.1f,.05f);
+    scene->background_color = Vector3f(.4f,.4f,.8f);
 
 #if TESTSET == 1
     unique_ptr<Mesh> cube(new Mesh("cube"));
@@ -79,7 +80,7 @@ void Raytracer::init(void) {
     teapot2->loadMesh("resource/teapot.obj", true);
     teapot2->computeVertexNormals();
     teapot2->parent = scene;
-    teapot2->translation = Vector3f(-2,0,0);
+    teapot2->translation = Vector3f(-2, 0, 0);
     scene->children.push_back(move(teapot2));
 
     unique_ptr<Sphere> sphere(new Sphere("sphere"));
@@ -122,6 +123,24 @@ void Raytracer::init(void) {
 
 #pragma mark - Events
 
+
+
+void Raytracer::drawDebugRay() {
+    //draw the line
+
+    for(auto ray = testrays.begin(); ray != testrays.end(); ++ray){
+        ray->draw();
+    }
+
+    if(!testrays.empty()) {
+        TestRay lastray = testrays.back();
+        lastray.drawInfo();
+
+    }
+
+
+}
+
 void Raytracer::draw(void) {
     //draw open gl debug stuff
     //this function is called every frame
@@ -134,15 +153,8 @@ void Raytracer::draw(void) {
 
     glDisable(GL_LIGHTING);
 
-    /*glBegin(GL_LINES);
-     {
-     glColor3f(0,1,1);
-     glVertex3f(testRay.origin[0], testRay.origin[1], testRay.origin[2]);
 
-     glColor3f(0,0,1);
-     glVertex3f(testRay.dest[0], testRay.dest[1], testRay.dest[2]);
-     }
-    glEnd();*/
+    drawDebugRay();
 
     glPointSize(10);
 
@@ -154,7 +166,7 @@ void Raytracer::draw(void) {
 }
 
 void Raytracer::keyboard(char t [[gnu::unused]], int mouseX [[gnu::unused]], int mouseY [[gnu::unused]], const Vector3f& rayOrigin, const Vector3f& rayDest) {
-    testRay.update(rayOrigin, rayDest);
+    performRayTracing(rayOrigin, rayDest, true);
 
     switch (t) {
         case 'n':
@@ -163,23 +175,27 @@ void Raytracer::keyboard(char t [[gnu::unused]], int mouseX [[gnu::unused]], int
         case 'b':
             scene->showBoundingBoxes = !scene->showBoundingBoxes;
             break;
+        case 'c':
+            testrays.clear();
+            break;
         default:
             std::cout << t << " pressed! The mouse was in location " << mouseX << ", " << mouseY << "!" << std::endl;
             break;
     }
 }
 
+
 #pragma mark - Raytracing
 
-Vector3f Raytracer::performRayTracing(const Vector3f &origin, const Vector3f &dest) {
+Vector3f Raytracer::performRayTracing(const Vector3f &origin, const Vector3f &dest, bool testray) {
     Ray ray(origin, dest);
-    Vector3f col;
     shared_ptr<Scene> scene = g_raytracer->scene;
+
 
     // Hit the scene with the first ray
     hit_result result = scene->hit(ray);
 
-    if(!result.is_hit()) {
+    if (!result.is_hit()) {
         // Check screen shadows. Darken the background if current pixel
         // is not lit by light.
 
@@ -188,6 +204,7 @@ Vector3f Raytracer::performRayTracing(const Vector3f &origin, const Vector3f &de
 
         hit_result shadowRes = scene->hit(Ray(origin, light->position));
 
+
         if(shadowRes.is_hit())
             return .5f * scene->background_color;
         else
@@ -195,8 +212,8 @@ Vector3f Raytracer::performRayTracing(const Vector3f &origin, const Vector3f &de
     }
 
     // Apply the hit, this is recursive.
-    col = result.node->apply(scene, 1, result);
-    
-    return col;
+    ApplyResult col = result.node->apply(scene, 1, result, testray);
+
+    return col.sum();
 }
 
