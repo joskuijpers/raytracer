@@ -127,7 +127,7 @@ public:
     virtual hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
 
     // Apply method: applies the hit.
-    virtual ApplyResult apply(unsigned int level, hit_result hit_info, bool testray = false);
+    virtual ApplyResult apply(shared_ptr<Scene> scene, unsigned int level, hit_result hit_info, bool testray = false);
 
 #pragma mark - Properties
     const char *name;

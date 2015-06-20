@@ -17,7 +17,7 @@ using namespace std;
 #define TESTSET 4
 
 void Raytracer::init(void) {
-    scene->background_color = Vector3f(.4f,.1f,.05f);
+    scene->background_color = Vector3f(.4f,.4f,.8f);
 
 #if TESTSET == 1
     unique_ptr<Mesh> cube(new Mesh("cube"));
@@ -72,7 +72,7 @@ void Raytracer::init(void) {
 #elif TESTSET == 4
     unique_ptr<Mesh> teapot(new Mesh("teapot"));
     teapot->loadMesh("resource/teapot.obj", true);
-//    teapot->computeVertexNormals();
+    teapot->computeVertexNormals();
     teapot->parent = scene;
     scene->children.push_back(move(teapot));
 
@@ -99,6 +99,12 @@ void Raytracer::init(void) {
 
     scene->children.push_back(move(sphere));
 #elif TESTSET == 5
+    unique_ptr<Mesh> teapot(new Mesh("teapot"));
+    teapot->loadMesh("resource/teapot.obj", true);
+    teapot->computeVertexNormals();
+    teapot->parent = scene;
+    scene->children.push_back(move(teapot));
+#elif TESTSET == 6
     unique_ptr<Mesh> cube(new Mesh("cube"));
     cube->loadMesh("resource/cube.obj", true);
     cube->computeVertexNormals();
@@ -126,6 +132,11 @@ void Raytracer::drawDebugRay() {
         ray->draw();
     }
 
+    if(!testrays.empty()) {
+        TestRay lastray = testrays.back();
+        lastray.drawInfo();
+
+    }
 
 
 }
@@ -141,6 +152,7 @@ void Raytracer::draw(void) {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
 
     glDisable(GL_LIGHTING);
+
 
     drawDebugRay();
 
@@ -177,27 +189,30 @@ void Raytracer::keyboard(char t [[gnu::unused]], int mouseX [[gnu::unused]], int
 
 Vector3f Raytracer::performRayTracing(const Vector3f &origin, const Vector3f &dest, bool testray) {
     Ray ray(origin, dest);
+    shared_ptr<Scene> scene = g_raytracer->scene;
+
 
     // Hit the scene with the first ray
-    hit_result result = g_raytracer->scene->hit(ray);
+    hit_result result = scene->hit(ray);
 
     if (!result.is_hit()) {
         // Check screen shadows. Darken the background if current pixel
         // is not lit by light.
 
         // Intersect with light(s)
-        auto &light = g_raytracer->scene->lights[0];
+        auto& light = scene->lights[0];
 
-        hit_result shadowRes = g_raytracer->scene->hit(Ray(origin, light->position), nullptr);
+        hit_result shadowRes = scene->hit(Ray(origin, light->position));
 
-        if (shadowRes.is_hit())
-            return .5f * g_raytracer->scene->background_color;
+
+        if(shadowRes.is_hit())
+            return .5f * scene->background_color;
         else
-            return g_raytracer->scene->background_color;
+            return scene->background_color;
     }
 
     // Apply the hit, this is recursive.
-    ApplyResult col = result.node->apply(1, result, testray);
+    ApplyResult col = result.node->apply(scene, 1, result, testray);
 
     return col.sum();
 }

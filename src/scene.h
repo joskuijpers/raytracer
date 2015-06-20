@@ -51,7 +51,7 @@ public:
 
     /// Lights within the scene
     // TODO: special light object in the graph
-    vector<unique_ptr<Light>> lights;
+    vector<shared_ptr<Light>> lights;
 
     /// Whether to draw the bounding boxes of objects and scene.
     bool showBoundingBoxes = true;
