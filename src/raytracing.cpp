@@ -91,9 +91,10 @@ void Raytracer::init(void) {
     Material mat;
     mat.setKd(.9f, .3f, .9f);
     mat.setKa(.2f, .02f, .2f);
-    mat.setKs(1.f, 1.f, 1.f);
+    mat.setKs(0.5f, 0.5f, 0.5f);
     mat.setNs(27);
     mat.setIl(6);
+
 
     sphere->material = mat;
 
@@ -156,12 +157,14 @@ void Raytracer::draw(void) {
 
     drawDebugRay();
 
+
+    /*
     glPointSize(10);
 
     glBegin(GL_POINTS);
     glVertex3fv(scene->lights[0]->position.pointer());
     glEnd();
-
+*/
     glPopAttrib();
 }
 

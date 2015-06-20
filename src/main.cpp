@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     // Set light position
     int lightPosition[4] = {0,0,2,0};
     int lightMaterial[4] __attribute__((unused)) = {1,1,1,1};
-    glLightiv(GL_LIGHT0, GL_POSITION, lightPosition);
+    //glLightiv(GL_LIGHT0, GL_POSITION, lightPosition);
 
     // (Missing) normals will be normalized in the graphics pipeline
     glEnable(GL_NORMALIZE);
@@ -99,6 +99,13 @@ int main(int argc, char *argv[])
 
     g_raytracer->init();
 
+    vector<shared_ptr<Light>>& lights = g_raytracer->scene->lights;
+    for(int i = 0; i<lights.size(); i++){
+        glEnable(GL_LIGHT0+i);
+        glLightfv(GL_LIGHT0+i, GL_POSITION, lights[i]->position.pointer());
+
+    }
+
     glutMainLoop();
 
     return 0;
@@ -124,6 +131,7 @@ void display(void)
     tbVisuTransform();
 
     g_raytracer->draw();
+
 
     glutSwapBuffers();
 
