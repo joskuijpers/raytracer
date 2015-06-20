@@ -99,13 +99,6 @@ int main(int argc, char *argv[])
 
     g_raytracer->init();
 
-    vector<shared_ptr<Light>>& lights = g_raytracer->scene->lights;
-    for(int i = 0; i<lights.size(); i++){
-        glEnable(GL_LIGHT0+i);
-        glLightfv(GL_LIGHT0+i, GL_POSITION, lights[i]->position.pointer());
-
-    }
-
     glutMainLoop();
 
     return 0;
