@@ -117,8 +117,8 @@ ApplyResult SceneNode::apply(shared_ptr<Scene> scene, unsigned int level, hit_re
     // Calculate contribution of every light
     for(auto& light : scene->lights) {
         auto direct_result = applyDirect(scene, hit, level, light);
-        result.diffuseColor = direct_result.diffuseColor;
-        result.specularColor = direct_result.specularColor;
+        result.diffuseColor += direct_result.diffuseColor;
+        result.specularColor += direct_result.specularColor;
     }
 
     // Add relection only if in the illumination model
