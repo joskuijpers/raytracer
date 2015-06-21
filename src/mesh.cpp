@@ -498,6 +498,15 @@ bool Mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
     }
 
     fclose(in);
+    vector<WsTriangle> wsTriangles;
+    for(Triangle t : triangles)
+    {
+        WsTriangle wsTriangle;
+        wsTriangle.v[0] = this->vertices[t.v[0]];
+        wsTriangle.v[1] = this->vertices[t.v[1]];
+        wsTriangle.v[2] = this->vertices[t.v[2]];
+    }
+    this->treeRoot = unique_ptr<KDNode>(KDNode::buildTree(wsTriangles, 0));
     return true;
 }
 

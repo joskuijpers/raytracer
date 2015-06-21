@@ -31,8 +31,12 @@ set(SOURCE_FILES
     src/trackball.cpp
     src/vector3.h
     src/vertex.h
-     src/testray.h
-     src/testray.cpp)
+    src/testray.h
+    src/testray.cpp
+    src/Triangle.h
+    src/KDNode.cpp
+    src/KDNode.h
+)
 
 add_executable(raytracer ${SOURCE_FILES})
 

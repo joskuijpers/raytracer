@@ -79,6 +79,17 @@ public:
         extendMax(other.max);
     };
 
+    inline int findLongestAxis() {
+        float lengthX = max[0] - min[0];
+        float lengthY = max[1] - min[1];
+        float lengthZ = max[2] - min[2];
+        if(lengthX > lengthY && lengthX > lengthZ)
+            return 0;
+        if(lengthY > lengthZ)
+            return 1;
+        return 2;
+    };
+
 #pragma mark - Drawing
 
     void draw();
