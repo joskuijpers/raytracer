@@ -93,8 +93,12 @@ hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip) {
         if(nodeResult.depth < result.depth) {
             result = nodeResult;
         }
+
+        // If a shadow ray, stop on first hit
+        if(ray.isShadowRay())
+            break;
     }
-    
+
     return result;
 }
 
@@ -152,11 +156,17 @@ inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned
     float distance = Lm.normalize();
 
     // See if this point is in shadow. If it is, do not apply diffuse and specular.
-    Ray shadowRay(hit.hitPosition, light->position);
+
+    // If Object is convex, no need to do self shadowing
+    Vector3f shadowRayOrigin = hit.hitPosition;
+    if(!hit.node->isConvex())
+        shadowRayOrigin -= 0.001f * hit.lightDirection;
+
+    Ray shadowRay(shadowRayOrigin, light->position);
+    shadowRay.shadow_ray = true; // for faster tracing
 
     // Offset shadow ray to prevent hit the same hitpoint again
-    // TODO: if convex, always skip self-shadowing. If not convex, find another way.
-    shadowRes = scene->hit(shadowRay, hit.node);
+    shadowRes = scene->hit(shadowRay, hit.node->isConvex() ? hit.node : nullptr);
 
     // If hit by shadow, do not draw anything other than ambient
     if(shadowRes.is_hit() && shadowRes.depth >= 0.1f)
@@ -170,8 +180,8 @@ inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned
 
     // Diffuse shading
     result.diffuseColor += hit.material.getKd() * hit.normal.dot(Lm) * light->diffuse;
-    if(result.diffuseColor[0] < 0.0 || result.diffuseColor[1] < 0.0 || result.diffuseColor[2] < 0.0) result.diffuseColor = Vector3f();
-
+    if(result.diffuseColor[0] < 0.0 || result.diffuseColor[1] < 0.0 || result.diffuseColor[2] < 0.0)
+        result.diffuseColor = Vector3f();
 
     // Specular only if specular component and if illum model required specular
     if(hit.material.hasKs() && hit.material.getIl() >= 2) {

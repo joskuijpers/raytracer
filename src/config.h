@@ -4,7 +4,7 @@
 #define MAX_TRACE_LEVELS 5
 
 /// Whether to use anti aliasing
-#define USE_ANTIALIASING 1
+#define USE_ANTIALIASING 0
 // The anti aliasing factor
 #define ANTIALIASING_LEVEL 4
 // #define ANTIALIASING_LEVEL 16

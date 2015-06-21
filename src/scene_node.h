@@ -111,7 +111,6 @@ public:
 
 #pragma mark - Raytracing
 
-
     ApplyResult extended_result;
     /// Create the bounding box
     virtual void createBoundingBox(void);
@@ -139,6 +138,10 @@ public:
     /// Same as above bounding box, but in world space.
     /// Min and Max are multiplied by the ws_transformationMatrix.
     AABoundingBox ws_boundingBox;
+
+    virtual bool isConvex() {
+        return false;
+    }
 
 #pragma mark - Transformation properties
 

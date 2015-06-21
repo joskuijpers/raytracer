@@ -24,6 +24,10 @@ public:
 
     Material material;
 
+    bool isConvex() {
+        return true;
+    }
+
 private:
     Vector3f scale [[deprecated]];
     Vector3f rotation [[deprecated]];

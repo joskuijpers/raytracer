@@ -104,15 +104,18 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
         if (intersectResult != INTERSECT)
             continue;
 
-        // Skip if not nearer than prev hit.
-        if(hit >= result.depth)
-            continue;
+        // If hit is nearer than prev hit, store it
+        if(hit < result.depth) {
+            result.depth = hit;
+            nearestTriangle = t;
+            triangleIndex = it;
+            nearestHitS = hitS;
+            nearestHitT = hitT;
+        }
 
-        result.depth = hit;
-        nearestTriangle = t;
-        triangleIndex = it;
-        nearestHitS = hitS;
-        nearestHitT = hitT;
+        // If a shadow ray, stop on first hit
+        if(ray.isShadowRay())
+            break;
     }
 
     // If no hit, return unhit result

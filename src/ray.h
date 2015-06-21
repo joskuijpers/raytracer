@@ -7,6 +7,7 @@ class Ray {
 public:
 #pragma mark - Constructor
     Ray(Vector3f origin, Vector3f dest) : origin(origin) {
+        shadow_ray = false;
         update(origin, dest);
     }
 
