@@ -107,6 +107,7 @@ inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned
 inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigned int level, bool testray);
 inline Vector3f applyRefraction(shared_ptr<Scene> scene, hit_result hit, unsigned int level);
 inline float fresnel(Vector3f direction, Vector3f normal, float n);
+bool inShadow(shared_ptr<Scene> scene, hit_result hit, shared_ptr<Light> light);
 
 ApplyResult SceneNode::apply(shared_ptr<Scene> scene, unsigned int level, hit_result hit, bool testray) {
     ApplyResult result;
@@ -146,9 +147,7 @@ ApplyResult SceneNode::apply(shared_ptr<Scene> scene, unsigned int level, hit_re
  * Calculate the contribution of direct light using Phong shading
  */
 inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned int level [[gnu::unused]], shared_ptr<Light> light) {
-    hit_result shadowRes;
     ApplyResult result;
-
     Vector3f Lm, V;
 
     // Get the direction to the light source
@@ -156,21 +155,8 @@ inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned
     float distance = Lm.normalize();
 
     // See if this point is in shadow. If it is, do not apply diffuse and specular.
-
-    // If Object is convex, no need to do self shadowing
-    Vector3f shadowRayOrigin = hit.hitPosition;
-    if(!hit.node->isConvex())
-        shadowRayOrigin -= 0.001f * hit.lightDirection;
-
-    Ray shadowRay(shadowRayOrigin, light->position);
-    shadowRay.shadow_ray = true; // for faster tracing
-
-    // Offset shadow ray to prevent hit the same hitpoint again
-    shadowRes = scene->hit(shadowRay, hit.node->isConvex() ? hit.node : nullptr);
-
-    // If hit by shadow, do not draw anything other than ambient
-    if(shadowRes.is_hit() && shadowRes.depth >= 0.1f)
-       return result;
+    if(inShadow(scene, hit, light))
+        return result;
 
     // No shading
     if(hit.material.getIl() == 0) {
@@ -203,6 +189,27 @@ inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned
     result.fresnel = fresnel(hit.lightDirection, hit.normal, hit.material.getNi());
 
     return result;
+}
+
+inline bool inShadow(shared_ptr<Scene> scene, hit_result hit, shared_ptr<Light> light) {
+    hit_result shadowRes;
+
+    // If Object is convex, no need to do self shadowing
+    Vector3f shadowRayOrigin = hit.hitPosition;
+    if(!hit.node->isConvex())
+        shadowRayOrigin -= 0.001f * hit.lightDirection;
+
+    Ray shadowRay(shadowRayOrigin, light->position);
+    shadowRay.shadow_ray = true; // for faster tracing
+
+    // Offset shadow ray to prevent hit the same hitpoint again
+    shadowRes = scene->hit(shadowRay, hit.node->isConvex() ? hit.node : nullptr);
+
+    // If hit by shadow, do not draw anything other than ambient
+    if(shadowRes.is_hit() && shadowRes.depth >= 0.1f)
+        return true;
+
+    return false;
 }
 
 inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigned int level, bool testray) {
