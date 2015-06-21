@@ -106,19 +106,19 @@ inline Vector3f applyRefraction(shared_ptr<Scene> scene, hit_result hit, unsigne
 ApplyResult SceneNode::apply(shared_ptr<Scene> scene, unsigned int level, hit_result hit, bool testray) {
     ApplyResult result;
 
-    // Make this average of all light sources the ambient light
+    // Sum the ambiant
     Vector3f Ia = Vector3f(0,0,0);
     for(auto& light : scene->lights) {
         Ia += light->ambient;
     }
-    Ia /= scene->lights.size();
 
     result.ambiantColor = Ia * hit.material.getKa();
 
     // Calculate contribution of every light
     for(auto& light : scene->lights) {
         auto direct_result = applyDirect(scene, hit, level, light);
-        result.diffuseColor = direct_result.diffuseColor;
+        result.diffuseColor += direct_result.diffuseColor;
+        result.specularColor += direct_result.specularColor;
     }
 
     // Add relection only if in the illumination model
@@ -143,8 +143,12 @@ ApplyResult SceneNode::apply(shared_ptr<Scene> scene, unsigned int level, hit_re
 inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned int level [[gnu::unused]], shared_ptr<Light> light) {
     hit_result shadowRes;
     ApplyResult result;
-    Vector3f lightDir;
-    Vector3f color;
+
+    Vector3f Lm, V;
+
+    // Get the direction to the light source
+    Lm = light->position - hit.hitPosition;
+    float distance = Lm.normalize();
 
     // See if this point is in shadow. If it is, do not apply diffuse and specular.
     Ray shadowRay(hit.hitPosition, light->position);
@@ -154,8 +158,8 @@ inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned
     shadowRes = scene->hit(shadowRay, hit.node);
 
     // If hit by shadow, do not draw anything other than ambient
-    if(shadowRes.is_hit() && shadowRes.depth >= 0.f)
-        return result;
+    if(shadowRes.is_hit() && shadowRes.depth >= 0.1f)
+       return result;
 
     // No shading
     if(hit.material.getIl() == 0) {
@@ -163,27 +167,22 @@ inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned
         return result;
     }
 
-    // Get the direction to the light source
-    lightDir = light->position - hit.hitPosition;
-    lightDir.normalize();
-
     // Diffuse shading
-    result.diffuseColor += hit.material.getKd() * hit.normal.dot(lightDir) * light->diffuse;
+    result.diffuseColor += hit.material.getKd() * hit.normal.dot(Lm) * light->diffuse;
+    if(result.diffuseColor[0] < 0.0 || result.diffuseColor[1] < 0.0 || result.diffuseColor[2] < 0.0) result.diffuseColor = Vector3f();
+
 
     // Specular only if specular component and if illum model required specular
     if(hit.material.hasKs() && hit.material.getIl() >= 2) {
-        Vector3f phongDir, viewerDir;
-        float phongTerm;
-
-        // Direction of a perfectly reflected ray
-        phongDir = lightDir - 2.f * (lightDir.dot(hit.normal) * hit.normal);
 
         // Direction towards the viewer
-        viewerDir = hit.viewer - hit.hitPosition;
-        viewerDir.normalize();
+        V = hit.viewer - hit.hitPosition;
+        V.normalize();
 
+        Vector3f half = (Lm + V);
+        half.normalize();
+        float phongTerm = half.dot(hit.normal);
 
-        phongTerm = phongDir.dot(viewerDir);
         if(phongTerm < 0.f)
             phongTerm = 0.f;
 

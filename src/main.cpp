@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     // Set light position
     int lightPosition[4] = {0,0,2,0};
     int lightMaterial[4] __attribute__((unused)) = {1,1,1,1};
-    glLightiv(GL_LIGHT0, GL_POSITION, lightPosition);
+    //glLightiv(GL_LIGHT0, GL_POSITION, lightPosition);
 
     // (Missing) normals will be normalized in the graphics pipeline
     glEnable(GL_NORMALIZE);
@@ -124,6 +124,7 @@ void display(void)
     tbVisuTransform();
 
     g_raytracer->draw();
+
 
     glutSwapBuffers();
 

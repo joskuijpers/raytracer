@@ -83,6 +83,7 @@ struct ApplyResult{
 
     }
 
+
     Vector3f sum(){
         return ambiantColor+diffuseColor+specularColor+reflectedColor+refractedColor;
     }
