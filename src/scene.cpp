@@ -28,16 +28,15 @@ void Scene::drawLights(void)
 void Scene::draw(void) {
 
     vector<shared_ptr<Light>>& lights = g_raytracer->scene->lights;
-    for(int i = 0; i<8; i++){
-        if(i < lights.size()) {
+    for(unsigned int i = 0; i < 8; ++i){
+        if((size_t)i < lights.size()) {
             glEnable(GL_LIGHT0+i);
             glLightfv(GL_LIGHT0 + i, GL_POSITION, lights[i]->position.pointer());
             glLightfv(GL_LIGHT0 + i, GL_AMBIENT, lights[i]->ambient.pointer());
             glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, lights[i]->diffuse.pointer());
             glLightfv(GL_LIGHT0 + i, GL_SPECULAR, lights[i]->specular.pointer());
-
-        }else{
-            glDisable(GL_LIGHT0+i);
+        } else {
+            glDisable(GL_LIGHT0 + i);
         }
     }
 

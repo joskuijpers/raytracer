@@ -94,7 +94,7 @@ void Raytracer::init(void) {
     mat.setKs(0.5f, 0.5f, 0.5f);
     mat.setNs(27);
     mat.setIl(6);
-
+    mat.setNi(1.5);
 
     sphere->material = mat;
 
@@ -114,8 +114,9 @@ void Raytracer::init(void) {
 #endif
 
     // Create a single lighblendert
-    scene->lights.push_back(unique_ptr<Light>(new Light(scene->camera + Vector3f(0,5,0))));
+//    scene->lights.push_back(unique_ptr<Light>(new Light(scene->camera + Vector3f(0,5,0))));
     scene->lights.push_back(unique_ptr<Light>(new Light(Vector3f(4,5,0))));
+    scene->lights.push_back(unique_ptr<Light>(new Light(scene->camera + Vector3f(0,2,0))));
 
     // Prepare the scene for raytracing: create bounding boxes,
     // and possibly transformation matrices
@@ -124,11 +125,7 @@ void Raytracer::init(void) {
 
 #pragma mark - Events
 
-
-
 void Raytracer::drawDebugRay() {
-    //draw the line
-
     for(auto ray = testrays.begin(); ray != testrays.end(); ++ray){
         ray->draw();
     }
@@ -136,35 +133,16 @@ void Raytracer::drawDebugRay() {
     if(!testrays.empty()) {
         TestRay lastray = testrays.back();
         lastray.drawInfo();
-
     }
-
-
 }
 
 void Raytracer::draw(void) {
-    //draw open gl debug stuff
-    //this function is called every frame
-
     // Draw the scene
     scene->draw();
 
-    //as an example: we draw the test ray, which is set by the keyboard function
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-    glDisable(GL_LIGHTING);
-
-
+    // Draw the debug ray
     drawDebugRay();
 
-
-    /*
-    glPointSize(10);
-
-    glBegin(GL_POINTS);
-    glVertex3fv(scene->lights[0]->position.pointer());
-    glEnd();
-*/
     glPopAttrib();
 }
 

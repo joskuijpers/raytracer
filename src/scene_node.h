@@ -63,31 +63,30 @@ public:
 
 struct ApplyResult{
     Vector3f ambiantColor, diffuseColor, specularColor, reflectedColor, refractedColor;
+    float fresnel;
 
-
+#pragma mark - Constructors
     ApplyResult() { }
 
-
     ApplyResult(Vector3f &ambiantColor, Vector3f &diffuseColor, Vector3f &specularColor, Vector3f &reflectedColor,
-                Vector3f &refractedColor) : ambiantColor(ambiantColor), diffuseColor(diffuseColor),
+                Vector3f &refractedColor, float fresnel) : ambiantColor(ambiantColor), diffuseColor(diffuseColor),
                                             specularColor(specularColor), reflectedColor(reflectedColor),
-                                            refractedColor(refractedColor) { }
+                                            refractedColor(refractedColor), fresnel(fresnel) { }
 
     void update(Vector3f &ambiantColor, Vector3f &diffuseColor, Vector3f &specularColor, Vector3f &reflectedColor,
-                Vector3f &refractedColor){
+                Vector3f &refractedColor, float fresnel){
         this->ambiantColor = ambiantColor;
         this->diffuseColor = diffuseColor;
         this->specularColor = specularColor;
         this->reflectedColor = reflectedColor;
         this->refractedColor = refractedColor;
-
+        this->fresnel = fresnel;
     }
 
-
-    Vector3f sum(){
-        return ambiantColor+diffuseColor+specularColor+reflectedColor+refractedColor;
+    Vector3f sum() {
+//        cout << "fresnel " << fresnel << endl;
+        return ambiantColor + diffuseColor + specularColor + reflectedColor + refractedColor;
     }
-
 };
 
 

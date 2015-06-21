@@ -102,6 +102,7 @@ hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip) {
 inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned int level, shared_ptr<Light> light);
 inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigned int level, bool testray);
 inline Vector3f applyRefraction(shared_ptr<Scene> scene, hit_result hit, unsigned int level);
+inline float fresnel(Vector3f direction, Vector3f normal, float n);
 
 ApplyResult SceneNode::apply(shared_ptr<Scene> scene, unsigned int level, hit_result hit, bool testray) {
     ApplyResult result;
@@ -174,7 +175,6 @@ inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned
 
     // Specular only if specular component and if illum model required specular
     if(hit.material.hasKs() && hit.material.getIl() >= 2) {
-
         // Direction towards the viewer
         V = hit.viewer - hit.hitPosition;
         V.normalize();
@@ -187,8 +187,10 @@ inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned
             phongTerm = 0.f;
 
         result.specularColor += hit.material.getKs() * powf(phongTerm, hit.material.getNs()) * light->specular;
-
     }
+
+    // Calculate the fresnel paramater
+    result.fresnel = fresnel(hit.lightDirection, hit.normal, hit.material.getNi());
 
     return result;
 }
@@ -215,4 +217,29 @@ inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigne
 inline Vector3f applyRefraction(shared_ptr<Scene> scene [[gnu::unused]], hit_result hit, unsigned int level [[gnu::unused]]) {
     Vector3f It;
     return (1.f - hit.material.getKs()) * hit.material.getTf() * It;
+}
+
+inline float clamp(float min, float max, float value) {
+    return std::max(min, std::min(max, value));
+}
+
+// Kr = return value, Kt = 1 - Kr
+inline float fresnel(Vector3f direction, Vector3f normal, float n) {
+    float cosi = clamp(-1.f, 1.f, normal.dot(direction));
+    float etai = 1, etat = n;
+
+    if(cosi > 0)
+        swap(etai,etat);
+
+    float sint = etai / etat * sqrtf(max(0.f, 1 - cosi * cosi));
+    if(sint >= 1)
+        return 1;
+    else {
+        float cost = sqrtf(max(0.f, 1.f - sint * sint));
+        cosi = fabsf(cosi);
+
+        float Rs = ((etat * cosi) - (etai * cost)) / ((etat * cosi) + (etai * cost));
+        float Rp = ((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost));
+        return (Rs * Rs + Rp * Rp) / 2.0;
+    }
 }

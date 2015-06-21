@@ -17,6 +17,10 @@
 		800460A71B25E84F001CFCF0 /* sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460A51B25E84F001CFCF0 /* sphere.cpp */; };
 		800460AD1B2762D1001CFCF0 /* scene_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460AC1B2762D1001CFCF0 /* scene_node.cpp */; };
 		800460B61B28553E001CFCF0 /* aabb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460B41B28553E001CFCF0 /* aabb.cpp */; };
+		8043A43A1B36F39E00A0C93A /* trackball.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8043A4391B36F39E00A0C93A /* trackball.cpp */; };
+		8043A43B1B36F39E00A0C93A /* trackball.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8043A4391B36F39E00A0C93A /* trackball.cpp */; };
+		8043A43E1B36F3B700A0C93A /* testray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8043A43C1B36F3B700A0C93A /* testray.cpp */; };
+		8043A43F1B36F3B700A0C93A /* testray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8043A43C1B36F3B700A0C93A /* testray.cpp */; };
 		A66B134E1B2F0A600014222F /* scene_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460AC1B2762D1001CFCF0 /* scene_node.cpp */; };
 		A66B134F1B2F0A600014222F /* sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460A51B25E84F001CFCF0 /* sphere.cpp */; };
 		A66B13501B2F0A600014222F /* aabb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460B41B28553E001CFCF0 /* aabb.cpp */; };
@@ -86,6 +90,9 @@
 		800460B71B286716001CFCF0 /* matrix4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = matrix4.h; sourceTree = "<group>"; };
 		800460B81B28671F001CFCF0 /* vector4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vector4.h; sourceTree = "<group>"; };
 		8043A4351B30D11C00A0C93A /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		8043A4391B36F39E00A0C93A /* trackball.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = trackball.cpp; sourceTree = "<group>"; };
+		8043A43C1B36F3B700A0C93A /* testray.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testray.cpp; sourceTree = "<group>"; };
+		8043A43D1B36F3B700A0C93A /* testray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testray.h; sourceTree = "<group>"; };
 		A66B135E1B2F0A600014222F /* RayTracer OpenMP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "RayTracer OpenMP"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A66B135F1B2F11AB0014222F /* libiomp5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiomp5.dylib; path = ../../../../../../../usr/local/Cellar/libiomp/20150401/lib/libiomp5.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -147,10 +154,11 @@
 		8004607D1B249222001CFCF0 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				800460841B24934A001CFCF0 /* image_writer.h */,
 				800460991B25CF3F001CFCF0 /* image_writer.cpp */,
+				800460841B24934A001CFCF0 /* image_writer.h */,
 				800460B01B279A0B001CFCF0 /* color.h */,
 				800460851B24934A001CFCF0 /* main.cpp */,
+				8043A4391B36F39E00A0C93A /* trackball.cpp */,
 				8004608B1B24934A001CFCF0 /* trackball.h */,
 				800460A11B25DECA001CFCF0 /* math */,
 				800460A01B25DEC0001CFCF0 /* scene */,
@@ -227,6 +235,8 @@
 		800460AE1B277DF3001CFCF0 /* raytracing */ = {
 			isa = PBXGroup;
 			children = (
+				8043A43C1B36F3B700A0C93A /* testray.cpp */,
+				8043A43D1B36F3B700A0C93A /* testray.h */,
 				800460891B24934A001CFCF0 /* raytracing.cpp */,
 				8004608A1B24934A001CFCF0 /* raytracing.h */,
 				800460AF1B277E2D001CFCF0 /* ray.h */,
@@ -321,8 +331,10 @@
 				800460A71B25E84F001CFCF0 /* sphere.cpp in Sources */,
 				800460B61B28553E001CFCF0 /* aabb.cpp in Sources */,
 				8004609E1B25DA0C001CFCF0 /* scene.cpp in Sources */,
+				8043A43E1B36F3B700A0C93A /* testray.cpp in Sources */,
 				8004609A1B25CF3F001CFCF0 /* image_writer.cpp in Sources */,
 				800460901B24934A001CFCF0 /* raytracing.cpp in Sources */,
+				8043A43A1B36F39E00A0C93A /* trackball.cpp in Sources */,
 				8004608F1B24934A001CFCF0 /* mesh.cpp in Sources */,
 				8004608E1B24934A001CFCF0 /* main.cpp in Sources */,
 			);
@@ -336,8 +348,10 @@
 				A66B134F1B2F0A600014222F /* sphere.cpp in Sources */,
 				A66B13501B2F0A600014222F /* aabb.cpp in Sources */,
 				A66B13511B2F0A600014222F /* scene.cpp in Sources */,
+				8043A43F1B36F3B700A0C93A /* testray.cpp in Sources */,
 				A66B13521B2F0A600014222F /* image_writer.cpp in Sources */,
 				A66B13531B2F0A600014222F /* raytracing.cpp in Sources */,
+				8043A43B1B36F39E00A0C93A /* trackball.cpp in Sources */,
 				A66B13541B2F0A600014222F /* mesh.cpp in Sources */,
 				A66B13551B2F0A600014222F /* main.cpp in Sources */,
 			);

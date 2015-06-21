@@ -67,9 +67,14 @@ public:
         return r;
     }
 
+    inline bool isShadowRay() {
+        return shadow_ray;
+    }
+
 #pragma mark - Properties
 
     Vector3f origin;
     Vector3f direction, direction_inv;
     int sign[3];
+    bool shadow_ray;
 };
