@@ -218,11 +218,14 @@ inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigne
 
     reflectionRay.origin = hit.hitPosition;
 
+    if(!hit.node->isConvex())
+        reflectionRay.origin -= 0.001f * hit.lightDirection;
+
     float reflet = 2.f * (hit.lightDirection.dot(hit.normal));
     reflectionRay.updateDirection(hit.lightDirection - reflet * hit.normal);
 
     // Hit the scene with our ray
-    reflResult = scene->hit(reflectionRay, hit.node);
+    reflResult = scene->hit(reflectionRay, hit.node->isConvex() ? hit.node : nullptr);
 
     // If we hit something, add color
     if(reflResult.is_hit() && reflResult.depth >= 0.f)
