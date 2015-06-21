@@ -199,8 +199,8 @@ void createRender() {
     produceRay(winSizeX - 1, 0, &origin10, &dest10);
     produceRay(winSizeX - 1, winSizeY - 1, &origin11, &dest11);
 
-
     int done = 0;
+    float lastPercent = 0.f;
     auto starttime = std::chrono::system_clock::now();
 #pragma omp parallel for schedule(static, 2)
     for (unsigned int y = 0; y < winSizeY;++y) {
@@ -245,10 +245,14 @@ void createRender() {
             result.setPixel(x,y, Color3(rgb));
         }
         done++;
-        cout << (float) done / (float) winSizeY << "percent \n";
+
+        float percent = (float)done / (float)winSizeY;
+        if(percent - lastPercent >= 0.01f) {
+            cout << std::setprecision(2) << (percent * 100.f) << "%\n";
+            lastPercent = percent;
+        }
     }
     std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now() - starttime;
-
 
     cout << "Finished raytracing!" << endl;
     cout << "Took " << elapsed_seconds.count() << " seconds " << endl;
