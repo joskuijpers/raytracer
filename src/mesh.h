@@ -7,7 +7,7 @@
 #include "vertex.h"
 #include "material.h"
 #include "scene_node.h"
-#include "Triangle.h"
+#include "triangle.h"
 #include "KDNode.h"
 
 using namespace std;

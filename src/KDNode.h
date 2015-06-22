@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Triangle.h"
+#include "triangle.h"
 #include "aabb.h"
 #include <vector>
 
