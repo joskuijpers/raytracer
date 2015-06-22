@@ -14,11 +14,13 @@ public:
 #pragma mark - Constructors
 
     inline Triangle() {
+        index = 0;
         v[0] = v[1] = v[2] = 0;
         n[0] = n[1] = n[2] = 0;
     }
 
     inline Triangle(const Triangle& t2) {
+        index = t2.index;
         v[0] = t2.v[0];
         v[1] = t2.v[1];
         v[2] = t2.v[2];
@@ -32,7 +34,8 @@ public:
         t[2] = t2.t[2];
     }
 
-    inline Triangle(unsigned int v0, unsigned int t0, unsigned int v1, unsigned int t1, unsigned int v2, unsigned int t2) {
+    inline Triangle(int i, unsigned int v0, unsigned int t0, unsigned int v1, unsigned int t1, unsigned int v2, unsigned int t2) {
+        index = i;
         v[0] = v0;
         v[1] = v1;
         v[2] = v2;
@@ -61,6 +64,7 @@ public:
         t[1] = other.t[1];
         t[2] = other.t[2];
 
+        index = other.index;
         return (*this);
     }
 
@@ -80,9 +84,6 @@ public:
 
     // texture coordinate
     unsigned int t[3];
-};
 
-class WsTriangle {
-public:
-    vertex v[3];
+    int index;
 };

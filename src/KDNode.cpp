@@ -1,48 +1,58 @@
-//
-// Created by jens on 21-6-15.
-//
-
 #include "KDNode.h"
 
-KDNode* KDNode::buildTree(vector<WsTriangle> triangles, int depth) {
+KDNode* KDNode::buildTree(vector<vertex>& vertices, vector<Triangle>& triangles, int depth) {
     KDNode* node = new KDNode();
+    node->box = AABoundingBox();
     node->triangles = triangles;
+    node->left = NULL;
+    node->right = NULL;
 
     if(triangles.size() == 0)
         return node;
-    node->box = KDNode::createBoundingBoxFromTriangle(triangles[0]);
-    if(triangles.size() < MIN_TRIANGLES || depth > MAX_DEPTH) {
-        node->left->triangles = vector<WsTriangle>();
-        node->right->triangles = vector<WsTriangle>();
+    node->box = KDNode::createBoundingBoxFromTriangle(vertices, triangles[0]);
+    for(Triangle t : triangles)
+        node->box.extend(KDNode::createBoundingBoxFromTriangle(vertices, t));
+    if(triangles.size() < MIN_TRIANGLES || depth >= MAX_DEPTH) { // node is small or deep enough to stop dividing
+        node->left = new KDNode();
+        node->right = new KDNode();
+        node->left->triangles = vector<Triangle>();
+        node->right->triangles = vector<Triangle>();
         return node;
     }
     Vector3f center;
 
-    for(WsTriangle t : triangles) {
-        node->box.extend(KDNode::createBoundingBoxFromTriangle(t));
-        center += KDNode::calculateCenterOfTriangle(t);
-    }
+    for(Triangle t : triangles)
+        center += (KDNode::calculateCenterOfTriangle(vertices, t) / triangles.size());
 
-    vector<WsTriangle> left_triangles;
-    vector<WsTriangle> right_triangles;
+    vector<Triangle> left_triangles = vector<Triangle>();
+    vector<Triangle> right_triangles = vector<Triangle>();
     int axis = node->box.findLongestAxis();
-    for(WsTriangle t : triangles) {
-        center[axis] >= KDNode::calculateCenterOfTriangle(t)[axis] ? right_triangles.push_back(t) : left_triangles.push_back(t);
+    for(Triangle t : triangles) {
+        Vector3f centerOfTriangle = KDNode::calculateCenterOfTriangle(vertices, t);
+        if(center[axis] >= centerOfTriangle[axis]) {
+            right_triangles.push_back(t);
+        } else {
+            left_triangles.push_back(t);
+        }
     }
-    node->left = buildTree(left_triangles, depth + 1);
-    node->right = buildTree(right_triangles, depth + 1);
-
+    node->left = buildTree(vertices, left_triangles, depth + 1);
+    node->right = buildTree(vertices, right_triangles, depth + 1);
     return node;
 }
 
-Vector3f KDNode::calculateCenterOfTriangle(WsTriangle t) {
-    return Vector3<float>(nullptr);
+Vector3f KDNode::calculateCenterOfTriangle(vector<vertex> vertices, Triangle t) {
+    Vector3f mid;
+    float midX = (vertices[t.v[0]].p[0] + vertices[t.v[1]].p[0] + vertices[t.v[2]].p[0])/3;
+    float midY = (vertices[t.v[0]].p[1] + vertices[t.v[1]].p[1] + vertices[t.v[2]].p[1])/3;
+    float midZ = (vertices[t.v[0]].p[2] + vertices[t.v[1]].p[2] + vertices[t.v[2]].p[2])/3;
+    mid.set(midX, midY, midZ);
+    return mid;
 }
 
-AABoundingBox KDNode::createBoundingBoxFromTriangle(WsTriangle t) {
+AABoundingBox KDNode::createBoundingBoxFromTriangle(vector<vertex> vertices, Triangle t) {
     AABoundingBox box;
-    box.extend(t.v[0].p);
-    box.extend(t.v[1].p);
-    box.extend(t.v[2].p);
-    return AABoundingBox();
+    box.extend(vertices[t.v[0]].p);
+    box.extend(vertices[t.v[1]].p);
+    box.extend(vertices[t.v[2]].p);
+    return box;
 }

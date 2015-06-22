@@ -47,6 +47,7 @@ public:
 private:
     int rayTriangleIntersect(Ray ray, Triangle triangle, Vector3f &point, float &hitDistance, float &s, float &t);
     Vector3f normalOfFace(Triangle triangle, float s, float t);
+    void findTriangles(Ray ray, KDNode* node, vector<Triangle>& triangles);
 public:
 
 #pragma mark - Properties
@@ -74,5 +75,5 @@ public:
     // the class material is defined just above
     std::vector<Material> materials;
 
-    unique_ptr<KDNode> treeRoot;
+    KDNode* treeRoot;
 };

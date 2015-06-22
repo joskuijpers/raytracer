@@ -86,6 +86,10 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     float nearestHitS = 0.f, nearestHitT = 0.f;
     Ray os_ray;
 
+
+    vector<Triangle> toConsider;
+    findTriangles(ray, treeRoot, toConsider);
+
     // Store the viewer position for specular shading
     result.viewer = ray.origin;
     result.lightDirection = ray.direction;
@@ -93,11 +97,11 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     // Transform the ray, effectively transforming this object
     os_ray = ray.transform(ws_transformationMatrix);
 
-    for(size_t it = 0; it < this->triangles.size(); ++it) {
+
+    for(Triangle t : toConsider) {
         int intersectResult;
         Vector3f intPoint;
         float hit, hitS, hitT;
-        Triangle t = this->triangles[it];
 
         intersectResult = rayTriangleIntersect(os_ray, t, intPoint, hit, hitS, hitT);
 
@@ -116,6 +120,12 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
         // If a shadow ray, stop on first hit
         if(ray.isShadowRay())
             break;
+
+        result.depth = hit;
+        nearestTriangle = t;
+        triangleIndex = t.index;
+        nearestHitS = hitS;
+        nearestHitT = hitT;
     }
 
     // If no hit, return unhit result
@@ -471,13 +481,15 @@ bool Mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
 
                     const int m  = (materialIndex.find(matname))->second;
 
-                    triangles.push_back(Triangle(vhandles[v0], texhandles[t0],
+                    triangles.push_back(Triangle(triangles.size(),
+                                                 vhandles[v0], texhandles[t0],
                                                  vhandles[v1], texhandles[t1],
                                                  vhandles[v2], texhandles[t2]));
                     triangleMaterials.push_back(m);
                 }
             } else if (vhandles.size() == 3) {
-                Triangle t(vhandles[0], texhandles[0],
+                Triangle t(triangles.size(),
+                           vhandles[0], texhandles[0],
                            vhandles[1], texhandles[1],
                            vhandles[2], texhandles[2]);
 
@@ -498,15 +510,7 @@ bool Mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
     }
 
     fclose(in);
-    vector<WsTriangle> wsTriangles;
-    for(Triangle t : triangles)
-    {
-        WsTriangle wsTriangle;
-        wsTriangle.v[0] = this->vertices[t.v[0]];
-        wsTriangle.v[1] = this->vertices[t.v[1]];
-        wsTriangle.v[2] = this->vertices[t.v[2]];
-    }
-    this->treeRoot = unique_ptr<KDNode>(KDNode::buildTree(wsTriangles, 0));
+    this->treeRoot = KDNode::buildTree(vertices, triangles, 0);
     return true;
 }
 
@@ -641,4 +645,22 @@ bool Mesh::loadMaterial(const char *filename, std::map<string, unsigned int> &ma
     fclose(in);
     
     return true;
+}
+
+void Mesh::findTriangles(Ray ray, KDNode *node, vector<Triangle>& triangles) {
+    AABoundingBox wsBox;
+    wsBox.min = ws_transformationMatrix * node->box.min;
+    wsBox.max = ws_transformationMatrix * node->box.max;
+    if(node->left->triangles.size() > 0 || node->right->triangles.size() > 0) {
+        wsBox.min = ws_transformationMatrix * node->right->box.min;
+        wsBox.max = ws_transformationMatrix * node->right->box.max;
+        if(wsBox.intersection(ray, FLT_MAX))
+            findTriangles(ray, node->right, triangles);
+        wsBox.min = ws_transformationMatrix * node->left->box.min;
+        wsBox.max = ws_transformationMatrix * node->left->box.max;
+        if(wsBox.intersection(ray, FLT_MAX))
+            findTriangles(ray, node->left, triangles);
+    } else {
+        triangles.insert(triangles.end(), node->triangles.begin(), node->triangles.end());
+    }
 }
