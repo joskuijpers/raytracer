@@ -14,6 +14,7 @@ public:
         ambient = Vector3f(.1f,.1f,.1f);
         diffuse = Vector3f(.8f,.8f,.8f);
         specular = Vector3f(0.8f,0.8f,0.8f);
+        intensity = 1.f;
     }
 
 #pragma mark - Properties
@@ -22,6 +23,7 @@ public:
     Vector3f ambient;
     Vector3f diffuse;
     Vector3f specular;
+    float intensity;
 };
 
 class Scene : public SceneNode

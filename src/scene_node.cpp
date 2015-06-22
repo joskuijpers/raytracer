@@ -140,6 +140,10 @@ ApplyResult SceneNode::apply(shared_ptr<Scene> scene, unsigned int level, hit_re
     if (testray) {
         g_raytracer->testrays.push_back(TestRay(Ray(hit.viewer, hit.hitPosition), hit.depth, result));
     }
+
+    // Calculate the fresnel paramater
+    result.fresnel = fresnel(hit.lightDirection, hit.normal, hit.material.getNi());
+
     return result;
 }
 
@@ -165,7 +169,7 @@ inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned
     }
 
     // Diffuse shading
-    result.diffuseColor += hit.material.getKd() * hit.normal.dot(Lm) * light->diffuse;
+    result.diffuseColor = hit.material.getKd() * hit.normal.dot(Lm) * light->intensity;
     if(result.diffuseColor[0] < 0.0 || result.diffuseColor[1] < 0.0 || result.diffuseColor[2] < 0.0)
         result.diffuseColor = Vector3f();
 
@@ -182,11 +186,10 @@ inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned
         if(phongTerm < 0.f)
             phongTerm = 0.f;
 
-        result.specularColor += hit.material.getKs() * powf(phongTerm, hit.material.getNs()) * light->specular;
-    }
+        result.specularColor = hit.material.getKs() * powf(phongTerm, hit.material.getNs()) * light->intensity;
 
-    // Calculate the fresnel paramater
-    result.fresnel = fresnel(hit.lightDirection, hit.normal, hit.material.getNi());
+//        result.specularColor *= fresnel(Lm * half, hit.material.getKs(), hit.material.getNs()) * light->intensity;
+    }
 
     return result;
 }
@@ -197,7 +200,7 @@ inline bool inShadow(shared_ptr<Scene> scene, hit_result hit, shared_ptr<Light> 
     // If Object is convex, no need to do self shadowing
     Vector3f shadowRayOrigin = hit.hitPosition;
     if(!hit.node->isConvex())
-        shadowRayOrigin -= 0.001f * hit.lightDirection;
+        shadowRayOrigin -= 0.0001f * hit.lightDirection;
 
     Ray shadowRay(shadowRayOrigin, light->position);
     shadowRay.shadow_ray = true; // for faster tracing
@@ -219,7 +222,7 @@ inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigne
     reflectionRay.origin = hit.hitPosition;
 
     if(!hit.node->isConvex())
-        reflectionRay.origin -= 0.001f * hit.lightDirection;
+        reflectionRay.origin -= 0.0001f * hit.lightDirection;
 
     float reflet = 2.f * (hit.lightDirection.dot(hit.normal));
     reflectionRay.updateDirection(hit.lightDirection - reflet * hit.normal);
