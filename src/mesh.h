@@ -8,7 +8,7 @@
 #include "material.h"
 #include "scene_node.h"
 #include "triangle.h"
-#include "KDNode.h"
+#include "kdnode.h"
 
 using namespace std;
 

@@ -1,4 +1,4 @@
-#include "KDNode.h"
+#include "kdnode.h"
 
 KDNode* KDNode::buildTree(vector<vertex>& vertices, vector<Triangle>& triangles, int depth) {
     KDNode* node = new KDNode();

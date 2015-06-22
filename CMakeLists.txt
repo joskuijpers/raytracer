@@ -34,8 +34,8 @@ set(SOURCE_FILES
     src/testray.h
     src/testray.cpp
     src/triangle.h
-    src/KDNode.cpp
-    src/KDNode.h
+    src/kdnode.cpp
+    src/kdnode.h
 )
 
 add_executable(raytracer ${SOURCE_FILES})
