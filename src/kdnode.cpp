@@ -12,7 +12,7 @@ KDNode* KDNode::buildTree(vector<vertex>& vertices, vector<Triangle>& triangles,
     node->box = KDNode::createBoundingBoxFromTriangle(vertices, triangles[0]);
     for(Triangle t : triangles)
         node->box.extend(KDNode::createBoundingBoxFromTriangle(vertices, t));
-    if(triangles.size() < MIN_TRIANGLES || depth >= MAX_DEPTH) { // node is small or deep enough to stop dividing
+    if(triangles.size() < MIN_KD_TRIANGLES || depth >= MAX_KD_DEPTH) { // node is small or deep enough to stop dividing
         node->left = new KDNode();
         node->right = new KDNode();
         node->left->triangles = vector<Triangle>();
@@ -41,12 +41,7 @@ KDNode* KDNode::buildTree(vector<vertex>& vertices, vector<Triangle>& triangles,
 }
 
 Vector3f KDNode::calculateCenterOfTriangle(vector<vertex> vertices, Triangle t) {
-    Vector3f mid;
-    float midX = (vertices[t.v[0]].p[0] + vertices[t.v[1]].p[0] + vertices[t.v[2]].p[0])/3;
-    float midY = (vertices[t.v[0]].p[1] + vertices[t.v[1]].p[1] + vertices[t.v[2]].p[1])/3;
-    float midZ = (vertices[t.v[0]].p[2] + vertices[t.v[1]].p[2] + vertices[t.v[2]].p[2])/3;
-    mid.set(midX, midY, midZ);
-    return mid;
+    return (vertices[t.v[0]].p + vertices[t.v[1]].p + vertices[t.v[2]].p) / 3.f;
 }
 
 AABoundingBox KDNode::createBoundingBoxFromTriangle(vector<vertex> vertices, Triangle t) {

@@ -8,7 +8,8 @@
 // The anti aliasing factor
 #define ANTIALIASING_LEVEL 4
 // #define ANTIALIASING_LEVEL 16
-
+#define MAX_KD_DEPTH 20
+#define MIN_KD_TRIANGLES 100
 
 
 

@@ -3,9 +3,7 @@
 #include "triangle.h"
 #include "aabb.h"
 #include <vector>
-
-#define MAX_DEPTH 20
-#define MIN_TRIANGLES 100
+#include "config.h"
 
 class KDNode {
 public:
