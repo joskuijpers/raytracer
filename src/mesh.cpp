@@ -112,7 +112,7 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
         if(hit < result.depth) {
             result.depth = hit;
             nearestTriangle = t;
-            triangleIndex = it;
+            triangleIndex = t.index;
             nearestHitS = hitS;
             nearestHitT = hitT;
         }

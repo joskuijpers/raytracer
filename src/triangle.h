@@ -34,7 +34,7 @@ public:
         t[2] = t2.t[2];
     }
 
-    inline Triangle(int i, unsigned int v0, unsigned int t0, unsigned int v1, unsigned int t1, unsigned int v2, unsigned int t2) {
+    inline Triangle(size_t i, unsigned int v0, unsigned int t0, unsigned int v1, unsigned int t1, unsigned int v2, unsigned int t2) {
         index = i;
         v[0] = v0;
         v[1] = v1;
@@ -85,5 +85,5 @@ public:
     // texture coordinate
     unsigned int t[3];
 
-    int index;
+    size_t index;
 };
