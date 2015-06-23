@@ -77,9 +77,9 @@ template <class T> bool operator< (const Vector4<T> &a, const Vector4<T> &b) {
 }
 
 template <class T> bool operator>= (const Vector4<T> &a, const Vector4<T> &b) {
-    return (a[0] >= b[0] ||
-            a[1] >= b[1] ||
-            a[2] >= b[2] ||
+    return (a[0] >= b[0] &&
+            a[1] >= b[1] &&
+            a[2] >= b[2] &&
             a[3] >= b[3]);
 }
 

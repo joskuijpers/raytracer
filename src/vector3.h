@@ -86,8 +86,8 @@ template <class T> bool operator<= (const Vector3<T> &a, const Vector3<T> &b) {
 }
 
 template <class T> bool operator>= (const Vector3<T> &a, const Vector3<T> &b) {
-    return (a[0] >= b[0] ||
-            a[1] >= b[1] ||
+    return (a[0] >= b[0] &&
+            a[1] >= b[1] &&
             a[2] >= b[2]);
 }
 
