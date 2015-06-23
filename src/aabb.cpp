@@ -111,3 +111,14 @@ bool AABoundingBox::intersection(Ray ray, float t [[gnu::unused]]) {
 
     return tmin < FLT_MAX && tmax > 0;
 }
+
+int AABoundingBox::findLongestAxis() {
+    float lengthX = max[0] - min[0];
+    float lengthY = max[1] - min[1];
+    float lengthZ = max[2] - min[2];
+    if(lengthX > lengthY && lengthX > lengthZ)
+        return 0;
+    if(lengthY > lengthZ)
+        return 1;
+    return 2;
+}

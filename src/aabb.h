@@ -79,6 +79,8 @@ public:
         extendMax(other.max);
     };
 
+    int findLongestAxis();
+
 #pragma mark - Drawing
 
     void draw();
