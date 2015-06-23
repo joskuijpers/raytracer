@@ -21,6 +21,8 @@
 		8043A43B1B36F39E00A0C93A /* trackball.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8043A4391B36F39E00A0C93A /* trackball.cpp */; };
 		8043A43E1B36F3B700A0C93A /* testray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8043A43C1B36F3B700A0C93A /* testray.cpp */; };
 		8043A43F1B36F3B700A0C93A /* testray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8043A43C1B36F3B700A0C93A /* testray.cpp */; };
+		8043A44E1B39993A00A0C93A /* kdnode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8043A44C1B39993A00A0C93A /* kdnode.cpp */; };
+		8043A44F1B39993A00A0C93A /* kdnode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8043A44C1B39993A00A0C93A /* kdnode.cpp */; };
 		A66B134E1B2F0A600014222F /* scene_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460AC1B2762D1001CFCF0 /* scene_node.cpp */; };
 		A66B134F1B2F0A600014222F /* sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460A51B25E84F001CFCF0 /* sphere.cpp */; };
 		A66B13501B2F0A600014222F /* aabb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 800460B41B28553E001CFCF0 /* aabb.cpp */; };
@@ -93,6 +95,9 @@
 		8043A4391B36F39E00A0C93A /* trackball.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = trackball.cpp; sourceTree = "<group>"; };
 		8043A43C1B36F3B700A0C93A /* testray.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testray.cpp; sourceTree = "<group>"; };
 		8043A43D1B36F3B700A0C93A /* testray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testray.h; sourceTree = "<group>"; };
+		8043A44C1B39993A00A0C93A /* kdnode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = kdnode.cpp; sourceTree = "<group>"; };
+		8043A44D1B39993A00A0C93A /* kdnode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kdnode.h; sourceTree = "<group>"; };
+		8043A4501B39994000A0C93A /* triangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = triangle.h; sourceTree = "<group>"; };
 		A66B135E1B2F0A600014222F /* RayTracer OpenMP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "RayTracer OpenMP"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A66B135F1B2F11AB0014222F /* libiomp5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiomp5.dylib; path = ../../../../../../../usr/local/Cellar/libiomp/20150401/lib/libiomp5.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -162,6 +167,7 @@
 				8004608B1B24934A001CFCF0 /* trackball.h */,
 				800460A11B25DECA001CFCF0 /* math */,
 				800460A01B25DEC0001CFCF0 /* scene */,
+				8043A4501B39994000A0C93A /* triangle.h */,
 				800460AE1B277DF3001CFCF0 /* raytracing */,
 				800460A21B25DED4001CFCF0 /* misc */,
 				8043A4351B30D11C00A0C93A /* config.h */,
@@ -195,6 +201,8 @@
 				8004609F1B25DABD001CFCF0 /* material.h */,
 				8004609C1B25DA0C001CFCF0 /* scene.cpp */,
 				8004609D1B25DA0C001CFCF0 /* scene.h */,
+				8043A44C1B39993A00A0C93A /* kdnode.cpp */,
+				8043A44D1B39993A00A0C93A /* kdnode.h */,
 			);
 			name = scene;
 			sourceTree = "<group>";
@@ -333,6 +341,7 @@
 				8004609E1B25DA0C001CFCF0 /* scene.cpp in Sources */,
 				8043A43E1B36F3B700A0C93A /* testray.cpp in Sources */,
 				8004609A1B25CF3F001CFCF0 /* image_writer.cpp in Sources */,
+				8043A44E1B39993A00A0C93A /* kdnode.cpp in Sources */,
 				800460901B24934A001CFCF0 /* raytracing.cpp in Sources */,
 				8043A43A1B36F39E00A0C93A /* trackball.cpp in Sources */,
 				8004608F1B24934A001CFCF0 /* mesh.cpp in Sources */,
@@ -350,6 +359,7 @@
 				A66B13511B2F0A600014222F /* scene.cpp in Sources */,
 				8043A43F1B36F3B700A0C93A /* testray.cpp in Sources */,
 				A66B13521B2F0A600014222F /* image_writer.cpp in Sources */,
+				8043A44F1B39993A00A0C93A /* kdnode.cpp in Sources */,
 				A66B13531B2F0A600014222F /* raytracing.cpp in Sources */,
 				8043A43B1B36F39E00A0C93A /* trackball.cpp in Sources */,
 				A66B13541B2F0A600014222F /* mesh.cpp in Sources */,
