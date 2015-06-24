@@ -44,8 +44,8 @@ void SceneNode::updateTransformationMatrix(void) {
 
     // TODO: make sure this is the right order!
     // Rotate around certain point: Scale * point translation * rotation * object translation
-    // Normally: scale * rotation * translation
-    transformationMatrix = scal * rot * trans;
+    // This is the right order in order to get everything right
+    transformationMatrix = scal * trans * rot;
 
     // If parent is available, using the parent worldspace matrix, create our own ws matrix
     if(auto p = parent.lock()) {
