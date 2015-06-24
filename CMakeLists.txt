@@ -36,6 +36,8 @@ set(SOURCE_FILES
     src/triangle.h
     src/kdnode.cpp
     src/kdnode.h
+    src/lodepng.cpp
+    src/lodepng.h
 )
 
 add_executable(raytracer ${SOURCE_FILES})
