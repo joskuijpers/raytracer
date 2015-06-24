@@ -89,10 +89,14 @@ void Raytracer::init(void) {
     sphere->radius = 0.2f;
 
     Material mat;
-    mat.setKd(.9f, .3f, .9f);
-    mat.setKa(.2f, .02f, .2f);
-    mat.setKs(0.5f, 0.5f, 0.5f);
-    mat.setNs(27);
+//    mat.setKd(.9f, .3f, .9f);
+//    mat.setKa(.2f, .02f, .2f);
+//    mat.setKs(0.5f, 0.5f, 0.5f);
+//    mat.setNs(27);
+    mat.setKd(0, 0, 0);
+    mat.setKa(0, 0, 0);
+    mat.setKs(1, 1, 1);
+    mat.setNs(20);
     mat.setIl(6);
     mat.setNi(1.5);
 
