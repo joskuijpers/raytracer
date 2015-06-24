@@ -120,12 +120,6 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
         // If a shadow ray, stop on first hit
         if(ray.isShadowRay())
             break;
-
-        result.depth = hit;
-        nearestTriangle = t;
-        triangleIndex = t.index;
-        nearestHitS = hitS;
-        nearestHitT = hitT;
     }
 
     // If no hit, return unhit result
