@@ -49,5 +49,17 @@ AABoundingBox KDNode::createBoundingBoxFromTriangle(vector<vertex> vertices, Tri
     box.extend(vertices[t.v[0]].p);
     box.extend(vertices[t.v[1]].p);
     box.extend(vertices[t.v[2]].p);
+
+    box.color = Vector3f(.082, .996, .776);
+
     return box;
+}
+
+void KDNode::draw() {
+    if (triangles.size() > 0) {
+        box.draw();
+
+        left->draw();
+        right->draw();
+    }
 }

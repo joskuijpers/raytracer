@@ -56,7 +56,7 @@ void Scene::draw(void) {
 
     if(showBoundingBoxes) {
         for(auto& obj : children) {
-            obj->drawBoundingBox();
+            obj->drawStructure();
         }
     }
 

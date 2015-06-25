@@ -257,6 +257,17 @@ void Mesh::drawNormals() {
     glEnd();
 }
 
+void Mesh::drawStructure() {
+    ws_boundingBox.draw();
+
+    if (g_raytracer->scene->showTree) {
+        glPushMatrix();
+        SceneNode::draw();
+        treeRoot->draw();
+        glPopMatrix();
+    }
+}
+
 #pragma mark - Loading
 
 bool Mesh::loadMesh(const char *filename, bool randomizeTriangulation) {

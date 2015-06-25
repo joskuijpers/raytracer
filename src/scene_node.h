@@ -107,7 +107,7 @@ public:
     /// The draw method for OpenGL display. Override it.
     virtual void draw(void);
     virtual void drawNormals(void);
-    virtual void drawBoundingBox(void);
+    virtual void drawStructure(void);
 
 #pragma mark - Raytracing
 

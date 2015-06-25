@@ -37,7 +37,7 @@ public:
     /**
      * Additional keyboard functionality.
      */
-    void keyboard(char t, int x, int y, const Vector3f& rayOrigin, const Vector3f& rayDest);
+    void keyboard(char t, int x, int y);
 
 #pragma mark - Raytracing
 
