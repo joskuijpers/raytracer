@@ -18,10 +18,10 @@ Vector3f Texture::getFromFace(Texture::Face face, float xf, float yf) {
         x = (((xf *size) + size) /2) + 3 * size;
         y = (((yf *size) + size) /2) + size;
     } else if (face == FACE_TOP) {
-        x = (((xf *size) + size) /2) + size;
+        x = (((xf *size) + size) /2) + size * 2;
         y = (((yf *size) + size) /2);
     } else if (face == FACE_BOTTOM) {
-        x = (((xf *size) + size) /2) + size;
+        x = (((xf *size) + size) /2) + size * 2;
         y = (((yf *size) + size) /2) + size * 2;
     } else
         return Vector3<float>(0,0,0);

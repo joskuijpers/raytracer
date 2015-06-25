@@ -135,7 +135,7 @@ void Raytracer::init(void) {
     // and possibly transformation matrices
     scene->prepare();
 
-    texture = new Texture("resource/Skybox.png", 1024+512, 1024+512, 1024);
+    texture = new Texture("resource/Skybox.png", 1024+1024+512, 1024+512, 1024);
     skybox = new Skybox(texture);
 }
 

@@ -130,7 +130,7 @@ ApplyResult SceneNode::apply(shared_ptr<Scene> scene, unsigned int level, hit_re
 
     // Add relection only if in the illumination model
     if(hit.material.getIl() >= 3 && level < MAX_TRACE_LEVELS) {
-        result.reflectedColor = applyReflection(scene, hit, level, testray);
+        result.reflectedColor = .4f * applyReflection(scene, hit, level, testray);
     }
 
     // Add refraction only if in the illumination model
@@ -157,7 +157,7 @@ inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned
 
     // Get the direction to the light source
     Lm = light->position - hit.hitPosition;
-    float distance = Lm.normalize();
+    float distance [[gnu::unused]] = Lm.normalize();
 
     // See if this point is in shadow. If it is, do not apply diffuse and specular.
     if(inShadow(scene, hit, light))
