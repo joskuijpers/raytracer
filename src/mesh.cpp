@@ -78,14 +78,12 @@ Vector3f Mesh::normalOfFace(Triangle triangle, float s, float t) {
     return n;
 }
 
-hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
+hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip, size_t triangleSkip)
 {
     hit_result result;
-    size_t triangleIndex = 0;
     Triangle nearestTriangle;
     float nearestHitS = 0.f, nearestHitT = 0.f;
     Ray os_ray;
-
 
     vector<Triangle> toConsider;
     findTriangles(ray, treeRoot, toConsider);
@@ -103,6 +101,9 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
         Vector3f intPoint;
         float hit, hitS, hitT;
 
+        if unlikely(triangleSkip == t.index && this == skip.get())
+            continue;
+
         intersectResult = rayTriangleIntersect(os_ray, t, intPoint, hit, hitS, hitT);
 
         if (intersectResult != INTERSECT)
@@ -112,7 +113,6 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
         if(hit < result.depth) {
             result.depth = hit;
             nearestTriangle = t;
-            triangleIndex = t.index;
             nearestHitS = hitS;
             nearestHitT = hitT;
         }
@@ -142,7 +142,10 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     result.normal = normalOfFace(nearestTriangle, nearestHitS, nearestHitT);
 
     // Material of the triangle
-    result.material = materials[triangleMaterials[triangleIndex]];
+    result.material = materials[triangleMaterials[nearestTriangle.index]];
+
+    // Index of the triangle
+    result.triangle = nearestTriangle.index;
 
     return result;
 }
@@ -171,7 +174,7 @@ int Mesh::rayTriangleIntersect(Ray ray, Triangle triangle, Vector3f &point, floa
     b = n.dot(ray.direction);
 
     // Angle is much much tiny: parallel
-    if (unlikely(fabs(b) < 0.00000001f)) {
+    if unlikely(fabs(b) < 0.00000001f) {
         if(a == 0.f)
             return PARALLEL;
         else

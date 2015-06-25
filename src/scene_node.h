@@ -21,10 +21,10 @@ class SceneNode;
  *
  * @todo Move this to the raytracing file if possible?
  */
-class hit_result {
+struct hit_result {
 public:
 #pragma mark - Constructor
-    hit_result() : depth(FLT_MAX), hit(false) {}
+    hit_result() : depth(FLT_MAX), hit(false), triangle(SIZE_T_MAX) {}
 
 #pragma mark - Operators
 
@@ -59,6 +59,9 @@ public:
 
     /// Direction the light came from
     Vector3f lightDirection;
+
+    /// Triangle ID for meshes. SIZE_T_MAX is no mesh or no hit.
+    size_t triangle;
 };
 
 struct ApplyResult{
@@ -122,12 +125,13 @@ public:
     void updateTransformationMatrix(void);
 
     /// The hit method, to detect ray hits.
-    virtual hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
+    virtual hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr, size_t triangleSkip = SIZE_T_MAX);
 
     // Apply method: applies the hit.
     virtual ApplyResult apply(shared_ptr<Scene> scene, unsigned int level, hit_result hit_info, bool testray = false);
 
 #pragma mark - Properties
+
     const char *name;
 
     vector<shared_ptr<SceneNode>> children;

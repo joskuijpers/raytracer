@@ -67,7 +67,7 @@ void SceneNode::createWsBoundingBox(void) {
 
 #pragma mark - Raytracing
 
-hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip) {
+hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip, size_t triangleSkip) {
     hit_result result;
 
     // check against bounding box
@@ -80,11 +80,12 @@ hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip) {
     for(auto& node : children) {
         hit_result nodeResult;
 
-        if(skip == node)
+        // No specific triangle to skip, and skip object.
+        if(triangleSkip == SIZE_T_MAX && skip == node)
             continue;
 
         // Try to hit the node
-        nodeResult = node->hit(ray, skip);
+        nodeResult = node->hit(ray, skip, triangleSkip);
 
         if(!nodeResult.is_hit())
             continue;
@@ -197,19 +198,14 @@ inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned
 inline bool inShadow(shared_ptr<Scene> scene, hit_result hit, shared_ptr<Light> light) {
     hit_result shadowRes;
 
-    // If Object is convex, no need to do self shadowing
-    Vector3f shadowRayOrigin = hit.hitPosition;
-    if(!hit.node->isConvex())
-        shadowRayOrigin -= 0.0001f * hit.lightDirection;
-
-    Ray shadowRay(shadowRayOrigin, light->position);
+    Ray shadowRay(hit.hitPosition, light->position);
     shadowRay.shadow_ray = true; // for faster tracing
 
     // Offset shadow ray to prevent hit the same hitpoint again
-    shadowRes = scene->hit(shadowRay, hit.node->isConvex() ? hit.node : nullptr);
+    shadowRes = scene->hit(shadowRay, hit.node, hit.triangle);
 
     // If hit by shadow, do not draw anything other than ambient
-    if(shadowRes.is_hit() && shadowRes.depth >= 0.1f)
+    if(shadowRes.is_hit() && shadowRes.depth > 0.0001f)
         return true;
 
     return false;
@@ -221,17 +217,14 @@ inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigne
 
     reflectionRay.origin = hit.hitPosition;
 
-    if(!hit.node->isConvex())
-        reflectionRay.origin -= 0.0001f * hit.lightDirection;
-
     float reflet = 2.f * (hit.lightDirection.dot(hit.normal));
     reflectionRay.updateDirection(hit.lightDirection - reflet * hit.normal);
 
     // Hit the scene with our ray
-    reflResult = scene->hit(reflectionRay, hit.node->isConvex() ? hit.node : nullptr);
+    reflResult = scene->hit(reflectionRay, hit.node, hit.triangle);
 
     // If we hit something, add color
-    if(reflResult.is_hit() && reflResult.depth >= 0.f)
+    if(reflResult.is_hit() && reflResult.depth > 0.0001f)
         return reflResult.node->apply(scene, level + 1, reflResult, testray).sum() * hit.material.getKs();
 
     return Vector3f(0,0,0);
