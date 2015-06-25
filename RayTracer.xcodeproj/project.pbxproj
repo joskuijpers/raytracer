@@ -175,17 +175,6 @@
 		8004607D1B249222001CFCF0 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				A66F7B271B3C9CCE0075A9C2 /* light.cpp */,
-				A66F7B281B3C9CCE0075A9C2 /* light.h */,
-				A66F7B0C1B3C0EDF0075A9C2 /* lodepng.cpp */,
-				A66F7B0D1B3C0EDF0075A9C2 /* lodepng.h */,
-				A66F7B0E1B3C0EDF0075A9C2 /* skybox.cpp */,
-				A66F7B0F1B3C0EDF0075A9C2 /* skybox.h */,
-				A66F7B101B3C0EDF0075A9C2 /* texture.cpp */,
-				A66F7B111B3C0EDF0075A9C2 /* texture.h */,
-				800460991B25CF3F001CFCF0 /* image_writer.cpp */,
-				800460841B24934A001CFCF0 /* image_writer.h */,
-				800460B01B279A0B001CFCF0 /* color.h */,
 				800460851B24934A001CFCF0 /* main.cpp */,
 				8043A4391B36F39E00A0C93A /* trackball.cpp */,
 				8004608B1B24934A001CFCF0 /* trackball.h */,
@@ -225,8 +214,12 @@
 				8004609F1B25DABD001CFCF0 /* material.h */,
 				8004609C1B25DA0C001CFCF0 /* scene.cpp */,
 				8004609D1B25DA0C001CFCF0 /* scene.h */,
+				A66F7B101B3C0EDF0075A9C2 /* texture.cpp */,
+				A66F7B111B3C0EDF0075A9C2 /* texture.h */,
 				8043A44C1B39993A00A0C93A /* kdnode.cpp */,
 				8043A44D1B39993A00A0C93A /* kdnode.h */,
+				A66F7B271B3C9CCE0075A9C2 /* light.cpp */,
+				A66F7B281B3C9CCE0075A9C2 /* light.h */,
 			);
 			name = scene;
 			sourceTree = "<group>";
@@ -247,6 +240,10 @@
 			children = (
 				800460981B25028A001CFCF0 /* platform.h */,
 				8004609B1B25D36B001CFCF0 /* compiler_opt.h */,
+				A66F7B0C1B3C0EDF0075A9C2 /* lodepng.cpp */,
+				A66F7B0D1B3C0EDF0075A9C2 /* lodepng.h */,
+				800460991B25CF3F001CFCF0 /* image_writer.cpp */,
+				800460841B24934A001CFCF0 /* image_writer.h */,
 			);
 			name = misc;
 			sourceTree = "<group>";
@@ -260,6 +257,8 @@
 				800460A61B25E84F001CFCF0 /* sphere.h */,
 				800460AC1B2762D1001CFCF0 /* scene_node.cpp */,
 				800460A41B25E7D2001CFCF0 /* scene_node.h */,
+				A66F7B0E1B3C0EDF0075A9C2 /* skybox.cpp */,
+				A66F7B0F1B3C0EDF0075A9C2 /* skybox.h */,
 			);
 			name = objects;
 			sourceTree = "<group>";
@@ -272,6 +271,7 @@
 				800460891B24934A001CFCF0 /* raytracing.cpp */,
 				8004608A1B24934A001CFCF0 /* raytracing.h */,
 				800460AF1B277E2D001CFCF0 /* ray.h */,
+				800460B01B279A0B001CFCF0 /* color.h */,
 			);
 			name = raytracing;
 			sourceTree = "<group>";
