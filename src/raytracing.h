@@ -10,6 +10,7 @@
 #include "testray.h"
 #include "texture.h"
 #include "skybox.h"
+#include "config.h"
 
 /// Transform a mouse position to a source/destination pair
 extern void produceRay(int x_I, int y_I, Vector3f &origin, Vector3f &dest);
@@ -21,7 +22,7 @@ extern shared_ptr<Raytracer> g_raytracer;
 class Raytracer : public enable_shared_from_this<Raytracer>
 {
 public:
-    Raytracer() : windowSizeX(800), windowSizeY(600) {
+    Raytracer() : windowSizeX(WINDOW_WIDTH), windowSizeY(WINDOW_HEIGHT) {
         scene = move(unique_ptr<Scene>(new Scene()));
     };
 

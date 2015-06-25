@@ -18,5 +18,4 @@ public:
     KDNode* left;
     KDNode* right;
     vector<Triangle> triangles;
-
 };

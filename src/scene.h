@@ -53,8 +53,6 @@ public:
 
     Vector3f background_color;
 
-
-
     /// Lights within the scene
     // TODO: special light object in the graph
     vector<shared_ptr<Light>> lights;

@@ -45,7 +45,7 @@ void SceneNode::updateTransformationMatrix(void) {
     // TODO: make sure this is the right order!
     // Rotate around certain point: Scale * point translation * rotation * object translation
     // This is the right order in order to get everything right
-    transformationMatrix = scal * trans * rot;
+    transformationMatrix = trans * scal * rot;
 
     // If parent is available, using the parent worldspace matrix, create our own ws matrix
     if(auto p = parent.lock()) {
@@ -106,7 +106,7 @@ hit_result SceneNode::hit(Ray ray, shared_ptr<SceneNode> skip, size_t triangleSk
 
 inline ApplyResult applyDirect(shared_ptr<Scene> scene, hit_result hit, unsigned int level, shared_ptr<Light> light);
 inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigned int level, bool testray);
-inline Vector3f applyRefraction(shared_ptr<Scene> scene, hit_result hit, unsigned int level);
+inline Vector3f applyRefraction(shared_ptr<Scene> scene, hit_result hit, unsigned int level, bool testray);
 inline float fresnel(Vector3f direction, Vector3f normal, float n);
 bool inShadow(shared_ptr<Scene> scene, hit_result hit, shared_ptr<Light> light);
 
@@ -135,7 +135,7 @@ ApplyResult SceneNode::apply(shared_ptr<Scene> scene, unsigned int level, hit_re
 
     // Add refraction only if in the illumination model
     if(hit.material.getIl() >= 6 && level < MAX_TRACE_LEVELS) {
-        result.refractedColor = applyRefraction(scene, hit, level);
+        result.refractedColor = applyRefraction(scene, hit, level, testray);
     }
 
     if (testray) {
@@ -232,13 +232,58 @@ inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigne
     return Vector3f(0,0,0);
 }
 
-inline Vector3f applyRefraction(shared_ptr<Scene> scene [[gnu::unused]], hit_result hit, unsigned int level [[gnu::unused]]) {
-    Vector3f It;
-    return (1.f - hit.material.getKs()) * hit.material.getTf() * It;
-}
-
 inline float clamp(float min, float max, float value) {
     return std::max(min, std::min(max, value));
+}
+
+inline Vector3f applyRefraction(shared_ptr<Scene> scene [[gnu::unused]], hit_result hit [[gnu::unused]], unsigned int level [[gnu::unused]], bool testray [[gnu::unused]]) {
+    /*Ray refractionRay;
+    hit_result refrResult;
+
+    // There are two cases: inside to outside, and outside to inside.
+    // For both cases we need to do the right division between materials
+    // and normal directions
+    /// @note From many many sites, incl http://www.scratchapixel.com/code.php?id=8&origin=/lessons/3d-basic-rendering/ray-tracing-overview
+
+    float cosi = clamp(-1.f,1.f,hit.normal.dot(hit.lightDirection));
+
+    float etai = 1, etat = hit.material.getNi();
+    Vector3f n = hit.normal;
+
+    // Switch normal if needed
+    if(cosi < 0)
+        cosi = -cosi;
+    else {
+        swap(etai,etat);
+        n = -hit.normal;
+    }
+
+    float eta = etai / etat;
+    float k = 1.f - eta * eta * (1 - cosi * cosi);
+
+    if(k < 0.f)
+        refractionRay.updateDirection(Vector3f(0,0,0));
+    else
+        refractionRay.updateDirection(eta * hit.lightDirection + (eta * cosi - sqrtf(k)) * n);
+
+    if(refractionRay.direction.dot(hit.normal) < 0.f)
+        refractionRay.origin = hit.hitPosition - hit.normal * 0.00001f;
+    else
+        refractionRay.origin = hit.hitPosition + hit.normal * 0.00001f;
+
+    refrResult = scene->hit(refractionRay);
+    if(refrResult.is_hit() && refrResult.depth > 0.00001f) {
+        Vector3f color;
+
+        color = refrResult.node->apply(scene, level + 1, refrResult, testray).sum();
+
+//        cout << refrResult.node->name << endl;
+
+//        return Vector3f(0,1,0);
+        return color;
+    }*/
+    
+    return Vector3f(0,0,0);
 }
 
 // Kr = return value, Kt = 1 - Kr

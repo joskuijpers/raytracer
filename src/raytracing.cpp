@@ -103,6 +103,15 @@ void Raytracer::init(void) {
     sphere->material = mat;
 
     scene->children.push_back(move(sphere));
+
+
+    shared_ptr<Mesh> floor(new Mesh("floor"));
+    floor->loadMesh("resource/cube.obj", true);
+    floor->computeVertexNormals();
+    floor->parent = scene;
+    floor->translation = Vector3f(-4.f,-.1f,-4.f);
+    floor->scale = Vector3f(8,.1f,8);
+    scene->children.push_back(move(floor));
 #elif TESTSET == 5
     unique_ptr<Mesh> teapot(new Mesh("teapot"));
     teapot->loadMesh("resource/teapot.obj", true);
@@ -126,7 +135,7 @@ void Raytracer::init(void) {
     // and possibly transformation matrices
     scene->prepare();
 
-    texture = new Texture("resource/Skybox.png", 1250, 750, 500);
+    texture = new Texture("resource/Skybox.png", 1024+512, 1024+512, 1024);
     skybox = new Skybox(texture);
 }
 
