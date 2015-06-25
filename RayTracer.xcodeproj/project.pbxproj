@@ -34,6 +34,12 @@
 		A66B13581B2F0A600014222F /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800460951B2495A6001CFCF0 /* GLUT.framework */; };
 		A66B13591B2F0A600014222F /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800460931B2495A2001CFCF0 /* OpenGL.framework */; };
 		A66B13601B2F11AB0014222F /* libiomp5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A66B135F1B2F11AB0014222F /* libiomp5.dylib */; };
+		A66F7B121B3C0EDF0075A9C2 /* lodepng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A66F7B0C1B3C0EDF0075A9C2 /* lodepng.cpp */; };
+		A66F7B131B3C0EDF0075A9C2 /* lodepng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A66F7B0C1B3C0EDF0075A9C2 /* lodepng.cpp */; };
+		A66F7B141B3C0EDF0075A9C2 /* skybox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A66F7B0E1B3C0EDF0075A9C2 /* skybox.cpp */; };
+		A66F7B151B3C0EDF0075A9C2 /* skybox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A66F7B0E1B3C0EDF0075A9C2 /* skybox.cpp */; };
+		A66F7B161B3C0EDF0075A9C2 /* texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A66F7B101B3C0EDF0075A9C2 /* texture.cpp */; };
+		A66F7B171B3C0EDF0075A9C2 /* texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A66F7B101B3C0EDF0075A9C2 /* texture.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -100,6 +106,12 @@
 		8043A4501B39994000A0C93A /* triangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = triangle.h; sourceTree = "<group>"; };
 		A66B135E1B2F0A600014222F /* RayTracer OpenMP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "RayTracer OpenMP"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A66B135F1B2F11AB0014222F /* libiomp5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiomp5.dylib; path = ../../../../../../../usr/local/Cellar/libiomp/20150401/lib/libiomp5.dylib; sourceTree = "<group>"; };
+		A66F7B0C1B3C0EDF0075A9C2 /* lodepng.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lodepng.cpp; sourceTree = "<group>"; };
+		A66F7B0D1B3C0EDF0075A9C2 /* lodepng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lodepng.h; sourceTree = "<group>"; };
+		A66F7B0E1B3C0EDF0075A9C2 /* skybox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = skybox.cpp; sourceTree = "<group>"; };
+		A66F7B0F1B3C0EDF0075A9C2 /* skybox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = skybox.h; sourceTree = "<group>"; };
+		A66F7B101B3C0EDF0075A9C2 /* texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = texture.cpp; sourceTree = "<group>"; };
+		A66F7B111B3C0EDF0075A9C2 /* texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +171,12 @@
 		8004607D1B249222001CFCF0 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				A66F7B0C1B3C0EDF0075A9C2 /* lodepng.cpp */,
+				A66F7B0D1B3C0EDF0075A9C2 /* lodepng.h */,
+				A66F7B0E1B3C0EDF0075A9C2 /* skybox.cpp */,
+				A66F7B0F1B3C0EDF0075A9C2 /* skybox.h */,
+				A66F7B101B3C0EDF0075A9C2 /* texture.cpp */,
+				A66F7B111B3C0EDF0075A9C2 /* texture.h */,
 				800460991B25CF3F001CFCF0 /* image_writer.cpp */,
 				800460841B24934A001CFCF0 /* image_writer.h */,
 				800460B01B279A0B001CFCF0 /* color.h */,
@@ -344,7 +362,10 @@
 				8043A44E1B39993A00A0C93A /* kdnode.cpp in Sources */,
 				800460901B24934A001CFCF0 /* raytracing.cpp in Sources */,
 				8043A43A1B36F39E00A0C93A /* trackball.cpp in Sources */,
+				A66F7B121B3C0EDF0075A9C2 /* lodepng.cpp in Sources */,
 				8004608F1B24934A001CFCF0 /* mesh.cpp in Sources */,
+				A66F7B161B3C0EDF0075A9C2 /* texture.cpp in Sources */,
+				A66F7B141B3C0EDF0075A9C2 /* skybox.cpp in Sources */,
 				8004608E1B24934A001CFCF0 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -362,7 +383,10 @@
 				8043A44F1B39993A00A0C93A /* kdnode.cpp in Sources */,
 				A66B13531B2F0A600014222F /* raytracing.cpp in Sources */,
 				8043A43B1B36F39E00A0C93A /* trackball.cpp in Sources */,
+				A66F7B131B3C0EDF0075A9C2 /* lodepng.cpp in Sources */,
 				A66B13541B2F0A600014222F /* mesh.cpp in Sources */,
+				A66F7B171B3C0EDF0075A9C2 /* texture.cpp in Sources */,
+				A66F7B151B3C0EDF0075A9C2 /* skybox.cpp in Sources */,
 				A66B13551B2F0A600014222F /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
