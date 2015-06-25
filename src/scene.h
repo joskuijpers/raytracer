@@ -7,12 +7,11 @@
 #include "scene_node.h"
 #include "light.h"
 
-using namespace std;
-
 class Scene : public SceneNode
 {
 public:
     Scene() : SceneNode("scene") {};
+
 #pragma mark - Drawing
 
     void draw(void);
@@ -42,6 +41,7 @@ public:
     /// Whether to draw the bounding boxes of objects and scene.
     bool showBoundingBoxes = true;
     bool showNormals = false;
+    bool showTree = false;
 
 #pragma mark - Methods
     void selectNextLight();

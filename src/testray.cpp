@@ -27,9 +27,9 @@ void TestRay::draw() {
 }
 
 
-void writeText(char *text) {
-    char *p = nullptr;
-    for (p = text; *p != '\0'; p++)
+void writeText(const char *text) {
+    const char *p = nullptr;
+    for (p = text; *p != '\0'; ++p)
         glutStrokeCharacter(GLUT_STROKE_ROMAN, *p);
 }
 
@@ -67,7 +67,7 @@ void TestRay::drawInfo() {
         {
             Vector3f tmp = applyResult.ambiantColor * 2; //cheat a bit by making it brighter
             glColor3fv(tmp.pointer());
-            writeText("ambiant:");
+            writeText("ambient:");
             glBegin(GL_QUADS);
             for (int i = 0; i < 5; i++) {
                 glVertex3dv(corners[i]);

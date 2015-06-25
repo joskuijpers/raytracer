@@ -1,15 +1,9 @@
-# Blender MTL File: 'None'
-# Material Count: 1
-
 newmtl pot
-Ns 25.490196
-Ka 0.000000 0.000000 0.000000
-Kd 0.624314 0.454902 0.090980
-Ks 0.496078 0.470588 0.403922
-Ni 1.500000
-d 0.000000
-<<<<<<< HEAD
-illum 2
-=======
 illum 4
->>>>>>> feature/shading_ref
+Tf 1.00 1.00 1.00
+Ka 0.5 0.5 0.5
+Ks 0.667 0.667 0.667
+Kd 0.833 0.333 0.333
+Ns 50.8
+Tf 0 1 0
+Ni 1

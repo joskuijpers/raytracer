@@ -78,13 +78,15 @@ Vector3f Mesh::normalOfFace(Triangle triangle, float s, float t) {
     return n;
 }
 
-hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
+hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip, size_t triangleSkip)
 {
     hit_result result;
-    size_t triangleIndex = 0;
     Triangle nearestTriangle;
     float nearestHitS = 0.f, nearestHitT = 0.f;
     Ray os_ray;
+
+    vector<Triangle> toConsider;
+    findTriangles(ray, treeRoot, toConsider);
 
     // Store the viewer position for specular shading
     result.viewer = ray.origin;
@@ -93,26 +95,31 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     // Transform the ray, effectively transforming this object
     os_ray = ray.transform(ws_transformationMatrix);
 
-    for(size_t it = 0; it < this->triangles.size(); ++it) {
+
+    for(Triangle t : toConsider) {
         int intersectResult;
         Vector3f intPoint;
         float hit, hitS, hitT;
-        Triangle t = this->triangles[it];
+
+        if unlikely(triangleSkip == t.index && this == skip.get())
+            continue;
 
         intersectResult = rayTriangleIntersect(os_ray, t, intPoint, hit, hitS, hitT);
 
         if (intersectResult != INTERSECT)
             continue;
 
-        // Skip if not nearer than prev hit.
-        if(hit >= result.depth)
-            continue;
+        // If hit is nearer than prev hit, store it
+        if(hit < result.depth) {
+            result.depth = hit;
+            nearestTriangle = t;
+            nearestHitS = hitS;
+            nearestHitT = hitT;
+        }
 
-        result.depth = hit;
-        nearestTriangle = t;
-        triangleIndex = it;
-        nearestHitS = hitS;
-        nearestHitT = hitT;
+        // If a shadow ray, stop on first hit
+        if(ray.isShadowRay())
+            break;
     }
 
     // If no hit, return unhit result
@@ -135,7 +142,10 @@ hit_result Mesh::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
     result.normal = normalOfFace(nearestTriangle, nearestHitS, nearestHitT);
 
     // Material of the triangle
-    result.material = materials[triangleMaterials[triangleIndex]];
+    result.material = materials[triangleMaterials[nearestTriangle.index]];
+
+    // Index of the triangle
+    result.triangle = nearestTriangle.index;
 
     return result;
 }
@@ -164,7 +174,7 @@ int Mesh::rayTriangleIntersect(Ray ray, Triangle triangle, Vector3f &point, floa
     b = n.dot(ray.direction);
 
     // Angle is much much tiny: parallel
-    if (unlikely(fabs(b) < 0.00000001f)) {
+    if unlikely(fabs(b) < 0.00000001f) {
         if(a == 0.f)
             return PARALLEL;
         else
@@ -248,6 +258,17 @@ void Mesh::drawNormals() {
     }
 
     glEnd();
+}
+
+void Mesh::drawStructure() {
+    ws_boundingBox.draw();
+
+    if (g_raytracer->scene->showTree) {
+        glPushMatrix();
+        SceneNode::draw();
+        treeRoot->draw();
+        glPopMatrix();
+    }
 }
 
 #pragma mark - Loading
@@ -468,13 +489,15 @@ bool Mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
 
                     const int m  = (materialIndex.find(matname))->second;
 
-                    triangles.push_back(Triangle(vhandles[v0], texhandles[t0],
+                    triangles.push_back(Triangle(triangles.size(),
+                                                 vhandles[v0], texhandles[t0],
                                                  vhandles[v1], texhandles[t1],
                                                  vhandles[v2], texhandles[t2]));
                     triangleMaterials.push_back(m);
                 }
             } else if (vhandles.size() == 3) {
-                Triangle t(vhandles[0], texhandles[0],
+                Triangle t(triangles.size(),
+                           vhandles[0], texhandles[0],
                            vhandles[1], texhandles[1],
                            vhandles[2], texhandles[2]);
 
@@ -495,6 +518,7 @@ bool Mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
     }
 
     fclose(in);
+    this->treeRoot = KDNode::buildTree(vertices, triangles, 0);
     return true;
 }
 
@@ -629,4 +653,27 @@ bool Mesh::loadMaterial(const char *filename, std::map<string, unsigned int> &ma
     fclose(in);
     
     return true;
+}
+
+void Mesh::findTriangles(Ray ray, KDNode *node, vector<Triangle>& triangles) {
+    AABoundingBox wsBox;
+
+    wsBox.min = ws_transformationMatrix * node->box.min;
+    wsBox.max = ws_transformationMatrix * node->box.max;
+
+    if(node->left->triangles.size() > 0 || node->right->triangles.size() > 0) {
+        wsBox.min = ws_transformationMatrix * node->right->box.min;
+        wsBox.max = ws_transformationMatrix * node->right->box.max;
+
+        if(wsBox.intersection(ray, FLT_MAX))
+            findTriangles(ray, node->right, triangles);
+
+        wsBox.min = ws_transformationMatrix * node->left->box.min;
+        wsBox.max = ws_transformationMatrix * node->left->box.max;
+
+        if(wsBox.intersection(ray, FLT_MAX))
+            findTriangles(ray, node->left, triangles);
+    } else {
+        triangles.insert(triangles.end(), node->triangles.begin(), node->triangles.end());
+    }
 }

@@ -325,58 +325,7 @@ public:
         return translate(v[0],v[1],v[2]);
     }
 
-    inline Matrix4& rotate(const float angle, const Vector3<T>& axis) {
-        return rotate(angle,axis[0],axis[1],axis[2]);
-    }
-
-    inline Matrix4& rotate(const float angle, T x, T y, T z) {
-        float c = cosf(angle * DEG2RAD);    // cosine
-        float s = sinf(angle * DEG2RAD);    // sine
-        float c1 = 1.0f - c;                // 1 - c
-        T m0 = m[0],  m4 = m[4],  m8 = m[8],  m12= m[12],
-        m1 = m[1],  m5 = m[5],  m9 = m[9],  m13= m[13],
-        m2 = m[2],  m6 = m[6],  m10= m[10], m14= m[14];
-
-        // build rotation matrix
-        T r0 = x * x * c1 + c;
-        T r1 = x * y * c1 + z * s;
-        T r2 = x * z * c1 - y * s;
-        T r4 = x * y * c1 - z * s;
-        T r5 = y * y * c1 + c;
-        T r6 = y * z * c1 + x * s;
-        T r8 = x * z * c1 + y * s;
-        T r9 = y * z * c1 - x * s;
-        T r10= z * z * c1 + c;
-
-        // multiply rotation matrix
-        m[0] = r0 * m0 + r4 * m1 + r8 * m2;
-        m[1] = r1 * m0 + r5 * m1 + r9 * m2;
-        m[2] = r2 * m0 + r6 * m1 + r10* m2;
-        m[4] = r0 * m4 + r4 * m5 + r8 * m6;
-        m[5] = r1 * m4 + r5 * m5 + r9 * m6;
-        m[6] = r2 * m4 + r6 * m5 + r10* m6;
-        m[8] = r0 * m8 + r4 * m9 + r8 * m10;
-        m[9] = r1 * m8 + r5 * m9 + r9 * m10;
-        m[10]= r2 * m8 + r6 * m9 + r10* m10;
-        m[12]= r0 * m12+ r4 * m13+ r8 * m14;
-        m[13]= r1 * m12+ r5 * m13+ r9 * m14;
-        m[14]= r2 * m12+ r6 * m13+ r10* m14;
-
-        return (*this);
-    }
-
-    inline Matrix4& rotateX(const float angle) {
-        return rotate(angle,1,0,0);
-    }
-
-    inline Matrix4& rotateY(const float angle) {
-        return rotate(angle,0,1,0);
-    }
-
-    inline Matrix4& rotateZ(const float angle) {
-        return rotate(angle,0,0,1);
-    }
-
+    
     /// Multiply columns by s
     inline Matrix4& scale(T s) {
         return scale(s,s,s);
@@ -448,24 +397,33 @@ public:
     }
 
     inline const Matrix4 makeRotation(float angle, T x, T y, T z) {
+        Vector3f normalized = Vector3f(x,y,z);
+        normalized.normalize();
+        
+        T nx = normalized[0];
+        T ny = normalized[1];
+        T nz = normalized[2];
+        
         T c = cosf(angle * DEG2RAD);
         T s = sinf(angle * DEG2RAD);
         T c1 = 1.f - c;
-
+        
         T m0 = m[0],  m4 = m[4],  m8 = m[8],  m12= m[12],
         m1 = m[1],  m5 = m[5],  m9 = m[9],  m13= m[13],
         m2 = m[2],  m6 = m[6],  m10= m[10], m14= m[14];
-
+        
         // build rotation matrix
-        T r0 = x * x * c1 + c;
-        T r1 = x * y * c1 + z * s;
-        T r2 = x * z * c1 - y * s;
-        T r4 = x * y * c1 - z * s;
-        T r5 = y * y * c1 + c;
-        T r6 = y * z * c1 + x * s;
-        T r8 = x * z * c1 + y * s;
-        T r9 = y * z * c1 - x * s;
-        T r10= z * z * c1 + c;
+        T r0 = nx * nx * c1 + c;
+        T r1 = nx * ny * c1 + nz * s;
+        T r2 = nx * nz * c1 - ny * s;
+        
+        T r4 = nx * ny * c1 - nz * s;
+        T r5 = ny * ny * c1 + c;
+        T r6 = ny * nz * c1 + nx * s;
+        
+        T r8 = nx * nz * c1 + ny * s;
+        T r9 = ny * nz * c1 - nx * s;
+        T r10= nz * nz * c1 + c;
 
         // multiply rotation matrix
         m[0] = r0 * m0 + r4 * m1 + r8 * m2;

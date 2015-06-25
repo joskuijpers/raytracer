@@ -11,6 +11,8 @@
 #include "mesh.h"
 #include "sphere.h"
 #include "trackball.h"
+#include "texture.h"
+#include "skybox.h"
 
 using namespace std;
 
@@ -74,6 +76,8 @@ void Raytracer::init(void) {
     teapot->loadMesh("resource/teapot.obj", true);
     teapot->computeVertexNormals();
     teapot->parent = scene;
+    //teapot->rotation = Vector3f(1.f, 2.f, 3.f);
+    //teapot->rotationAngle = 10.f;
     scene->children.push_back(move(teapot));
 
     unique_ptr<Mesh> teapot2(new Mesh("teapot"));
@@ -94,11 +98,20 @@ void Raytracer::init(void) {
     mat.setKs(0.5f, 0.5f, 0.5f);
     mat.setNs(27);
     mat.setIl(6);
-
+    mat.setNi(1.5);
 
     sphere->material = mat;
 
     scene->children.push_back(move(sphere));
+
+
+    shared_ptr<Mesh> floor(new Mesh("floor"));
+    floor->loadMesh("resource/cube.obj", true);
+    floor->computeVertexNormals();
+    floor->parent = scene;
+    floor->translation = Vector3f(-4.f,-.1f,-4.f);
+    floor->scale = Vector3f(8,.1f,8);
+    scene->children.push_back(move(floor));
 #elif TESTSET == 5
     unique_ptr<Mesh> teapot(new Mesh("teapot"));
     teapot->loadMesh("resource/teapot.obj", true);
@@ -113,23 +126,21 @@ void Raytracer::init(void) {
     scene->children.push_back(move(cube));
 #endif
 
-    // Create a single lighblendert
-    scene->lights.push_back(unique_ptr<Light>(new Light(scene->camera + Vector3f(0,5,0))));
     scene->lights.push_back(unique_ptr<Light>(new Light(Vector3f(4,5,0))));
     scene->lights[0]->selected = true;
+    scene->lights.push_back(unique_ptr<Light>(new Light(scene->camera + Vector3f(0,2,0))));
 
     // Prepare the scene for raytracing: create bounding boxes,
     // and possibly transformation matrices
     scene->prepare();
+
+    texture = new Texture("resource/Skybox.png", 1024+1024+512, 1024+512, 1024);
+    skybox = new Skybox(texture);
 }
 
 #pragma mark - Events
 
-
-
 void Raytracer::drawDebugRay() {
-    //draw the line
-
     for(auto ray = testrays.begin(); ray != testrays.end(); ++ray){
         ray->draw();
     }
@@ -137,41 +148,20 @@ void Raytracer::drawDebugRay() {
     if(!testrays.empty()) {
         TestRay lastray = testrays.back();
         lastray.drawInfo();
-
     }
-
-
 }
 
 void Raytracer::draw(void) {
-    //draw open gl debug stuff
-    //this function is called every frame
-
     // Draw the scene
     scene->draw();
 
-    //as an example: we draw the test ray, which is set by the keyboard function
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-    glDisable(GL_LIGHTING);
-
-
+    // Draw the debug ray
     drawDebugRay();
 
-
-    /*
-    glPointSize(10);
-
-    glBegin(GL_POINTS);
-    glVertex3fv(scene->lights[0]->position.pointer());
-    glEnd();
-*/
     glPopAttrib();
 }
 
-void Raytracer::keyboard(char t [[gnu::unused]], int mouseX [[gnu::unused]], int mouseY [[gnu::unused]], const Vector3f& rayOrigin, const Vector3f& rayDest) {
-    performRayTracing(rayOrigin, rayDest, true);
-
+void Raytracer::keyboard(char t, int x, int y) {
     switch (t) {
         case 'n':
             scene->showNormals = !scene->showNormals;
@@ -179,11 +169,14 @@ void Raytracer::keyboard(char t [[gnu::unused]], int mouseX [[gnu::unused]], int
         case 'b':
             scene->showBoundingBoxes = !scene->showBoundingBoxes;
             break;
+        case 's':
+            scene->showTree = !scene->showTree;
+            break;
         case 'c':
             testrays.clear();
             break;
         default:
-            std::cout << t << " pressed! The mouse was in location " << mouseX << ", " << mouseY << "!" << std::endl;
+            std::cout << t << " pressed! The mouse was in location " << x << ", " << y << "!" << std::endl;
             break;
     }
 }
@@ -204,15 +197,17 @@ Vector3f Raytracer::performRayTracing(const Vector3f &origin, const Vector3f &de
         // is not lit by light.
 
         // Intersect with light(s)
-        auto& light = scene->lights[0];
-
-        hit_result shadowRes = scene->hit(Ray(origin, light->position));
-
-
-        if(shadowRes.is_hit())
-            return .5f * scene->background_color;
-        else
-            return scene->background_color;
+//        auto& light = scene->lights[0];
+//
+//        hit_result shadowRes = scene->hit(Ray(origin, light->position));
+//
+//
+//        if(shadowRes.is_hit())
+//            return .5f * scene->background_color;
+//        else
+            //return scene->background_color;
+            return skybox->getColor(ray);
+        //return Vector3f(0.1f, 0.1f, 0.1f);
     }
 
     // Apply the hit, this is recursive.

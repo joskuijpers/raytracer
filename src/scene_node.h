@@ -19,10 +19,10 @@ class SceneNode;
  *
  * @todo Move this to the raytracing file if possible?
  */
-class hit_result {
+struct hit_result {
 public:
 #pragma mark - Constructor
-    hit_result() : depth(FLT_MAX), hit(false) {}
+    hit_result() : depth(FLT_MAX), hit(false), triangle(SIZE_T_MAX) {}
 
 #pragma mark - Operators
 
@@ -57,35 +57,37 @@ public:
 
     /// Direction the light came from
     Vector3f lightDirection;
+
+    /// Triangle ID for meshes. SIZE_T_MAX is no mesh or no hit.
+    size_t triangle;
 };
 
 struct ApplyResult{
     Vector3f ambiantColor, diffuseColor, specularColor, reflectedColor, refractedColor;
+    float fresnel;
 
-
+#pragma mark - Constructors
     ApplyResult() { }
 
-
     ApplyResult(Vector3f &ambiantColor, Vector3f &diffuseColor, Vector3f &specularColor, Vector3f &reflectedColor,
-                Vector3f &refractedColor) : ambiantColor(ambiantColor), diffuseColor(diffuseColor),
+                Vector3f &refractedColor, float fresnel) : ambiantColor(ambiantColor), diffuseColor(diffuseColor),
                                             specularColor(specularColor), reflectedColor(reflectedColor),
-                                            refractedColor(refractedColor) { }
+                                            refractedColor(refractedColor), fresnel(fresnel) { }
 
     void update(Vector3f &ambiantColor, Vector3f &diffuseColor, Vector3f &specularColor, Vector3f &reflectedColor,
-                Vector3f &refractedColor){
+                Vector3f &refractedColor, float fresnel){
         this->ambiantColor = ambiantColor;
         this->diffuseColor = diffuseColor;
         this->specularColor = specularColor;
         this->reflectedColor = reflectedColor;
         this->refractedColor = refractedColor;
-
+        this->fresnel = fresnel;
     }
 
-
-    Vector3f sum(){
-        return ambiantColor+diffuseColor+specularColor+reflectedColor+refractedColor;
+    Vector3f sum() {
+//        cout << "fresnel " << fresnel << endl;
+        return ambiantColor + diffuseColor + specularColor + reflectedColor + refractedColor;
     }
-
 };
 
 
@@ -106,10 +108,9 @@ public:
     /// The draw method for OpenGL display. Override it.
     virtual void draw(void);
     virtual void drawNormals(void);
-    virtual void drawBoundingBox(void);
+    virtual void drawStructure(void);
 
 #pragma mark - Raytracing
-
 
     ApplyResult extended_result;
     /// Create the bounding box
@@ -122,12 +123,13 @@ public:
     void updateTransformationMatrix(void);
 
     /// The hit method, to detect ray hits.
-    virtual hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
+    virtual hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr, size_t triangleSkip = SIZE_T_MAX);
 
     // Apply method: applies the hit.
     virtual ApplyResult apply(shared_ptr<Scene> scene, unsigned int level, hit_result hit_info, bool testray = false);
 
 #pragma mark - Properties
+
     const char *name;
 
     vector<shared_ptr<SceneNode>> children;
@@ -138,6 +140,10 @@ public:
     /// Same as above bounding box, but in world space.
     /// Min and Max are multiplied by the ws_transformationMatrix.
     AABoundingBox ws_boundingBox;
+
+    virtual bool isConvex() {
+        return false;
+    }
 
 #pragma mark - Transformation properties
 

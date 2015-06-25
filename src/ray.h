@@ -7,6 +7,7 @@ class Ray {
 public:
 #pragma mark - Constructor
     Ray(Vector3f origin, Vector3f dest) : origin(origin) {
+        shadow_ray = false;
         update(origin, dest);
     }
 
@@ -67,9 +68,14 @@ public:
         return r;
     }
 
+    inline bool isShadowRay() {
+        return shadow_ray;
+    }
+
 #pragma mark - Properties
 
     Vector3f origin;
     Vector3f direction, direction_inv;
     int sign[3];
+    bool shadow_ray;
 };

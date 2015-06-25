@@ -17,12 +17,16 @@ public:
 #pragma mark - Raytracing
 
     void createBoundingBox();
-    hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr);
+    hit_result hit(Ray ray, shared_ptr<SceneNode> skip = nullptr, size_t triangleSkip = SIZE_T_MAX);
 
 #pragma mark - Properties
     float radius;
 
     Material material;
+
+    bool isConvex() {
+        return true;
+    }
 
 private:
     Vector3f scale [[deprecated]];

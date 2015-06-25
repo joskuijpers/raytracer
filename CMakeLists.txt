@@ -35,9 +35,18 @@ set(SOURCE_FILES
     src/testray.cpp
     src/light.cpp
     src/light.h
+    src/triangle.h
+    src/kdnode.cpp
+    src/kdnode.h
+    src/lodepng.cpp
+    src/lodepng.h
+    src/texture.cpp
+    src/texture.h
+    src/skybox.cpp
+    src/skybox.h
 )
 
-add_executable(raytracer ${SOURCE_FILES})
+add_executable(raytracer ${SOURCE_FILES} )
 
 #########################################################
 # FIND GLUT

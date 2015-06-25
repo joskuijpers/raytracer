@@ -18,7 +18,7 @@ void Sphere::createBoundingBox() {
     boundingBox.max = Vector3f(+radius,+radius,+radius);
 }
 
-hit_result Sphere::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]])
+hit_result Sphere::hit(Ray ray, shared_ptr<SceneNode> skip [[gnu::unused]], size_t triangleSkip [[gnu::unused]])
 {
     hit_result result;
     float a, b, c, discriminant;

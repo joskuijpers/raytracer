@@ -15,6 +15,7 @@
 #include "image_writer.h"
 #include "scene.h"
 #include "config.h"
+#include "texture.h"
 
 using namespace std;
 
@@ -66,11 +67,6 @@ int main(int argc, char *argv[])
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL);
-
-    // Set light position
-    int lightPosition[4] = {0,0,2,0};
-    int lightMaterial[4] __attribute__((unused)) = {1,1,1,1};
-    //glLightiv(GL_LIGHT0, GL_POSITION, lightPosition);
 
     // (Missing) normals will be normalized in the graphics pipeline
     glEnable(GL_NORMALIZE);
@@ -199,8 +195,8 @@ void createRender() {
     produceRay(winSizeX - 1, 0, &origin10, &dest10);
     produceRay(winSizeX - 1, winSizeY - 1, &origin11, &dest11);
 
-
     int done = 0;
+    float lastPercent = 0.f;
     auto starttime = std::chrono::system_clock::now();
 #pragma omp parallel for schedule(static, 2)
     for (unsigned int y = 0; y < winSizeY;++y) {
@@ -245,10 +241,14 @@ void createRender() {
             result.setPixel(x,y, Color3(rgb));
         }
         done++;
-        cout << (float) done / (float) winSizeY << "percent \n";
+
+        float percent = (float)done / (float)winSizeY;
+        if(percent - lastPercent >= 0.01f) {
+            cout << std::setprecision(2) << (percent * 100.f) << "%\n";
+            lastPercent = percent;
+        }
     }
     std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now() - starttime;
-
 
     cout << "Finished raytracing!" << endl;
     cout << "Took " << elapsed_seconds.count() << " seconds " << endl;
@@ -276,14 +276,19 @@ void keyboard(unsigned char key, int x, int y)
         case 'r':
             createRender();
             break;
-        case 27:     // touche ESC
-            exit(0);
-        default:
+        case ' ':
+        {
             //produce the ray for the current mouse position
             Vector3f testRayOrigin, testRayDestination;
             produceRay(x, y, &testRayOrigin, &testRayDestination);
-
-            g_raytracer->keyboard(key, x, y, testRayOrigin, testRayDestination);
+            g_raytracer->performRayTracing(testRayOrigin, testRayDestination, true);
+        }
+            break;
+        case 27:     // touche ESC
+            exit(0);
+            break;
+        default:
+            g_raytracer->keyboard(key, x, y);
             break;
     }
 }
