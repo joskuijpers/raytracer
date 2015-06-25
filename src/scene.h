@@ -30,6 +30,8 @@ class Scene : public SceneNode
 {
 public:
     Scene() : SceneNode("scene") {};
+
+
 #pragma mark - Drawing
 
     void draw(void);
@@ -50,6 +52,8 @@ public:
     Vector3f camera;
 
     Vector3f background_color;
+
+
 
     /// Lights within the scene
     // TODO: special light object in the graph

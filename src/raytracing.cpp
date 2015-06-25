@@ -11,6 +11,8 @@
 #include "mesh.h"
 #include "sphere.h"
 #include "trackball.h"
+#include "texture.h"
+#include "skybox.h"
 
 using namespace std;
 
@@ -121,6 +123,9 @@ void Raytracer::init(void) {
     // Prepare the scene for raytracing: create bounding boxes,
     // and possibly transformation matrices
     scene->prepare();
+
+    texture = new Texture("resource/Skybox.png", 1250, 750, 500);
+    skybox = new Skybox(texture);
 }
 
 #pragma mark - Events
@@ -181,15 +186,17 @@ Vector3f Raytracer::performRayTracing(const Vector3f &origin, const Vector3f &de
         // is not lit by light.
 
         // Intersect with light(s)
-        auto& light = scene->lights[0];
-
-        hit_result shadowRes = scene->hit(Ray(origin, light->position));
-
-
-        if(shadowRes.is_hit())
-            return .5f * scene->background_color;
-        else
-            return scene->background_color;
+//        auto& light = scene->lights[0];
+//
+//        hit_result shadowRes = scene->hit(Ray(origin, light->position));
+//
+//
+//        if(shadowRes.is_hit())
+//            return .5f * scene->background_color;
+//        else
+            //return scene->background_color;
+            return skybox->getColor(ray);
+        //return Vector3f(0.1f, 0.1f, 0.1f);
     }
 
     // Apply the hit, this is recursive.

@@ -15,6 +15,7 @@
 #include "image_writer.h"
 #include "scene.h"
 #include "config.h"
+#include "texture.h"
 
 using namespace std;
 
