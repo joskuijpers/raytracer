@@ -148,9 +148,7 @@ void Raytracer::draw(void) {
     glPopAttrib();
 }
 
-void Raytracer::keyboard(char t [[gnu::unused]], int mouseX [[gnu::unused]], int mouseY [[gnu::unused]], const Vector3f& rayOrigin, const Vector3f& rayDest) {
-    performRayTracing(rayOrigin, rayDest, true);
-
+void Raytracer::keyboard(char t, int x, int y) {
     switch (t) {
         case 'n':
             scene->showNormals = !scene->showNormals;
@@ -158,11 +156,14 @@ void Raytracer::keyboard(char t [[gnu::unused]], int mouseX [[gnu::unused]], int
         case 'b':
             scene->showBoundingBoxes = !scene->showBoundingBoxes;
             break;
+        case 's':
+            scene->showTree = !scene->showTree;
+            break;
         case 'c':
             testrays.clear();
             break;
         default:
-            std::cout << t << " pressed! The mouse was in location " << mouseX << ", " << mouseY << "!" << std::endl;
+            std::cout << t << " pressed! The mouse was in location " << x << ", " << y << "!" << std::endl;
             break;
     }
 }

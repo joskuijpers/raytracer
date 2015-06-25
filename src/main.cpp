@@ -271,14 +271,19 @@ void keyboard(unsigned char key, int x, int y)
         case 'r':
             createRender();
             break;
-        case 27:     // touche ESC
-            exit(0);
-        default:
+        case ' ':
+        {
             //produce the ray for the current mouse position
             Vector3f testRayOrigin, testRayDestination;
             produceRay(x, y, &testRayOrigin, &testRayDestination);
-
-            g_raytracer->keyboard(key, x, y, testRayOrigin, testRayDestination);
+            g_raytracer->performRayTracing(testRayOrigin, testRayDestination, true);
+        }
+            break;
+        case 27:     // touche ESC
+            exit(0);
+            break;
+        default:
+            g_raytracer->keyboard(key, x, y);
             break;
     }
 }

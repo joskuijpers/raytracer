@@ -38,6 +38,7 @@ public:
 
     void draw(void);
     void drawNormals(void);
+    void drawStructure(void);
 
 #pragma mark - Raytracing
 

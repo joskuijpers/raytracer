@@ -58,6 +58,7 @@ public:
     /// Whether to draw the bounding boxes of objects and scene.
     bool showBoundingBoxes = true;
     bool showNormals = false;
+    bool showTree = false;
 
 private:
     void drawLights(void);

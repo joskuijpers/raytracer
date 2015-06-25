@@ -257,6 +257,17 @@ void Mesh::drawNormals() {
     glEnd();
 }
 
+void Mesh::drawStructure() {
+    ws_boundingBox.draw();
+
+    if (g_raytracer->scene->showTree) {
+        glPushMatrix();
+        SceneNode::draw();
+        treeRoot->draw();
+        glPopMatrix();
+    }
+}
+
 #pragma mark - Loading
 
 bool Mesh::loadMesh(const char *filename, bool randomizeTriangulation) {
@@ -643,15 +654,20 @@ bool Mesh::loadMaterial(const char *filename, std::map<string, unsigned int> &ma
 
 void Mesh::findTriangles(Ray ray, KDNode *node, vector<Triangle>& triangles) {
     AABoundingBox wsBox;
+
     wsBox.min = ws_transformationMatrix * node->box.min;
     wsBox.max = ws_transformationMatrix * node->box.max;
+
     if(node->left->triangles.size() > 0 || node->right->triangles.size() > 0) {
         wsBox.min = ws_transformationMatrix * node->right->box.min;
         wsBox.max = ws_transformationMatrix * node->right->box.max;
+
         if(wsBox.intersection(ray, FLT_MAX))
             findTriangles(ray, node->right, triangles);
+
         wsBox.min = ws_transformationMatrix * node->left->box.min;
         wsBox.max = ws_transformationMatrix * node->left->box.max;
+
         if(wsBox.intersection(ray, FLT_MAX))
             findTriangles(ray, node->left, triangles);
     } else {

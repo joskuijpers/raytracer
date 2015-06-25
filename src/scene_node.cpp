@@ -14,12 +14,12 @@ void SceneNode::drawNormals() {
     }
 }
 
-void SceneNode::drawBoundingBox() {
-    for(auto &obj : children) {
-        obj->drawBoundingBox();
-    }
-
+void SceneNode::drawStructure() {
     ws_boundingBox.draw();
+
+    for(auto &obj : children) {
+        obj->drawStructure();
+    }
 }
 
 void SceneNode::createBoundingBox() {
