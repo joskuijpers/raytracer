@@ -8,6 +8,8 @@
 #include "scene.h"
 #include "ray.h"
 #include "testray.h"
+#include "texture.h"
+#include "skybox.h"
 
 /// Transform a mouse position to a source/destination pair
 extern void produceRay(int x_I, int y_I, Vector3f &origin, Vector3f &dest);
@@ -56,6 +58,9 @@ public:
 
     /// The raytracer scene
     shared_ptr<Scene> scene;
+
+    Texture * texture;
+    Skybox * skybox;
 
     /// Test ray
     vector<TestRay> testrays;

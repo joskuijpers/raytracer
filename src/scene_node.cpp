@@ -226,6 +226,8 @@ inline Vector3f applyReflection(shared_ptr<Scene> scene, hit_result hit, unsigne
     // If we hit something, add color
     if(reflResult.is_hit() && reflResult.depth > 0.0001f)
         return reflResult.node->apply(scene, level + 1, reflResult, testray).sum() * hit.material.getKs();
+    else
+        return g_raytracer->skybox->getColor(reflectionRay);
 
     return Vector3f(0,0,0);
 }
