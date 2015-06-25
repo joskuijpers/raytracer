@@ -74,6 +74,8 @@ void Raytracer::init(void) {
     teapot->loadMesh("resource/teapot.obj", true);
     teapot->computeVertexNormals();
     teapot->parent = scene;
+    //teapot->rotation = Vector3f(1.f, 2.f, 3.f);
+    //teapot->rotationAngle = 10.f;
     scene->children.push_back(move(teapot));
 
     unique_ptr<Mesh> teapot2(new Mesh("teapot"));
