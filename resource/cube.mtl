@@ -2,4 +2,7 @@ newmtl gray
 Kd 0.4000 0.4000 0.4000
 Ka 0.4000 0.4000 0.4000
 Ks 0 0 0
+Ni 0
+Ns 70
+d 1
 illum 2

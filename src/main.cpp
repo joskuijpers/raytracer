@@ -207,15 +207,15 @@ void createRender() {
 
 #if USE_ANTIALIASING
 # if ANTIALIASING_LEVEL == 16
-            fragmentX = x - 1.0f;
+            fragmentX = x - .5f;
 # endif
-            for(; fragmentX < x + 1.0f; fragmentX += 0.5f) {
+            for(; fragmentX < x + .5f; fragmentX += 0.25f) {
 # if ANTIALIASING_LEVEL == 16
-                fragmentY = y - 1.0f;
+                fragmentY = y - .5f;
 # else
                 fragmentY = y;
 # endif
-                for(; fragmentY < y + 1.0f; fragmentY += 0.5f) {
+                for(; fragmentY < y + .5f; fragmentY += 0.25f) {
 #endif
                     Vector3f origin, dest;
 

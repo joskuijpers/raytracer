@@ -73,7 +73,7 @@ void Raytracer::init(void) {
     scene->children.push_back(move(strawberry));
 #elif TESTSET == 4
     unique_ptr<Mesh> teapot(new Mesh("teapot"));
-    teapot->loadMesh("resource/teapot.obj", true);
+    teapot->loadMesh("resource/teapot2.obj", true);
     teapot->computeVertexNormals();
     teapot->parent = scene;
     //teapot->rotation = Vector3f(1.f, 2.f, 3.f);
@@ -81,15 +81,16 @@ void Raytracer::init(void) {
     scene->children.push_back(move(teapot));
 
     unique_ptr<Mesh> teapot2(new Mesh("teapot"));
-    teapot2->loadMesh("resource/teapot.obj", true);
+    teapot2->loadMesh("resource/teapot2.obj", true);
     teapot2->computeVertexNormals();
     teapot2->parent = scene;
-    teapot2->translation = Vector3f(-2, 0, 0);
+    teapot2->scale = Vector3f(1,1,1) * .4f;
+    teapot2->translation = Vector3f(-1.3f, 0, 0);
     scene->children.push_back(move(teapot2));
 
     unique_ptr<Sphere> sphere(new Sphere("sphere"));
     sphere->parent = scene;
-    sphere->translation = Vector3f(0,0.2f,1.f);
+    sphere->translation = Vector3f(-.4f,0.2f,1.f);
     sphere->radius = 0.2f;
 
     Material mat;
@@ -111,7 +112,7 @@ void Raytracer::init(void) {
     floor->parent = scene;
     floor->translation = Vector3f(-4.f,-.1f,-4.f);
     floor->scale = Vector3f(8,.1f,8);
-    scene->children.push_back(move(floor));
+//    scene->children.push_back(move(floor));
 #elif TESTSET == 5
     unique_ptr<Mesh> teapot(new Mesh("teapot"));
     teapot->loadMesh("resource/teapot.obj", true);
