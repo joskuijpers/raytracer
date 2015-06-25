@@ -33,6 +33,8 @@ set(SOURCE_FILES
     src/vertex.h
     src/testray.h
     src/testray.cpp
+    src/light.cpp
+    src/light.h
     src/triangle.h
     src/kdnode.cpp
     src/kdnode.h

@@ -126,9 +126,8 @@ void Raytracer::init(void) {
     scene->children.push_back(move(cube));
 #endif
 
-    // Create a single lighblendert
-//    scene->lights.push_back(unique_ptr<Light>(new Light(scene->camera + Vector3f(0,5,0))));
     scene->lights.push_back(unique_ptr<Light>(new Light(Vector3f(4,5,0))));
+    scene->lights[0]->selected = true;
     scene->lights.push_back(unique_ptr<Light>(new Light(scene->camera + Vector3f(0,2,0))));
 
     // Prepare the scene for raytracing: create bounding boxes,

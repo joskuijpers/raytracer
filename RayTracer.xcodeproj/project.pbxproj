@@ -40,6 +40,8 @@
 		A66F7B151B3C0EDF0075A9C2 /* skybox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A66F7B0E1B3C0EDF0075A9C2 /* skybox.cpp */; };
 		A66F7B161B3C0EDF0075A9C2 /* texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A66F7B101B3C0EDF0075A9C2 /* texture.cpp */; };
 		A66F7B171B3C0EDF0075A9C2 /* texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A66F7B101B3C0EDF0075A9C2 /* texture.cpp */; };
+		A66F7B291B3C9CCE0075A9C2 /* light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A66F7B271B3C9CCE0075A9C2 /* light.cpp */; };
+		A66F7B2A1B3C9CCE0075A9C2 /* light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A66F7B271B3C9CCE0075A9C2 /* light.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -112,6 +114,8 @@
 		A66F7B0F1B3C0EDF0075A9C2 /* skybox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = skybox.h; sourceTree = "<group>"; };
 		A66F7B101B3C0EDF0075A9C2 /* texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = texture.cpp; sourceTree = "<group>"; };
 		A66F7B111B3C0EDF0075A9C2 /* texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture.h; sourceTree = "<group>"; };
+		A66F7B271B3C9CCE0075A9C2 /* light.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = light.cpp; sourceTree = "<group>"; };
+		A66F7B281B3C9CCE0075A9C2 /* light.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = light.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,6 +175,8 @@
 		8004607D1B249222001CFCF0 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				A66F7B271B3C9CCE0075A9C2 /* light.cpp */,
+				A66F7B281B3C9CCE0075A9C2 /* light.h */,
 				A66F7B0C1B3C0EDF0075A9C2 /* lodepng.cpp */,
 				A66F7B0D1B3C0EDF0075A9C2 /* lodepng.h */,
 				A66F7B0E1B3C0EDF0075A9C2 /* skybox.cpp */,
@@ -361,6 +367,7 @@
 				8004609A1B25CF3F001CFCF0 /* image_writer.cpp in Sources */,
 				8043A44E1B39993A00A0C93A /* kdnode.cpp in Sources */,
 				800460901B24934A001CFCF0 /* raytracing.cpp in Sources */,
+				A66F7B291B3C9CCE0075A9C2 /* light.cpp in Sources */,
 				8043A43A1B36F39E00A0C93A /* trackball.cpp in Sources */,
 				A66F7B121B3C0EDF0075A9C2 /* lodepng.cpp in Sources */,
 				8004608F1B24934A001CFCF0 /* mesh.cpp in Sources */,
@@ -382,6 +389,7 @@
 				A66B13521B2F0A600014222F /* image_writer.cpp in Sources */,
 				8043A44F1B39993A00A0C93A /* kdnode.cpp in Sources */,
 				A66B13531B2F0A600014222F /* raytracing.cpp in Sources */,
+				A66F7B2A1B3C9CCE0075A9C2 /* light.cpp in Sources */,
 				8043A43B1B36F39E00A0C93A /* trackball.cpp in Sources */,
 				A66F7B131B3C0EDF0075A9C2 /* lodepng.cpp in Sources */,
 				A66B13541B2F0A600014222F /* mesh.cpp in Sources */,

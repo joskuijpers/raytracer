@@ -267,7 +267,11 @@ void keyboard(unsigned char key, int x, int y)
             g_raytracer->scene->lights.push_back(unique_ptr<Light>(new Light(getCameraPosition())));
             break;
         case 'l':
-            g_raytracer->scene->lights[g_raytracer->scene->lights.size() - 1] = unique_ptr<Light>(new Light(getCameraPosition()));
+            g_raytracer->scene->getSelectedLight()->move(getCameraPosition());
+            break;
+        case '+':
+        case '=':
+            g_raytracer->scene->selectNextLight();
             break;
         case 'r':
             createRender();

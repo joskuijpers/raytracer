@@ -7,21 +7,9 @@
 /// Draw the lights in OpenGL
 void Scene::drawLights(void)
 {
-    // Draw the lights as white dits
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-    // Disable lighting
-    glDisable(GL_LIGHTING);
-    glColor3f(1,1,1);
-    glPointSize(10);
-    glBegin(GL_POINTS);
-
-    for (auto &light : lights) {
-        glVertex3fv(light->position.pointer());
+    for (auto& light : lights) {
+        light->draw();
     }
-
-    glEnd();
-    glPopAttrib();
 }
 
 /// Draw the scene in OpenGL
@@ -95,4 +83,15 @@ void Scene::prepare() {
     }
 
     createWsBoundingBox();
+}
+
+void Scene::selectNextLight() {
+    lights[selectedLightIndex]->selected = false;
+    selectedLightIndex = (int) (++selectedLightIndex % lights.size());
+    printf("Selected light %d\n", selectedLightIndex);
+    lights[selectedLightIndex]->selected = true;
+}
+
+Light* Scene::getSelectedLight() {
+    return lights[selectedLightIndex].get();
 }
