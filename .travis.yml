@@ -1,0 +1,16 @@
+language: cpp
+
+compiler:
+  - clang
+  - gcc
+
+script:
+  - xcodebuild
+
+branches:
+  only:
+    - develop
+    - feature/*
+
+os:
+  - osx

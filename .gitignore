@@ -1,8 +1,14 @@
+# Program result file
+result.bmp
+result.ppm
+
 # Compiled Object files
 *.slo
 *.lo
 *.o
 *.obj
+obj/
+!resource/*.obj
 
 # Precompiled Headers
 *.gch
@@ -26,3 +32,29 @@
 *.exe
 *.out
 *.app
+bin/
+
+# Mac + Xcode
+.DS_Store
+
+## Derived data
+build/
+DerivedData
+
+## Various
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+
+## Other
+*.xccheckout
+*.moved-aside
+*.xcuserstate
+dep/
+
